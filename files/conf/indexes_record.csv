@@ -1,0 +1,10 @@
+#List with version used to build the indexes
+#name,path,version,commandline,active(1/0)
+bowtie,/software/bi/el6.3/bowtie-1.1.0/bowtie-build,1.1.0,#PROG #ORIG #DEST,1
+bowtie2,/software/bi/el6.3/bowtie2-2.2.3/bowtie2-build,2.2.3,#PROG #ORIG #DEST,1
+bwa,/software/bi/el6.3/bwa-0.7.10/bwa,0.7.10,#PROG index -a bwtsw -p #DEST #ORIG,1
+GEM,/software/rg/el6.3/gemtools-1.7.1-i3/bin/gemtools index,1.7.1-i3,#PROG -i #ORIG -o #DEST.gem,1
+fastaindex,/software/bi/el6.3/exonerate-2.2.0-x86_64/bin/fastaindex,2.2.0,#PROG #ORIG #DEST.ix,1
+ncbi-blast+,/software/bi/el6.3/ncbi-blast-2.2.30+/bin/makeblastdb,2.2.30,#PROG -dbtype nucl -in #ORIG ; mv #ORIG.* #END,1
+samtools,/software/bi/bin/samtools,1.0,cd #END;ln -fs #ORIG; #PROG faidx #DEST,1
+faToTwoBit,/software/galaxy/bin/faToTwoBit,0.0.0,#PROG #ORIG #DEST.2bit,1
