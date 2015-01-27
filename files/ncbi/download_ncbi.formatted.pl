@@ -348,7 +348,7 @@ sub processfasta {
         }
         
     }
-    
+    system("mv $origin/*nal $endpath"); # Moves nal file    
     system("mv $origin/*pal $endpath"); # Moves pal file
     system("mv $endpath/*.gz* $origin"); # Moves gz back
 	
