@@ -34,7 +34,7 @@ my $password = undef;
 my $currelease = strftime("%Y%m", localtime);
 
 my $ftpdir = "/blast/db";
-my $fastadir = "/FASTA";
+my $fastadir = "/blast/db/FASTA";
 
 print STDERR $ftpdir, "\n";
 
@@ -112,7 +112,7 @@ my @fastafiles = $ftp->ls();
 $ftp_files{'ncbifasta'} = \@fastafiles;
 
 foreach my $filed (@fastafiles) {
-	$ftp_sizes{'ncbifasta'}{$filed} = check_size_ftp($ftp, $ftpdir.$fastadir."/".$filed); 
+	$ftp_sizes{'ncbifasta'}{$filed} = check_size_ftp($ftp, $fastadir."/".$filed); 
 }
 
 
@@ -308,7 +308,7 @@ if ($pdown > 0) {
 				}
 			
 				# retrieve the file
-				system("wget -t 0 -c -N ftp://$host$ftpdir$fastadir/$file");
+				system("wget -t 0 -c -N ftp://$host$fastadir/$file");
 				#Check size file against DB
 				my $wc = 0;
 				while ( compare_size(cwd()."/".$file, $ftp_sizes{'ncbi'}{$file}) < 1 ) {
@@ -316,10 +316,10 @@ if ($pdown > 0) {
 						#Remove file and try again
 						#Maybe after 10 times (network problems) -> to die
 						
-						while ( checksum($file, "ftp://$host$ftpdir$fastadir/$file.md5") < 1 ) {
+						while ( checksum($file, "ftp://$host$fastadir/$file.md5") < 1 ) {
 							
 							system("rm $file");
-							system("wget -t 0 -c -N ftp://$host$ftpdir$fastadir/$file");
+							system("wget -t 0 -c -N ftp://$host$fastadir/$file");
 							$wc++;
 							if ($wc > 20) {die "network problem with $file\n";}
 						
