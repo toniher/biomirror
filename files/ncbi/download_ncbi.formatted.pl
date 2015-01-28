@@ -311,7 +311,7 @@ if ($pdown > 0) {
 				system("wget -t 0 -c -N ftp://$host$fastadir/$file");
 				#Check size file against DB
 				my $wc = 0;
-				while ( compare_size(cwd()."/".$file, $ftp_sizes{'ncbi'}{$file}) < 1 ) {
+				while ( compare_size(cwd()."/".$file, $ftp_sizes{'ncbifasta'}{$file}) < 1 ) {
 						
 						#Remove file and try again
 						#Maybe after 10 times (network problems) -> to die
