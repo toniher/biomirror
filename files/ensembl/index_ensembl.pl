@@ -7,10 +7,11 @@ use LWP::Simple;
 use Data::Dumper;
 
 #Chrom apps
-my @appsn = ('ncbi-blast+');
+my @appsn = ('ncbi-blast+', 'samTools', 'faToTwoBit');
 my @appsc = ('bowtie', 'bowtie2', 'bwa', 'GEM', 'fastaindex');
 
 #List of progs
+# TODO: Modify csv for JSON maybe
 my $listprogsfile = "/db/.scripts/indexes_record.csv";
 
 my %listprogs = getlistprogs($listprogsfile);
@@ -26,7 +27,6 @@ my @dirarray = ('genome', 'ncrna', 'transcriptome');
 
 #get config
 my ($branch) = $dir =~/(release\-\d+)/;
-my $pluginspath = "/db/ensembl/conf/".$branch.+"/public-plugins/ensembl/conf/ini-files";
 
 my $emailbin = "~/bin/sendMsg.sh";
 
@@ -121,7 +121,7 @@ sub indexfiles {
 
 		foreach my $prog (keys %{$listprogs}) {
 
-			# Adapt to chromosome context			
+			# Adapt to chromosome context
 			my $chromcontext = 0;
 			my $usefile = $file;
 			my $endusefile = $endfile;
@@ -208,28 +208,6 @@ sub getlistprogs {
 	close(FILE);
 
 	return(%hash);
-}
-
-sub getchroms {
-
-	my $file = shift;
-	my @chromosomes;
-
-	open (FILE, $file) || die "cannot open $file!";
-
-	# E.g. for Human
-	# ENSEMBL_CHROMOSOMES     = [ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT]
-
-	while (<FILE>) {
-		if ($_=~/ENSEMBL_CHROMOSOMES/) {
-			my ($chromlist) = $_=~ /\[\s*(.*)\s*\]/;
-			@chromosomes = split(/\s+/, $chromlist);
-		}
-	}
-
-	close(FILE);
-
-	return(\@chromosomes);
 }
 
 sub getchromsREST {
