@@ -24,6 +24,7 @@ use POSIX qw/strftime/;
 # Control parameters
 my $pdown = "1";
 my $pextr = "1";
+my $fastain = "1";
 
 # variables for FTP connection
 my $host = "ftp.ncbi.nlm.nih.gov";
@@ -33,6 +34,8 @@ my $password = undef;
 my $currelease = strftime("%Y%m", localtime);
 
 my $ftpdir = "/blast/db";
+my $fastadir = "/FASTA";
+
 print STDERR $ftpdir, "\n";
 
 
@@ -97,8 +100,21 @@ $ftp_files{'ncbi'} = \@files;
 
 # retrieve size of files
 foreach my $filed (@files) {
-        $ftp_sizes{'ncbi'}{$filed} = check_size_ftp($ftp, $ftpdir."/".$filed); 
+	$ftp_sizes{'ncbi'}{$filed} = check_size_ftp($ftp, $ftpdir."/".$filed); 
 }
+
+# FASTA Files
+$ftp->cwd($fastadir) or die "Can't go to $fastadir: $!";
+# get file list
+my @fastafiles = $ftp->ls();
+
+# add array to hash
+$ftp_files{'ncbifasta'} = \@fastafiles;
+
+foreach my $filed (@fastafiles) {
+	$ftp_sizes{'ncbifasta'}{$filed} = check_size_ftp($ftp, $ftpdir.$fastadir."/".$filed); 
+}
+
 
 # return to FTP root
 $ftp->cwd() or die "Can't go to FTP root: $!";
@@ -118,33 +134,32 @@ sub check_size_ftp {
 sub checksum{
 	
 	my $file = shift;
-        my $md5file = shift;
-        
-        unless ($file=~/\.md5\s*$/) {
-            
-            if ($file=~/\.gz\s*$/) {
-        
-                my $content = get($md5file);
-                my ($md5) = $content=~ /^(\S+)\s/;
-                open (FILE, "<$file") or die $!;
-                my $ctx = Digest::MD5->new;
-
-                $ctx->addfile(*FILE);
-                my $filemd5 = $ctx->digest;
-                close(FILE);
-                
-                if ($filemd5 eq $md5) {return(1);}
-                else {return(0);}
-            
-            }
-            
-            else {return(1);}
-        }
-
-        else {
-            return(1);
-        }
-        	
+	my $md5file = shift;
+	
+	unless ($file=~/\.md5\s*$/) {
+		
+		if ($file=~/\.gz\s*$/) {
+	
+			my $content = get($md5file);
+			my ($md5) = $content=~ /^(\S+)\s/;
+			open (FILE, "<$file") or die $!;
+			my $ctx = Digest::MD5->new;
+	
+			$ctx->addfile(*FILE);
+			my $filemd5 = $ctx->digest;
+			close(FILE);
+			
+			if ($filemd5 eq $md5) {return(1);}
+			else {return(0);}
+		
+		}
+		
+		else {return(1);}
+	}
+	
+	else {
+		return(1);
+	}
 
 }
 
@@ -212,74 +227,119 @@ sub checkinclude {
 
 if ($pdown > 0) {
 
-#REMOVE files if there
-if (-d $data_dir) {
-	#print STDERR "iii!\n";
-	chdir($data_dir);
-	#system("rm -rf ./*");
-}
-
-my $count = 0;
-
-    unless (-d $data_dir) {
-        make_path($data_dir);
-    }   
-	
-    
-    my $files_ref = $ftp_files{'ncbi'};
-	
-    my @files = @{$files_ref};
-    my $logfile = $data_dir."/LOG";
-	
-    foreach my $file (sort {$a cmp $b} (@files)) {
-	
-	#Check if file in list of allowed
-	unless (checkinclude($file, \@listinclude) > 0) {
-		next;
+	#REMOVE files if there
+	if (-d $data_dir) {
+		#print STDERR "iii!\n";
+		chdir($data_dir);
+		#system("rm -rf ./*");
 	}
+	
+	my $count = 0;
+	
+	unless (-d $data_dir) {
+		make_path($data_dir);
+	}
+	
+	
+	my $files_ref = $ftp_files{'ncbi'};
+	
+	my @files = @{$files_ref};
+	my $logfile = $data_dir."/LOG";
+	
+	foreach my $file (sort {$a cmp $b} (@files)) {
+		
+		#Check if file in list of allowed
+		unless (checkinclude($file, \@listinclude) > 0) {
+			next;
+		}
+				
+		unless (downloaded_latest($file, $logfile) > 0) {
+			# change to correct directory
+			chdir $data_dir;
 			
-	unless (downloaded_latest($file, $logfile) > 0) {
-            # change to correct directory
-            chdir $data_dir;
-            
-	    if (-e $file) {
-		system("rm $file");
-	    }
-	    
-            # retrieve the file
-            system("wget -t 0 -c -N ftp://$host$ftpdir/$file");
-            #Check size file against DB
-            my $wc = 0;
-            while ( compare_size(cwd()."/".$file, $ftp_sizes{'ncbi'}{$file}) < 1 ) {
-                    
-                    #Remove file and try again
-                    #Maybe after 10 times (network problems) -> to die
-                    
-                    while ( checksum($file, "ftp://$host$ftpdir/$file.md5") < 1 ) {
-                        
-                        system("rm $file");
-                        system("wget -t 0 -c -N ftp://$host$ftpdir/$file");
-                        $wc++;
-                        if ($wc > 20) {die "network problem with $file\n";}
-                    
-                    }
-            }
-            
-            open (FILEOUT, ">>LOG") || die "Cannot write";
-            print FILEOUT $file, "\n";
-            close (FILEOUT);
-        }
-    }
-    
-    
-    
-        
-    #PRINT STAMPFILE
-    open (FILEOUT, ">>$stampfile") || die "Cannot write";
-    print FILEOUT $currelease, "\n";
-    close (FILEOUT);
- 
-        
+			if (-e $file) {
+				system("rm $file");
+			}
+		
+			# retrieve the file
+			system("wget -t 0 -c -N ftp://$host$ftpdir/$file");
+			#Check size file against DB
+			my $wc = 0;
+			while ( compare_size(cwd()."/".$file, $ftp_sizes{'ncbi'}{$file}) < 1 ) {
+					
+					#Remove file and try again
+					#Maybe after 10 times (network problems) -> to die
+					
+					while ( checksum($file, "ftp://$host$ftpdir/$file.md5") < 1 ) {
+						
+						system("rm $file");
+						system("wget -t 0 -c -N ftp://$host$ftpdir/$file");
+						$wc++;
+						if ($wc > 20) {die "network problem with $file\n";}
+					
+					}
+			}
+			
+			open (FILEOUT, ">>LOG") || die "Cannot write";
+			print FILEOUT $file, "\n";
+			close (FILEOUT);
+		}
+	}
+	
+	if ( $fastain > 0 ) {
+		my $files_ref = $ftp_files{'ncbifasta'};
+		
+		my @files = @{$files_ref};
+		my $logfile = $data_dir."/LOG";
+		
+		foreach my $file (sort {$a cmp $b} (@files)) {
+			
+			#Check if file in list of allowed
+			unless (checkinclude($file, \@listinclude) > 0) {
+				next;
+			}
+					
+			unless (downloaded_latest($file, $logfile) > 0) {
+				# change to correct directory
+				chdir $data_dir;
+				
+				if (-e $file) {
+					system("rm $file");
+				}
+			
+				# retrieve the file
+				system("wget -t 0 -c -N ftp://$host$ftpdir$fastadir/$file");
+				#Check size file against DB
+				my $wc = 0;
+				while ( compare_size(cwd()."/".$file, $ftp_sizes{'ncbi'}{$file}) < 1 ) {
+						
+						#Remove file and try again
+						#Maybe after 10 times (network problems) -> to die
+						
+						while ( checksum($file, "ftp://$host$ftpdir$fastadir/$file.md5") < 1 ) {
+							
+							system("rm $file");
+							system("wget -t 0 -c -N ftp://$host$ftpdir$fastadir/$file");
+							$wc++;
+							if ($wc > 20) {die "network problem with $file\n";}
+						
+						}
+				}
+				
+				open (FILEOUT, ">>LOG") || die "Cannot write";
+				print FILEOUT $file, "\n";
+				close (FILEOUT);
+			}
+		}
+	}
+	
+	
+		
+	#PRINT STAMPFILE
+	open (FILEOUT, ">>$stampfile") || die "Cannot write";
+	print FILEOUT $currelease, "\n";
+	close (FILEOUT);
+
 }
 
 
@@ -290,25 +350,25 @@ my $count = 0;
 ##########################
 if ($pextr > 0) {
 
-# change to data dir
-chdir $data_dir;
-
-print "Extracting data (please be patient)...\n";
-
-my $dh;
-# get list of files
-opendir($dh, "$data_dir") or die "Can't opendir $data_dir: $!";
-my @files = grep {!/^\./ && -f "$data_dir/$_" && /\.gz$/} readdir($dh); #NOT EXTRACT MDSUMS
-closedir $dh;
-@files = sort {$a cmp $b} @files;
+	# change to data dir
+	chdir $data_dir;
 	
-
-processfasta(\@files, $data_dir, $final_dir);
+	print "Extracting data (please be patient)...\n";
+	
+	my $dh;
+	# get list of files
+	opendir($dh, "$data_dir") or die "Can't opendir $data_dir: $!";
+	my @files = grep {!/^\./ && -f "$data_dir/$_" && /\.gz$/} readdir($dh); #NOT EXTRACT MDSUMS
+	closedir $dh;
+	@files = sort {$a cmp $b} @files;
 		
-print "Done!\n";
-
-
-chdir getcwd();
+	
+	processfasta(\@files, $data_dir, $final_dir);
+			
+	print "Done!\n";
+	
+	
+	chdir getcwd();
 }
 
 sub processfasta {
@@ -324,34 +384,55 @@ sub processfasta {
 	
 	my $logfile = $endpath."/LOG";
 	#Next if arrived to the end
-    
-    foreach my $file (@{$files}) {
-        
-        chdir $endpath;
-        my ($patro) = $file =~ /^(\S+)\.tar\.gz\s*$/;
-        
-        unless (downloaded_latest($file, $logfile) > 0) {
-            
+	
+	foreach my $file (@{$files}) {
+		
+		chdir $endpath;
 
-            my $orifile = $origin."/".$file;
-            system("cd $origin; tar zxf $file; mv $patro.* $endpath") == 0 or die "failed: $?";
-	
-	
+		if ( $file=~/tar\.gz\s*$/) {
 
+			my ($patro) = $file =~ /^(\S+)\.tar\.gz\s*$/;
+			
+			unless (downloaded_latest($file, $logfile) > 0) {
+				
+		
+				my $orifile = $origin."/".$file;
+				system("cd $origin; tar zxf $file; mv $patro.* $endpath") == 0 or die "failed: $?";
 	
-	 
-            #LOG if things went well
-            open (FILEOUT, ">>$logfile") || die "Cannot write";
-            print FILEOUT $file, "\n";
-            close (FILEOUT);
-        
-        }
-        
-    }
-    system("mv $origin/*nal $endpath"); # Moves nal file    
-    system("mv $origin/*pal $endpath"); # Moves pal file
-    system("mv $endpath/*.gz* $origin"); # Moves gz back
-	
+				#LOG if things went well
+				open (FILEOUT, ">>$logfile") || die "Cannot write";
+				print FILEOUT $file, "\n";
+				close (FILEOUT);
+			
+			}
+		
+		} else {
+
+			# Process FASTA
+			if ( $file=~/\.gz\s*$/ && $fastain > 0 ) {
+
+				my ($patro) = $file =~ /^(\S+)\.gz\s*$/;
+			
+				unless (downloaded_latest($file, $logfile) > 0) {
+					
+			
+					my $orifile = $origin."/".$file;
+					system("cd $origin; gunzip $file; mv $patro.* $endpath") == 0 or die "failed: $?";
+		
+					#LOG if things went well
+					open (FILEOUT, ">>$logfile") || die "Cannot write";
+					print FILEOUT $file, "\n";
+					close (FILEOUT);
+				
+				}
+			}
+
+		}
+	}
+
+	system("mv $origin/*nal $endpath"); # Moves nal file    
+	system("mv $origin/*pal $endpath"); # Moves pal file
+	system("mv $endpath/*.gz* $origin"); # Moves gz back
 
 }
 
