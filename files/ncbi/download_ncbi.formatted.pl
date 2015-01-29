@@ -417,7 +417,9 @@ sub processfasta {
 					
 			
 					my $orifile = $origin."/".$file;
-					system("cd $origin; gunzip $file; mv $patro.* $endpath") == 0 or die "failed: $?";
+					system("cd $origin; gunzip $file; mv $patro $endpath") == 0 or die "failed: $?";
+					# Symlink fasta
+					system("cd $endpath; ln -s $patro $patro.fa");
 		
 					#LOG if things went well
 					open (FILEOUT, ">>$logfile") || die "Cannot write";
