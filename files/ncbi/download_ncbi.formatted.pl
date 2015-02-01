@@ -53,9 +53,6 @@ my $messagesend = "Please, be patient";
 
 system ("$emailbin '$subjsend' '$messagesend'");
 
-my $formatprot = "/software/bi/bin/makeblastdb -parse_seqids -dbtype prot -in";
-my $formatnucl = "/software/bi/bin/makeblastdb -parse_seqids -dbtype nucl -in";
-
 # List of included DB
 my @listinclude = ('alu.a', 'alu.n', 'drosoph.aa', 'drosoph.nt', 'env_nr', 'env_nt', 'est_human', 'est_mouse', 'est_others', 'mito.aa', 'mito.nt', 'nr', 'nt', 'pataa', 'patnt', 'pdbaa', 'pdbnt', 'swissprot', 'vector', 'yeast');
 #my @listinclude = ('nr');
