@@ -1,3 +1,10 @@
 {
-	"taxonid": [ 272634 ]
+	"organisms" : [
+		{
+			"name": "mycoplasma_pneumoniae_m129",
+			"group": "bacteria",
+			"subgroup": "bacteria_0_collection",
+			"taxonid": 272634
+		}
+	]
 }
