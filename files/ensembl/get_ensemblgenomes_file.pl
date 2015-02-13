@@ -36,7 +36,7 @@ my ($download_force, $extract_force, $show_help);
 
 # Get JSON Config
 # We assume same path as script
-my $config = Config::JSON->new("ensemblgenomes.json");
+my $config = Config::JSON->new("../conf/ensemblgenomes.json");
 
 my $list_taxon = $config->get("organisms");
 
@@ -134,6 +134,7 @@ sub downloaded_latest_ensembl {
 
 foreach my $taxon ( @{ $list_taxon} ) {
 
+	# TODO: Dealing with no subsection, only in bacteria
 	my $section = $taxon->{'group'};
 	my $subsection = $taxon->{'subgroup'};
 	my $name = $taxon->{'name'};
@@ -144,12 +145,13 @@ foreach my $taxon ( @{ $list_taxon} ) {
 	
 	# other variables
 	my $base = "";
-	my $data_dir = $base."/db/.mirror/ensemblgenomes/$currelease/fasta"; ####### CHANGE THIS TO THE DIRECTORY YOU WANT TO STORE YOUR FILES IN #######
+	my $data_dir = $base."/db/.mirror/ensemblgenomes/$currelease/fasta"; 
 	my $stampfile = $base."/db/.mirror/ensemblgenomes/FASTA";
 	my $data_link = $base."/db/.mirror/ensemblgenomes/current_fasta";
 	my %data_ori = ('dna' => 'genome', 'cdna' => 'transcriptome', 'pep' => 'proteome', 'ncrna' => 'ncrna');
 	
-	my $final_dir = $base."/db/ensemblgenomes/$currelease";
+	my $final_dir = $base."/db/ensemblgenomes/$currelease/$subsection/$name";
+	# TODO: Evaluate filtering by species
 	my $fstampfile = $base."/db/ensemblgenomes/FASTA";
 	
 	
