@@ -75,7 +75,7 @@ foreach my $indir (@listdir) {
 
 
 # Email Messages
-my $subjsend2 = "Finished creating indexes for NA ENSEMBL files";
+my $subjsend2 = "Finished creating indexes for ENSEMBL files";
 my $messagesend2 = "Please, check that everything went well";
 
 system ("$emailbin '$subjsend2' '$messagesend2'");
@@ -218,8 +218,8 @@ sub indexfiles {
 			# END -> End dir, where indexes are placed
 			$command =~ s/\#END/$enddirindex/g;
 			
-			#system($command);
-			print "COMMAND: ", $command, "\n";
+			system($command);
+			#print "COMMAND: ", $command, "\n";
 
 		}	
 
