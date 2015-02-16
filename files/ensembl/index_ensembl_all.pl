@@ -13,11 +13,6 @@ my $config = Config::JSON->new("../conf/indexes.json");
 
 my $list_programs = $config->get("programs");
 
-my %listprogs;
-my @appsc;
-my @appsn;
-
-
 #Dir where ensembl release
 my $dir = shift;
 
@@ -30,11 +25,10 @@ my ($branch) = $dir =~/(release\-\d+)/;
 my $emailbin = "~/bin/sendMsg.sh";
 
 # Email Messages
-my $subjsend = "Starting creating indexes for NA ENSEMBL files";
+my $subjsend = "Starting creating indexes for ENSEMBL files";
 my $messagesend = "Please, be patient";
 
 system ("$emailbin '$subjsend' '$messagesend'");
-
 
 
 opendir(DIR, $dir) || die "Cannot open $dir";
@@ -107,34 +101,29 @@ sub processPrograms {
 	my $dir = shift;
 	my $listprograms = shift;
 	
-	print $dir;
-	
-	foreach my $program ( @{$listprograms} ) {
-	
-		foreach my $ver ( @{ $program->{"group"} } ) {
+	opendir(DIR, "$dir");
+	my ( @listdirs ) = grep { -d "$dir/$_" && $_!~/^\./ } readdir(DIR); 
 
-			if (-e "$dir/$ver") {
+	foreach my $ver ( @listdirs ) {
 
-				opendir(INDIR, "$dir/$ver") || die "Cannot open it";
+		if (-e "$dir/$ver") {
 
-				my @listindir = grep {-f "$dir/$ver/$_" && $_!~/^LOG/ && $_!~/\.chrom\./} readdir(INDIR);
-			
-				print Dumper( @listindir );
-				# preprocess for chromosomes -> #TODO: Move up, so no repeat
-				my ( $orgdir ) = $dir =~ /\/?(\w+)\s*$/;
-				$orgdir =~s/\s/_/g;
-				print $orgdir, "\n";
+			opendir(INDIR, "$dir/$ver") || die "Cannot open it";
 
-				my $chromosomes = getchromsREST($orgdir, $dir);
-				print Dumper( $chromosomes );
-				# indexing
-				#indexfiles("$dir/$indir/$ver", \@listindir, \%listprogs, $chromosomes, $ver);
+			my @listindir = grep {-f "$dir/$ver/$_" && $_!~/^LOG/ && $_!~/\.chrom\./} readdir(INDIR);
+		
+			#print Dumper( @listindir );
+			# preprocess for chromosomes -> #TODO: Move up, so no repeat
+			my ( $orgdir ) = $dir =~ /\/?(\w+)\s*$/;
+			$orgdir =~s/\s/_/g;
+			#print $orgdir, "\n";
 
+			my $chromosomes = getchromsREST($orgdir, $dir);
 
-				closedir(INDIR);
-			}
+			# indexing
+			indexfiles("$dir/$ver", \@listindir, $listprograms, $chromosomes, $ver);
 
-
+			closedir(INDIR);
 		}
 	
 	}
@@ -149,6 +138,11 @@ sub indexfiles {
 	my $chromosomes = shift;
 	my $ver = shift;
 
+	#print Dumper($path);
+	#print Dumper($listinfiles);
+	#print Dumper($listprogs);
+	#print Dumper($chromosomes);
+	#print Dumper($ver);
 
 	foreach my $file (@{$listinfiles}) {
 		
@@ -162,25 +156,28 @@ sub indexfiles {
 		my $endchromfile = $path."/".$chromfile;
 
 		#Generate chromfile
-		print @{$chromosomes}, "\n";
+		#print @{$chromosomes}, "\n";
 		
-		# Process to chromose indexes if we have karyotype
-		if (scalar @{$chromosomes} > 0 && $file!~/\_rm\./ && $file!~/\_sm\./ && $ver eq 'genome') { processfilechrom($endfile, $chromosomes, $endchromfile); }
+		# Process to chromose indexes if we have karyotype. That is, more than 1
+		if (scalar @{$chromosomes} > 1 && $file!~/\_rm\./ && $file!~/\_sm\./ && $ver eq 'genome') { processfilechrom($endfile, $chromosomes, $endchromfile); }
 
 
-		foreach my $prog (keys %{$listprogs}) {
+		foreach my $prog ( @{$listprogs} ) {
+
+			if ( ! inArray( $ver, $prog->{"group"} ) ) {
+				next;
+			}
+			
 
 			# Adapt to chromosome context
 			my $chromcontext = 0;
 			my $usefile = $file;
 			my $endusefile = $endfile;
 
-			foreach my $app (@appsc) {
-				if ($prog eq $app) {
-					$usefile = $chromfile;
-					$endusefile = $endchromfile;
-					$chromcontext = 1;
-				}
+			if ( $prog->{"chrom"} ) {
+				$usefile = $chromfile;
+				$endusefile = $endchromfile;
+				$chromcontext = 1;
 			}
 
 			if (($ver ne 'genome') &&  ($chromcontext == 1)) {
@@ -188,7 +185,7 @@ sub indexfiles {
 			}
 
 			#If no karyotype and chrom indexer, skip
-			if ((scalar @{$chromosomes} == 0) && ($chromcontext == 1)) {
+			if ((scalar @{$chromosomes} < 2) && ($chromcontext == 1)) {
 				next;
 			}
 
@@ -196,12 +193,11 @@ sub indexfiles {
 				next;
 			}
 
-
-			my $dirindex = $prog."_".${$listprogs}{$prog}{'version'};
+			my $dirindex = $prog->{'name'}."_".$prog->{'version'};
 			my $enddirindex = $path."/indexes/".$dirindex;
 			unless (-e $enddirindex) {
 				# Create enddirindex
-				print $enddirindex, "\n";				
+				print "INDEX: ", $enddirindex, "\n";
 				system("mkdir -p $enddirindex");
 			}
 			
@@ -210,9 +206,9 @@ sub indexfiles {
 			chomp($endfileindex);
 			chomp($path);
 			chomp($enddirindex);
-			my $command = ${$listprogs}{$prog}{'command'};
+			my $command = $prog->{'command'};
 			# PROG -> Actual program
-			$command =~ s/\#PROG/${$listprogs}{$prog}{'path'}/g;
+			$command =~ s/\#PROG/$prog->{'path'}/g;
 			# ORIG -> Origin file
 			$command =~ s/\#ORIG/$endusefile/g;
 			# DEST -> Destination file
@@ -222,41 +218,13 @@ sub indexfiles {
 			# END -> End dir, where indexes are placed
 			$command =~ s/\#END/$enddirindex/g;
 			
-			system($command);
-			#print $command, "\n";
+			#system($command);
+			print "COMMAND: ", $command, "\n";
 
 		}	
 
 	}
 
-}
-
-sub getlistprogs {
-
-	my $listfile = shift;
-	my %hash;
-
-	open(FILE, $listfile) || die "cannot open INDEX PROGS file!";
-
-	while (<FILE>) {
-
-		if ($_!~/^\s*\#/) {
-
-			#Eg. bowtie,/soft/molbio/bowtie-0.12.7/bowtie-build,0.12.7,#PROG #ORIG #DEST,1
-			my ($prog, $path, $ver, $com, $en) = split(/\,/, $_);
-
-			if ($en == 1) {
-				$hash{$prog}{'version'} = $ver;
-				$hash{$prog}{'path'} = $path;
-				$hash{$prog}{'command'} = $com;
-			}
-
-		}
-	}
-
-	close(FILE);
-
-	return(%hash);
 }
 
 sub getchromsREST {
@@ -289,6 +257,22 @@ sub getchromsREST {
 	return(\@chromosomes);
 	
 }
+
+
+sub inArray {
+
+	my $elem = shift;
+	my $array = shift;
+
+	my %params = map { $_ => 1 } @{$array};
+	if( exists( $params{$elem} ) ) {
+		return 1;
+	} else {
+		return 0;
+	}
+
+}
+
 
 
 sub processfilechrom {
