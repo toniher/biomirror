@@ -2,6 +2,6 @@
 
 ## TODO
 
-* Specific script for transcriptomes, for avoiding issue with chromosomes
-* ENSEMBL genomes
+* Add GTF in ENSEMBLGENOMES download file script
+* Migrate ENSEMBL script to ENSEMBLGENOMES model
 
