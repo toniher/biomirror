@@ -5,8 +5,6 @@ import couchdb
 from Bio import SeqIO
 
 
-
-
 def main(argv):
 
 		# Put stuff in JSON config file
