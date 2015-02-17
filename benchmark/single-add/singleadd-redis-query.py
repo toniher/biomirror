@@ -10,13 +10,16 @@ def main(argv):
 
 		r=redis.Redis()  
 
-		batch = 1000
+		batch = 1000;
 		itera = 0
+
+		checkID =  ""
 
 		pipeline=r.pipeline()
 		handle = open( argv[0], "r")
 		for record in SeqIO.parse(handle, "fasta") :
 				pipeline.set( str( record.id ), str( record.seq ) )
+				checkID = str( record.id )
 				itera = itera + 1
 				if itera > batch :
 					pipeline.execute()
@@ -26,6 +29,13 @@ def main(argv):
 				pipeline.execute()
 
 		handle.close()
+
+		# Query
+		
+		seqDoc1 = r.get( checkID )
+		seqDoc2 = r.get( argv[1] )
+		print seqDoc1.seq
+		print seqDoc2.seq
 
 
 if __name__ == "__main__":

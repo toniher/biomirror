@@ -18,13 +18,15 @@ def main(argv):
 
 		db = couch[couchDB]
 
-		batch = 1000
+		batch = 1000;
 		listDocs = []
 		itera = 0
-
+		checkID =  ""
+		
 		handle = open( argv[0], "r")
 		for record in SeqIO.parse(handle, "fasta") :
 				docSeq = dict( _id = record.id, seq = str( record.seq ) )
+				checkID = record.id
 				listDocs.append( docSeq )
 				itera = itera + 1
 				if itera > batch :
@@ -36,6 +38,12 @@ def main(argv):
 				db.update( listDocs )
 
 		handle.close()
+		
+		# Query
+		seqDoc1 = db.get( checkID )
+		seqDoc2 = db.get( argv[1] )
+		print seqDoc1.seq
+		print seqDoc2.seq
 
 
 if __name__ == "__main__":

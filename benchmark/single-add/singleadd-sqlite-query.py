@@ -11,16 +11,16 @@ def main(argv):
 		conn = sqlite3.connect( sqliteDB )
 
 		c = conn.cursor()
-		# Create table
-		c.execute('''DROP TABLE SEQS;''')
-		c.execute('''CREATE TABLE SEQS ( id varchar(32) PRIMARY KEY, seq text )''')
 
-		batch = 1000
+		batch = 1000;
 		itera = 0
+		
+		checkID = ""
 
 		handle = open( argv[0], "r")
 		for record in SeqIO.parse(handle, "fasta") :
 				c.execute("INSERT INTO SEQS VALUES ('" + str(record.id) + "', '" + str(record.seq) + "' )")
+				checkID = str(record.id)
 				itera = itera + 1
 				if itera > batch :
 						conn.commit()
@@ -30,6 +30,14 @@ def main(argv):
 				conn.commit()
 
 		handle.close()
+		
+		
+		for row in c.execute('SELECT seq from SEQS where id="'+checkID+'"') :
+				print row[0]
+
+		for row in c.execute('SELECT seq from SEQS where id="'+argv[1]+'"') :
+				print row[0]
+				
 		conn.close()
 
 
