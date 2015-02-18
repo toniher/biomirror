@@ -14,6 +14,9 @@ time python singleadd-couchdb-query.py ../datasets/drosoph.single.aa.md5 7d3bb4a
 >&2 echo "SQLITE - SINGLE ADD - QUERY"
 time python singleadd-sqlite-query.py ../datasets/drosoph.single.aa.md5 7d3bb4ae52311b22e8e7daf4daf4587e
 
+>&2 echo "MYSQL - SINGLE ADD - QUERY"
+time python singleadd-mysql-query.py ../datasets/drosoph.single.aa.md5 7d3bb4ae52311b22e8e7daf4daf4587e
+
 >&2 echo "REDIS - SINGLE ADD - QUERY"
 time python singleadd-redis-query.py ../datasets/drosoph.single.aa.md5 7d3bb4ae52311b22e8e7daf4daf4587e
 
