@@ -3,7 +3,6 @@ import os
 import couchdb
 from Bio import SeqIO
 
-
 def main(argv):
 
 		# Put stuff in JSON config file
@@ -39,11 +38,10 @@ def main(argv):
 
 		handle.close()
 		
-		# Query
-		seqDoc1 = db.get( checkID )
-		seqDoc2 = db.get( argv[1] )
-		print seqDoc1.seq
-		print seqDoc2.seq
+		seqDoc1 = db[ checkID ]
+		seqDoc2 = db[ argv[1] ]
+		print seqDoc1['seq']
+		print seqDoc2['seq']
 
 
 if __name__ == "__main__":

@@ -29,8 +29,6 @@ def main(argv):
 				pipeline.execute()
 
 		handle.close()
-
-		# Query
 		
 		seqDoc1 = r.get( checkID )
 		seqDoc2 = r.get( argv[1] )
