@@ -32,8 +32,8 @@ def main(argv):
 		
 		seqDoc1 = r.get( checkID )
 		seqDoc2 = r.get( argv[1] )
-		print seqDoc1.seq
-		print seqDoc2.seq
+		print seqDoc1
+		print seqDoc2
 
 
 if __name__ == "__main__":

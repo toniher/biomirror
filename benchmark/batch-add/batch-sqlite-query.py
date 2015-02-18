@@ -7,7 +7,7 @@ from Bio import SeqIO
 def main(argv):
 
 		# Put stuff in JSON config file
-		sqliteDB = 'testseq'
+		sqliteDB = '../datasets/testseq'
 		conn = sqlite3.connect( sqliteDB )
 		
 		c = conn.cursor()

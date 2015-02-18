@@ -1,4 +1,4 @@
 #!/bin/sh
 
-samtools faidx ../datasets/drosoph.aa.md5
+samtools faidx $1
 
