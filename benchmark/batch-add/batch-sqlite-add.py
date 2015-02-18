@@ -12,7 +12,7 @@ def main(argv):
 
 		c = conn.cursor()
 		# Create table
-		c.execute('''DROP TABLE SEQS;''')
+		c.execute('''DROP TABLE IF EXISTS SEQS;''')
 		c.execute('''CREATE TABLE SEQS ( id varchar(32) PRIMARY KEY, seq text )''')
 
 		batch = 1000
