@@ -3,20 +3,20 @@ import os
 import couchdb
 from Bio import SeqIO
 
-
 def main(argv):
 
 		# Put stuff in JSON config file
 		couchServer = 'http://localhost:5984/'
 		couchDB = 'testseq'
-		
 		couch = couchdb.Server(couchServer)
-
+		couch.resource.credentials = ( 'admin', argv[1] )
+	
 		# In case admin permissions
-		# couch.delete(couchDB)
-		# couch.create(couchDB)
-
-		db = couch[couchDB]
+		try:
+			db = couch.create(couchDB)
+		except Exception:
+			couch.delete(couchDB)
+			db = couch.create(couchDB)
 
 		batch = 1000
 		listDocs = []

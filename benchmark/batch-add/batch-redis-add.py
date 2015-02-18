@@ -13,6 +13,8 @@ def main(argv):
 		batch = 1000
 		itera = 0
 
+		r.flushdb()
+
 		pipeline=r.pipeline()
 		handle = open( argv[0], "r")
 		for record in SeqIO.parse(handle, "fasta") :
