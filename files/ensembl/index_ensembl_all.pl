@@ -194,7 +194,7 @@ sub indexfiles {
 				next;
 			}
 
-			if ($file=~/\_rm\./ && $file=~/\_sm\./ && $chromcontext == 1) {
+			if ( ( $file=~/\_rm\./ || $file=~/\_sm\./ ) && $chromcontext == 1) {
 				next;
 			}
 
