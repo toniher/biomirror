@@ -5,7 +5,7 @@ FASTA=../datasets/drosoph.single.aa.md5
 BASE=../datasets/drosoph.aa.md5
 BASETMP=../tmp/drosoph.aa.md5
 SEQ=7d3bb4ae52311b22e8e7daf4daf4587e
-SEQPRE=749b09af5b9cf3352f7124c63489e5a7
+SEQPRE=416fcc5499fcb42e864436329ac27ae7
 
 mkdir -p ../tmp
 cp -rf $BASE* ../tmp
