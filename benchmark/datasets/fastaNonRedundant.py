@@ -12,11 +12,18 @@ def main(argv):
 		arrayfasta = {}
 		
 		for record in SeqIO.parse(handle, "fasta") :
-				arrayfasta[record.id] = record.seq
+				arrayfasta[record.id] = 0
 		handle.close()
-		
-		for key in arrayfasta.keys():
-				writefile.write( str( ">" + key + "\n" + arrayfasta[key] +"\n" ) )
+
+		handle = open(argv[0], "rU")
+		for record in SeqIO.parse(handle, "fasta") :
+				key = record.id
+				if arrayfasta[key] == 0:
+					writefile.write( str( ">" + key + "\n" + record.seq +"\n" ) )
+					arrayfasta[key] = 1
+					
+		handle.close()
+				
 		writefile.close()
 		
 		return True
