@@ -175,9 +175,14 @@ sub indexfiles {
 			my $endusefile = $endfile;
 
 			if ( $prog->{"chrom"} ) {
-				$usefile = $chromfile;
-				$endusefile = $endchromfile;
+			
 				$chromcontext = 1;
+				
+				if ( (scalar @{$chromosomes} > 1) ) {
+					$usefile = $chromfile;
+					$endusefile = $endchromfile;
+				}
+
 			}
 
 			if (($ver ne 'genome') &&  ($chromcontext == 1)) {
@@ -185,7 +190,7 @@ sub indexfiles {
 			}
 
 			#If no karyotype and chrom indexer, skip
-			if ((scalar @{$chromosomes} < 2) && ($chromcontext == 1)) {
+			if ((scalar @{$chromosomes} < 1) && ($chromcontext == 1)) {
 				next;
 			}
 
