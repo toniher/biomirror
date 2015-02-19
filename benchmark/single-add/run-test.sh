@@ -7,11 +7,21 @@ BASETMP=../tmp/drosoph.aa.md5
 SEQ=7d3bb4ae52311b22e8e7daf4daf4587e
 SEQPRE=749b09af5b9cf3352f7124c63489e5a7
 
+mkdir -p ../tmp
+cp -rf $BASE* ../tmp
+cat $BASETMP $FASTA > $BASETMP.2
+mv $BASETMP.2 $BASETMP
 >&2 echo "BLAST - SINGLE ADD - QUERY"
-time ./singleadd-ncbiblast-query.sh $FASTA $BASE $BASETMP $SEQ $SEQPRE
+time ./singleadd-ncbiblast-query.sh $BASETMP $SEQ $SEQPRE
+rm -rf ../tmp
 
+mkdir -p ../tmp
+cp -rf $BASE* ../tmp
+cat $BASETMP $FASTA > $BASETMP.2
+mv $BASETMP.2 $BASETMP
 >&2 echo "SAMTOOLS - SINGLE ADD - QUERY"
-time ./singleadd-samtools-query.sh $FASTA $BASE $BASETMP $SEQ $SEQPRE
+time ./singleadd-samtools-query.sh $BASETMP $SEQ $SEQPRE
+rm -rf ../tmp
 
 >&2 echo "COUCHDB - SINGLE ADD - QUERY"
 time python singleadd-couchdb-query.py $FASTA $SEQ
