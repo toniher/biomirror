@@ -19,7 +19,7 @@ def main(argv):
 		c.execute("SELECT seq from SEQS where id='"+str(argv[0])+"'" )
 		data = c.fetchone()
 		for row in  data :
-				print row[0]
+				print row
 
 		conn.close()
 
