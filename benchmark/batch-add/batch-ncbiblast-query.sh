@@ -1,3 +1,3 @@
 #!/bin/sh
 
-blastdbcmd -dbtype prot -entry $1 -db ../datasets/drosoph.aa.md5
+blastdbcmd -dbtype prot -entry $2 -db $1

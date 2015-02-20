@@ -9,28 +9,28 @@ time rm -rf $FASTA.p*
 >&2 echo "BLAST - ADD"
 time ./batch-ncbiblast-add.sh $FASTA
 >&2 echo "BLAST - QUERY"
-time ./batch-ncbiblast-query.sh $SEQ
+time ./batch-ncbiblast-query.sh $FASTA $SEQ
 
 >&2 echo "BLAST.py - DROP"
 time rm -rf $FASTA.p*
 >&2 echo "BLAST.py - ADD"
 time python batch-ncbiblast-add.py $FASTA
 >&2 echo "BLAST.py - QUERY"
-time python batch-ncbiblast-query.py $SEQ
+time python batch-ncbiblast-query.py $FASTA $SEQ
 
 >&2 echo "SAMTOOLS - DROP"
 time rm -rf $FASTA.fai
 >&2 echo "SAMTOOLS - ADD"
 time ./batch-samtools-add.sh $FASTA
 >&2 echo "SAMTOOLS - QUERY"
-time ./batch-samtools-query.sh $SEQ
+time ./batch-samtools-query.sh $FASTA $SEQ
 
 >&2 echo "SAMTOOLS.py - DROP"
 time rm -rf $FASTA.fai
 >&2 echo "SAMTOOLS.py - ADD"
 time python batch-samtools-add.py $FASTA
 >&2 echo "SAMTOOLS.py - QUERY"
-time python batch-samtools-query.py $SEQ
+time python batch-samtools-query.py $FASTA $SEQ
 
 
 >&2 echo "COUCHDB - DROP"

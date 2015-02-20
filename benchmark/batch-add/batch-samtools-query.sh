@@ -1,3 +1,3 @@
 #!/bin/sh
 
-samtools faidx ../datasets/drosoph.aa.md5 $1
+samtools faidx $1 $2
