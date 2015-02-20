@@ -1,4 +1,6 @@
 Datasets used for benchmarking
 
-* Drosophila protein sequences from: ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
+* Protein sequences from: ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/
+	* Test yeast, drosophila and nr
+	* Applied non-redundant and md5sum ./convert-non-red.sh fastafile
 
