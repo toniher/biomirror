@@ -5,9 +5,11 @@ FASTA=../datasets/drosoph.single.aa.md5
 BASE=../datasets/swissprot.md5
 BASETMP=../tmp/swissprot.md5
 
-SEQ=1e395fc4a7d0e713cd8a9de6ea706eb5
+# Seq just added in the file
+SEQ=416fcc5499fcb42e864436329ac27ae7
 
-SEQPRE=416fcc5499fcb42e864436329ac27ae7
+# Seq already in DB
+SEQPRE=c177b600ade2fe9435503a61d5393942
 
 mkdir -p ../tmp
 cp -rf $BASE* ../tmp

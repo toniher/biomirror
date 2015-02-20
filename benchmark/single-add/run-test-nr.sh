@@ -2,10 +2,12 @@
 
 PASSWORD=$1
 FASTA=../datasets/drosoph.single.aa.md5
-BASE=../datasets/nr-md5
-BASETMP=../tmp/nr-md5
-SEQ=b8b953e09c5e3a8796fd6b1220a2586c
-SEQPRE=416fcc5499fcb42e864436329ac27ae7
+BASE=../datasets/nr.md5
+BASETMP=../tmp/nr.md5
+
+SEQ=416fcc5499fcb42e864436329ac27ae7
+
+SEQPRE=d803b8d660b523424ca60b8825d7e5fa
 
 mkdir -p ../tmp
 cp -rf $BASE* ../tmp
