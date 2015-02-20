@@ -1,0 +1,10 @@
+{
+	"drop": 1,
+	"include": ["homo_sapiens_core"],
+	"mysql": {
+		"host": "myserver",
+		"user": "ensembl",
+		"password": "mypassword",
+		"port": "3306"
+	}
+}
