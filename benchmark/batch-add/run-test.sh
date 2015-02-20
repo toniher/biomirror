@@ -48,7 +48,7 @@ time python batch-sqlite-add.py $FASTA
 time python batch-sqlite-query.py $SEQ
 
 >&2 echo "MYSQL - DROP"
-time mysql -utoniher test -e 'DROP DATABASE test; CREATE DATABASE test;'
+time mysql -utoniher -e 'DROP DATABASE IF EXISTS test; CREATE DATABASE IF NOT EXISTS test;'
 >&2 echo "MYSQL - ADD"
 time python batch-mysql-add.py $FASTA
 >&2 echo "MYSQL - QUERY"
