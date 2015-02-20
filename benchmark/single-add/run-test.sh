@@ -1,10 +1,14 @@
 #/bin/sh
 
 PASSWORD=$1
-FASTA=../datasets/drosoph.single.aa.md5
+FASTA=../datasets/yeast.single.aa.md5
 BASE=../datasets/drosoph.aa.md5
 BASETMP=../tmp/drosoph.aa.md5
-SEQ=7d3bb4ae52311b22e8e7daf4daf4587e
+
+# Seq just added in the file
+SEQ=28d270e9604b04b3d9ddade74c48c808
+
+# Seq already in DB
 SEQPRE=416fcc5499fcb42e864436329ac27ae7
 
 mkdir -p ../tmp
