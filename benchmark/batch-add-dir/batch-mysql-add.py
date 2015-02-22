@@ -2,7 +2,8 @@ import sys
 import os
 import MySQLdb
 from Bio import SeqIO
-
+from os import listdir
+from os.path import isfile, join
 
 def main(argv):
 
@@ -19,20 +20,27 @@ def main(argv):
 		c.execute('''CREATE TABLE SEQS ( id varchar(32) PRIMARY KEY, seq text )''')
 
 		batch = 1000
-		itera = 0
-
-		handle = open( argv[0], "r")
-		for record in SeqIO.parse(handle, "fasta") :
-				c.execute("INSERT INTO SEQS VALUES ('" + str(record.id) + "', '" + str(record.seq) + "' )")
-				itera = itera + 1
-				if itera > batch :
-						conn.commit()
-						itera = 0
 		
-		if itera > 0:
-				conn.commit()
+		onlyfiles = [ argv[0]+"/"+f for f in listdir(argv[0]) if isfile(join(argv[0],f)) ]
+		
+		for fastafile in onlyfiles:
+		
+			itera = 0
 
-		handle.close()
+			handle = open( fastafile, "r")
+			for record in SeqIO.parse(handle, "fasta") :
+					c.execute("INSERT INTO SEQS VALUES ('" + str(record.id) + "', '" + str(record.seq) + "' )")
+					itera = itera + 1
+					if itera > batch :
+							conn.commit()
+							itera = 0
+		
+			if itera > 0:
+					conn.commit()
+
+			handle.close()
+			
+			
 		conn.close()
 
 
