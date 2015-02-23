@@ -17,10 +17,42 @@ time rm -rf ../datasets/testseq
 >&2 echo "SQLITE - ADD"
 time python batch-sqlite-add.py $DIREND
 
+date1=$(date +"%s")
+>&2 echo "FASTA 2 CSV "
+for dfile in $DIREND/* ; do
+	python ../datasets/fasta2csv.py $dfile $dfile.csv
+done
+date2=$(date +"%s")
+diff=$(($date2-$date1))
+>&2 echo "$(($diff / 60)) m $(($diff % 60)) s"
+
+>&2 echo "SQLITE - DROP"
+time rm -rf ../datasets/testseq
+>&2 echo "SQLITE - START"
+time sqlite3 ../datasets/testseq < ./batch-sqlite-load-add.pre.sh
+date1=$(date +"%s")
+>&2 echo "SQLITE - LOAD ADD"
+for dfile in $DIREND/*csv ; do
+	cp batch-sqlite-load-add.sh /tmp/sqlite.sh
+	export dfile
+	perl -pi -e 's/\$CSVFILE/$ENV{dfile}/g' /tmp/sqlite.sh
+	time sqlite3 ../datasets/testseq < /tmp/sqlite.sh
+done
+date2=$(date +"%s")
+diff=$(($date2-$date1))
+>&2 echo "$(($diff / 60)) m $(($diff % 60)) s."
+
 >&2 echo "MYSQL - DROP"
 time mysql -utoniher -e 'DROP DATABASE IF EXISTS test; CREATE DATABASE IF NOT EXISTS test;'
 >&2 echo "MYSQL - ADD"
-time python batch-mysql-add.py $DIREND
+time python batch-mysql-add.py $DIREND $PASSWORD
+
+>&2 echo "MYSQL - DROP"
+time mysql -utoniher -e 'DROP DATABASE IF EXISTS test; CREATE DATABASE IF NOT EXISTS test;'
+>&2 echo "MYSQL - LOAD ADD"
+cp -rf $DIREND /tmp
+chmod -R a+rx /tmp/dir
+time python batch-mysql-load-add.py /tmp/dir $PASSWORD
 
 
 >&2 echo "REDIS - DROP"
