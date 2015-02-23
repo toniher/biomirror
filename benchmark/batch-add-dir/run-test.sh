@@ -3,6 +3,7 @@
 PASSWORD=$2
 FASTA=$1
 DIREND=../dir
+TMPDIR=/data/temp
 
 >&2 echo "SPLIT"
 time ./splitindir.sh $FASTA $DIREND
@@ -33,10 +34,10 @@ time sqlite3 ../datasets/testseq < ./batch-sqlite-load-add.pre.sh
 date1=$(date +"%s")
 >&2 echo "SQLITE - LOAD ADD"
 for dfile in $DIREND/*csv ; do
-	cp batch-sqlite-load-add.sh /tmp/sqlite.sh
+	cp batch-sqlite-load-add.sh $TMPDIR/sqlite.sh
 	export dfile
-	perl -pi -e 's/\$CSVFILE/$ENV{dfile}/g' /tmp/sqlite.sh
-	time sqlite3 ../datasets/testseq < /tmp/sqlite.sh
+	perl -pi -e 's/\$CSVFILE/$ENV{dfile}/g' $TMPDIR/sqlite.sh
+	time sqlite3 ../datasets/testseq < $TMPDIR/sqlite.sh
 done
 date2=$(date +"%s")
 diff=$(($date2-$date1))
@@ -50,9 +51,9 @@ time python batch-mysql-add.py $DIREND $PASSWORD
 >&2 echo "MYSQL - DROP"
 time mysql -utoniher -e 'DROP DATABASE IF EXISTS test; CREATE DATABASE IF NOT EXISTS test;'
 >&2 echo "MYSQL - LOAD ADD"
-cp -rf $DIREND /tmp
-chmod -R a+rx /tmp/dir
-time python batch-mysql-load-add.py /tmp/dir $PASSWORD
+cp -rf $DIREND $TMPDIR
+chmod -R a+rx $TMPDIR/dir
+time python batch-mysql-load-add.py $TMPDIR/dir $PASSWORD
 
 
 >&2 echo "REDIS - DROP"
