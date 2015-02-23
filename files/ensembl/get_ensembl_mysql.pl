@@ -413,7 +413,7 @@ foreach my $dir (@dirs) {
 	# create the database based on the dir name
 	print "Creating database for $dir...\n";
 	# setup database connection
-	my $dsn = "DBI:mysql:test:$sql_host:$sql_port";
+	my $dsn = "DBI:mysql:INFORMATION_SCHEMA:$sql_host:$sql_port";
 	my $dbh = DBI->connect($dsn, $sql_username, $sql_password) or die "Unable to connect: $DBI::errstr\n";
 
 	#If pointed we drop database
@@ -457,7 +457,7 @@ foreach my $dir (@dirs) {
 			my $path_sql_file = "$sql_file";
 			my $timestamp = puttimestamp();
 			print "Loading data in $sql_file ($path_sql_file) into $table... @ $timestamp\n";
-			my $dostring = "LOAD DATA INFILE '".$path_sql_file."' INTO TABLE ".$table;
+			my $dostring = "LOAD DATA LOCAL INFILE '".$path_sql_file."' INTO TABLE ".$table;
 			$dbh->do("SET SESSION myisam_sort_buffer_size=$mysql_sort_buffer");
 			print $dostring, "\n";
 			$dbh->do($dostring) or die "Cannot import, $DBI::errstr\n" ;
