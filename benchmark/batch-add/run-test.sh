@@ -2,6 +2,7 @@
 
 source $1
 PASSWORD=$2
+TMPDIR=/data/temp
 
 >&2 echo "BLAST - DROP"
 time rm -rf $FASTA.p*
@@ -53,10 +54,10 @@ time rm -rf ../datasets/testseq
 time python ../datasets/fasta2csv.py $FASTA $FASTA.csv
 
 >&2 echo "SQLITE - ADD - LOAD"
-cp batch-sqlite-load-add.sh /tmp/sqlite.sh
+cp batch-sqlite-load-add.sh $TMPDIR/sqlite.sh
 export FASTA
-perl -pi -e 's/\$CSVFILE/$ENV{FASTA}/g' /tmp/sqlite.sh
-time sqlite3 < /tmp/sqlite.sh
+perl -pi -e 's/\$CSVFILE/$ENV{FASTA}/g' $TMPDIR/sqlite.sh
+time sqlite3 < $TMPDIR/sqlite.sh
 
 
 >&2 echo "MYSQL - DROP"
@@ -69,9 +70,9 @@ time python batch-mysql-query.py $SEQ
 >&2 echo "MYSQL - DROP"
 time mysql -utoniher -e 'DROP DATABASE IF EXISTS test; CREATE DATABASE IF NOT EXISTS test;'
 >&2 echo "MYSQL - CP CSV"
-time cp $FASTA.csv /tmp/mysql-load.csv; chmod a+rx /tmp/mysql-load.csv
+time cp $FASTA.csv $TMPDIR/mysql-load.csv; chmod a+rx $TMPDIR/mysql-load.csv
 >&2 echo "MYSQL - ADD - LOAD"
-time python batch-mysql-load-add.py /tmp/mysql-load.csv $PASSWORD
+time python batch-mysql-load-add.py $TMPDIR/mysql-load.csv $PASSWORD
 
 
 >&2 echo "REDIS - DROP"
