@@ -41,12 +41,12 @@ print STDERR $ftpdir, "\n";
 
 # other variables
 my $base = ""; #Change depending on this is stored
-my $data_dir = $base."/db/.mirror/ncbi/$currelease/fasta"; ####### CHANGE THIS TO THE DIRECTORY YOU WANT TO STORE YOUR FILES IN #######
+my $data_dir = $base."/db/.mirror/ncbi/$currelease/fastadb"; ####### CHANGE THIS TO THE DIRECTORY YOU WANT TO STORE YOUR FILES IN #######
 my $stampfile = $base."/db/.mirror/ncbi/FASTADB";
-my $data_link = $base."/db/.mirror/ncbi/current_fasta";
+my $data_link = $base."/db/.mirror/ncbi/current_fastadb";
 
-my $final_dir = $base."/db/ncbi/$currelease/blast/db";
-my $fstampfile = $base."/db/ncbi/$currelease/blast/FASTADB";
+my $final_dir = $base."/db/ncbi/$currelease/blastdb/db";
+my $fstampfile = $base."/db/ncbi/$currelease/blastdb/FASTADB";
 
 my $emailbin = "~/bin/sendMsg.sh";
 
@@ -57,7 +57,7 @@ my $messagesend = "Please, be patient";
 system ("$emailbin '$subjsend' '$messagesend'");
 
 # List of included DB
-my @listinclude = ('alu.a', 'alu.n', 'drosoph.aa', 'drosoph.nt', 'env_nr', 'env_nt', 'est_human', 'est_mouse', 'est_others', 'mito.aa', 'mito.nt', 'nr', 'nt', 'pataa', 'patnt', 'pdbaa', 'pdbnt', 'swissprot', 'vector', 'yeast');
+my @listinclude = ('16SMicrobial', 'Representative_Genomes', 'alu.a', 'alu.n', 'drosoph.aa', 'drosoph.nt', 'env_nr', 'env_nt', 'est_human', 'est_mouse', 'est_others', 'mito.aa', 'mito.nt', 'nr', 'nt', 'pataa', 'patnt', 'pdbaa', 'pdbnt', 'swissprot', 'vector', 'yeast');
 #my @listinclude = ('nr');
 
 print STDERR $data_dir, "\n";
