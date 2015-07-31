@@ -36,14 +36,12 @@ def create_go_term(line):
 	gotype = line[2]
 	goname = line[1]
 
-	term = py2neo.Node("GO_TERM")
-	term.cast( {
+	term = py2neo.Node.cast( {
 		"id": goid, "acc": goacc, "term_type": gotype, "name": goname
 	})
 
-	#term.labels.add("GO_TERM")
+	term.labels.add("GO_TERM")
 	
-	term.bind(graph.uri+"/node/"+goid)
 	pp.pprint(term)
 	
 	term.push()
