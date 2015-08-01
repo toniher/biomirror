@@ -56,6 +56,9 @@ for row in reader:
     iter = iter + 1
     if ( iter > 5000 ):
         tx.process()
+        tx.commit()
+        tx = graph.cypher.begin()
+
         iter = 0
 
 tx.process()
@@ -85,6 +88,9 @@ for key in parentid:
     iter = iter + 1
     if ( iter > 5000 ):
         tx.process()
+        tx.commit()
+        tx = graph.cypher.begin()
+        
         iter = 0
 
 tx.process()
@@ -122,6 +128,9 @@ for row in reader:
         iter = iter + 1
         if ( iter > 5000 ):
             tx.process()
+            tx.commit()
+            tx = graph.cypher.begin()
+            
             iter = 0
 
 	if rowlist[0][3] == 'scientific name' :

@@ -53,13 +53,15 @@ reader = csv.reader(open(opts.termfile),delimiter="\t")
 iter = 0
 
 for row in reader:
-	statement = create_go_term(row)
-	tx.append(statement)
-	
-	iter = iter + 1
-	if ( iter > 5000 ):
-		tx.process()
-		iter = 0
+    statement = create_go_term(row)
+    tx.append(statement)
+    
+    iter = iter + 1
+    if ( iter > 5000 ):
+        tx.process()
+        tx.commit()
+        tx = graph.cypher.begin()
+        iter = 0
 
 tx.process()
 tx.commit()
@@ -83,6 +85,8 @@ for row in reader:
     iter = iter + 1
     if ( iter > 5000 ):
         tx.process()
+        tx.commit()
+        tx = graph.cypher.begin()
         iter = 0
 
 tx.process()
@@ -101,6 +105,8 @@ for row in reader:
     iter = iter + 1
     if ( iter > 5000 ):
         tx.process()
+        tx.commit()
+        tx = graph.cypher.begin()
         iter = 0
 
 tx.process()
