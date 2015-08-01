@@ -43,8 +43,7 @@ def create_go_term(line):
 	gotype = line[2]
 	goname = line[1]
 
-	statement = "CREATE (n:"+label+" { id : "+goid+", acc : \""+goacc+"\", name: \""+goname+"\" })"
-	print statement
+	statement = "CREATE (n:"+label+" { id : "+goid+", acc : \""+goacc+"\", term_type: \""+gotype+"\", name: \""+goname+"\" })"
 	
 	return statement
 
@@ -67,48 +66,45 @@ tx.commit()
 
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(id)")
 
-print idxout
 tx = graph.cypher.begin()
 
 logging.info('adding definitions')
 reader = csv.reader(open(opts.termdeffile),delimiter="\t")
 iter = 0
 for row in reader:
-	
-	params = {}
-	params["definition"] = row[1]
-	statement = "MATCH (n { id: "+row[0]+" }) SET n += "+params+" RETURN 1"
-	tx.append(statement)
-
-	iter = iter + 1
-	if ( iter > 5000 ):
-		tx.process()
-		tx.commit()
-		iter = 0
+    
+    definition = row[1]
+    definition = definition.replace("'", "\\'")
+    definition = definition.replace('"', '\\"')
+    
+    statement = "MATCH (n { id: "+row[0]+" }) SET n.definition = '"+definition+"' RETURN 1"
+    tx.append(statement)
+    
+    iter = iter + 1
+    if ( iter > 5000 ):
+        tx.process()
+        iter = 0
 
 tx.process()
 tx.commit()
 
-# relation = db.get_or_create_index(neo4j.Relationship, "Relation")
+tx = graph.cypher.begin()
+
 logging.info('adding relationships')
 reader = csv.reader(open(opts.term2termfile),delimiter="\t")
 iter = 0
 for row in reader:
 
-	matches_parent = id_node.get("id", row[2])
-	matches_child = id_node.get("id", row[3])
-	
-	nodeparent = db.node( matches_parent[0]._id )
-	nodechild = db.node( matches_child[0]._id )
-	
-	batch.get_or_create_path( nodechild, relationshipmap[row[1]], nodeparent )
-	iter = iter + 1
-	if ( iter > 5000 ):
-		batch.submit()
-		batch.clear()
-		iter = 0
+    statement = "MATCH (c:"+label+" {id:"+row[3]+"}), (p:"+label+" {id:"+row[2]+"}) CREATE (c)-[:"+relationshipmap[row[1]]+"]->(p)"
+    tx.append(statement)
 
-batch.submit()
+    iter = iter + 1
+    if ( iter > 5000 ):
+        tx.process()
+        iter = 0
+
+tx.process()
+tx.commit()
 
 
 
