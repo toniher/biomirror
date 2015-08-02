@@ -37,25 +37,12 @@ http.socket_timeout = 9999
 
 poolnum = 4;
 
+p = Pool(poolnum)
+numiter = 5000
 
 label = "GO_TERM"
 
 idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.acc IS UNIQUE")
-
-
-def create_go_term(line):
-	if(line[6]=='1'):
-		relationshipmap[line[0]]=line[1]
-	goid = line[0]
-	goacc = line[3]
-	gotype = line[2]
-	goname = line[1]
-
-	statement = "CREATE (n:"+label+" { id : "+goid+", acc : \""+goacc+"\", term_type: \""+gotype+"\", name: \""+goname+"\" })"
-	
-	return statement
-
-
 
 def process_statement( statements ):
     
@@ -72,16 +59,25 @@ def process_statement( statements ):
     tx.commit()
 
 
+def create_go_term(line):
+	if(line[6]=='1'):
+		relationshipmap[line[0]]=line[1]
+	goid = line[0]
+	goacc = line[3]
+	gotype = line[2]
+	goname = line[1]
+
+	statement = "CREATE (n:"+label+" { id : "+goid+", acc : \""+goacc+"\", term_type: \""+gotype+"\", name: \""+goname+"\" })"
+	
+	return statement
+
+
 logging.info('creating terms')
 reader = csv.reader(open(opts.termfile),delimiter="\t")
 iter = 0
 
 list_statements =  []
 statements = []
-
-p = Pool(poolnum)
-numiter = 5000
-
 
 for row in reader:
     statement = create_go_term(row)
