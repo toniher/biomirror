@@ -21,6 +21,8 @@ logging.basicConfig(level=logging.WARNING)
 
 http.socket_timeout = 9999
 
+numiter = 5000
+
 graph = py2neo.Graph()
 graph.bind("http://localhost:7474/db/data/")
 
@@ -50,7 +52,7 @@ for row in reader:
     statement = create_taxid(rowlist[0], iter)
     tx.append(statement)
     iter = iter + 1
-    if ( iter > 5000 ):
+    if ( iter > numiter ):
         tx.process()
         tx.commit()
         tx = graph.cypher.begin()
@@ -80,7 +82,7 @@ for key in parentid:
     tx.append(statement)
 
     iter = iter + 1
-    if ( iter > 5000 ):
+    if ( iter > numiter ):
         tx.process()
         tx.commit()
         tx = graph.cypher.begin()
@@ -119,7 +121,7 @@ for row in reader:
         scientific = ''
     
         iter = iter + 1
-        if ( iter > 5000 ):
+        if ( iter > numiter ):
             tx.process()
             tx.commit()
             tx = graph.cypher.begin()
