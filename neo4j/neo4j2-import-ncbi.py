@@ -47,12 +47,10 @@ def create_taxid(line, number):
 logging.info('creating nodes')
 reader = pandas.read_csv(opts.nodes, iterator=True, index_col=False, engine="c", chunksize=1, header=None, delimiter="|")
 iter = 0
-numberiter = 0
 for row in reader:
     rowlist = row.values.tolist()
-    statement = create_taxid(rowlist[0], numberiter)
+    statement = create_taxid(rowlist[0], iter)
     tx.append(statement)
-    numberiter = numberiter + 1
     iter = iter + 1
     if ( iter > 5000 ):
         tx.process()
@@ -73,7 +71,6 @@ tx = graph.cypher.begin()
 
 logging.info('adding relationships')
 iter = 0
-numberiter = 0
 
 for key in parentid:
 
@@ -84,7 +81,6 @@ for key in parentid:
 
     tx.append(statement)
 
-    numberiter = numberiter + 1
     iter = iter + 1
     if ( iter > 5000 ):
         tx.process()
@@ -114,7 +110,6 @@ for row in reader:
     if taxid != taxidsave :
         namestr = ""
         for n in names:
-            n.replace('"', '\\"')
             namestr = namestr + '"' + n + '"'
         taxidsave = taxid
         namestr = "[" + namestr + "]"
@@ -136,7 +131,7 @@ for row in reader:
 	if rowlist[0][3] == 'scientific name' :
 		scientific = rowlist[0][1].strip()
 	
-	names.append( str( rowlist[0][1] ).strip() )
+	names.append( str( rowlist[0][1] ).strip().replace('"', '\\"') )
 
 tx.process()
 tx.commit()
