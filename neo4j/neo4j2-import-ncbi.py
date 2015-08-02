@@ -32,6 +32,8 @@ label = "TAXID"
 
 parentid={}
 
+idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.taxid IS UNIQUE")
+
 def create_taxid(line, number):
     taxid = str(line[0]).strip()
     rank = line[2].strip()
@@ -62,7 +64,6 @@ for row in reader:
 tx.process()
 tx.commit()
 
-idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(id)")
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(rank)")
 
 
@@ -105,6 +106,7 @@ tx = graph.cypher.begin()
 for row in reader:
     rowlist = row.values.tolist()
     taxid = int(rowlist[0][0])
+    namentry = rowlist[0][1].strip().replace('"', '\\"')
     
     # If different, let's save
     if taxid != taxidsave :
@@ -117,6 +119,8 @@ for row in reader:
         #print statement
         
         tx.append(statement)
+        
+        # Empty
         names = []
         scientific = ''
     
@@ -129,9 +133,9 @@ for row in reader:
             iter = 0
 
 	if rowlist[0][3] == 'scientific name' :
-		scientific = rowlist[0][1].strip()
+		scientific = namentry
 	
-	names.append( str( rowlist[0][1] ).strip().replace('"', '\\"') )
+	names.append( namentry )
 
 tx.process()
 tx.commit()

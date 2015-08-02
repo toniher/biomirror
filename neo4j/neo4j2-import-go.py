@@ -42,6 +42,7 @@ numiter = 5000
 label = "GO_TERM"
 
 idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.acc IS UNIQUE")
+idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.id IS UNIQUE")
 
 def process_statement( statements ):
     
@@ -92,9 +93,6 @@ for row in reader:
 list_statements.append( statements )
 
 res = p.map( process_statement , list_statements )
-
-
-idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(id)")
 
 logging.info('adding definitions')
 reader = csv.reader(open(opts.termdeffile),delimiter="\t")
