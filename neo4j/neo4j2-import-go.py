@@ -150,6 +150,9 @@ for row in reader:
         statements = []
 
 
+#We force only one worker, fails if relation
+p = Pool(1)
+
 list_statements.append( statements )
 res = p.map( process_statement , list_statements )
 
