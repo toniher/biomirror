@@ -7,7 +7,6 @@ from multiprocessing import Pool
 import httplib
 
 import csv
-import shutil
 import logging
 import argparse
 import pprint

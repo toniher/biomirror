@@ -3,8 +3,6 @@ import py2neo
 from py2neo.packages.httpstream import http
 from py2neo.cypher import cypher_escape
 
-import csv
-import shutil
 import logging
 import argparse
 import pandas
