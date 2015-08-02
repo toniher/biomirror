@@ -2,12 +2,19 @@
 import py2neo
 from py2neo.packages.httpstream import http
 from py2neo.cypher import cypher_escape
+from multiprocessing import Pool
+
+import httplib
 
 import csv
 import shutil
 import logging
 import argparse
 import pprint
+
+httplib.HTTPConnection._http_vsn = 10
+
+httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 parser = argparse.ArgumentParser()
 parser.add_argument("termfile",
@@ -28,7 +35,8 @@ relationshipmap={}
 
 http.socket_timeout = 9999
 
-tx = graph.cypher.begin()
+poolnum = 4;
+
 
 label = "GO_TERM"
 
@@ -48,31 +56,59 @@ def create_go_term(line):
 	return statement
 
 
+
+def process_statement( statements ):
+    
+    tx = graph.cypher.begin()
+
+    #print statements
+    logging.info('proc sent')
+
+    for statement in statements:
+        #print statement
+        tx.append(statement)
+
+    tx.process()
+    tx.commit()
+
+
 logging.info('creating terms')
 reader = csv.reader(open(opts.termfile),delimiter="\t")
 iter = 0
 
+list_statements =  []
+statements = []
+
+p = Pool(poolnum)
+numiter = 5000
+
+
 for row in reader:
     statement = create_go_term(row)
-    tx.append(statement)
-    
+    statements.append( statement )
     iter = iter + 1
-    if ( iter > 5000 ):
-        tx.process()
-        tx.commit()
-        tx = graph.cypher.begin()
+    if ( iter > numiter ):
+        
+        list_statements.append( statements )
         iter = 0
+        statements = []
+    
 
-tx.process()
-tx.commit()
+list_statements.append( statements )
+
+res = p.map( process_statement , list_statements )
+
 
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(id)")
 
-tx = graph.cypher.begin()
-
 logging.info('adding definitions')
 reader = csv.reader(open(opts.termdeffile),delimiter="\t")
+
 iter = 0
+
+list_statements =  []
+statements = []
+
 for row in reader:
     
     definition = row[1]
@@ -80,38 +116,40 @@ for row in reader:
     definition = definition.replace('"', '\\"')
     
     statement = "MATCH (n { id: "+row[0]+" }) SET n.definition = '"+definition+"' RETURN 1"
-    tx.append(statement)
+    statements.append( statement )
+
     
     iter = iter + 1
-    if ( iter > 5000 ):
-        tx.process()
-        tx.commit()
-        tx = graph.cypher.begin()
+    if ( iter > numiter ):
+        list_statements.append( statements )
         iter = 0
+        statements = []
 
-tx.process()
-tx.commit()
+list_statements.append( statements )
+res = p.map( process_statement , list_statements )
 
-tx = graph.cypher.begin()
 
 logging.info('adding relationships')
 reader = csv.reader(open(opts.term2termfile),delimiter="\t")
+
+
 iter = 0
+list_statements =  []
+statements = []
+
 for row in reader:
 
     statement = "MATCH (c:"+label+" {id:"+row[3]+"}), (p:"+label+" {id:"+row[2]+"}) CREATE (c)-[:"+relationshipmap[row[1]]+"]->(p)"
-    tx.append(statement)
+    statements.append( statement )
+
 
     iter = iter + 1
-    if ( iter > 5000 ):
-        tx.process()
-        tx.commit()
-        tx = graph.cypher.begin()
+    if ( iter > numiter ):
+        list_statements.append( statements )
         iter = 0
-
-tx.process()
-tx.commit()
+        statements = []
 
 
-
+list_statements.append( statements )
+res = p.map( process_statement , list_statements )
 
