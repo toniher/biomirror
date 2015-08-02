@@ -79,7 +79,7 @@ for key in parentid:
 
     parent_taxid = parentid[key]
     
-    statement = "MATCH (c:"+label+" {id:"+key+"}), (p:"+label+" {id:"+parent_taxid+"}) CREATE (c)-[:has_parent]->(p)"
+    statement = "MATCH (c:"+label+" {id:"+str(key)+"}), (p:"+label+" {id:"+str(parent_taxid)+"}) CREATE (c)-[:has_parent]->(p)"
     #print statement
 
     tx.append(statement)
