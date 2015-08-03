@@ -104,38 +104,39 @@ names = []
 tx = graph.cypher.begin()
 
 for row in reader:
-    rowlist = row.values.tolist()
-    taxid = int(rowlist[0][0])
-    namentry = rowlist[0][1].strip().replace('"', '\\"')
-    
-    # If different, let's save
-    if taxid != taxidsave :
-        namestr = ""
-        for n in names:
-            namestr = namestr + '"' + n + '"'
-        taxidsave = taxid
-        namestr = "[" + namestr + "]"
-        statement = "MATCH (n { id: "+str(taxidsave)+" }) SET n.scientific_name = '"+scientific+"', n.name = "+namestr+" RETURN 1"
-        #print statement
-        
-        tx.append(statement)
-        
-        # Empty
-        names = []
-        scientific = ''
-    
-        iter = iter + 1
-        if ( iter > numiter ):
-            tx.process()
-            tx.commit()
-            tx = graph.cypher.begin()
-            
-            iter = 0
+	rowlist = row.values.tolist()
+	taxid = int(rowlist[0][0])
+	#print taxid
+	namentry = (rowlist[0][1]).strip().replace('"', '\\"')
+	#print namentry
 
-	if rowlist[0][3] == 'scientific name' :
-		scientific = namentry
+	# If different, let's save
+	if taxid != taxidsave :
+		namestr = ""
+		
+		for i in xrange( 0 ,len(names)):
+			names[i] = '"' + names[i] + '"'
+
+		namestr = "[" + ",".join(names) + "]"
+		statement = "MATCH (n { id: "+str(taxidsave)+" }) SET n.scientific_name = '"+scientific+"', n.name = "+namestr+" RETURN 1"
+		#print statement
+		tx.append(statement)
+
+		# Empty
+		names = []
+		scientific = ''
+		taxidsave = taxid
+
+		iter = iter + 1
+		if ( iter > numiter ):
+			tx.process()
+			tx.commit()
+			tx = graph.cypher.begin()
+			iter = 0
 	
 	names.append( namentry )
+	if ( rowlist[0][3] ).strip() == 'scientific name' :
+		scientific = namentry
 
 tx.process()
 tx.commit()
