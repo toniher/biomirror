@@ -6,9 +6,9 @@ from multiprocessing import Pool
 
 import httplib
 
+import csv
 import logging
 import argparse
-import pandas
 import sys
 from pprint import pprint
 
@@ -71,15 +71,14 @@ def create_taxid(line, number):
 
 
 logging.info('creating nodes')
-reader = pandas.read_csv(opts.nodes, iterator=True, index_col=False, engine="c", chunksize=1, header=None, delimiter="|")
+reader = csv.reader(open(opts.nodes),delimiter="|")
 iter = 0
 
 list_statements =  []
 statements = []
 
 for row in reader:
-	rowlist = row.values.tolist()
-	statement = create_taxid(rowlist[0], iter)
+	statement = create_taxid(row, iter)
 	statements.append( statement )
 	iter = iter + 1
 	if ( iter > numiter ):
@@ -119,7 +118,7 @@ tx.process()
 tx.commit()
 
 logging.info('adding name info')
-reader = pandas.read_csv(opts.names, iterator=True, index_col=False, engine="c", chunksize=1, header=None, delimiter="|")
+reader =  csv.reader(open(opts.names),delimiter="|")
 
 iter = 0
 taxidsave = 1
@@ -130,10 +129,9 @@ list_statements =  []
 statements = []
 
 for row in reader:
-	rowlist = row.values.tolist()
-	taxid = int(rowlist[0][0])
+	taxid = int(row[0])
 	#print taxid
-	namentry = str(rowlist[0][1]).strip().replace('"', '\\"')
+	namentry = str(row[1]).strip().replace('"', '\\"')
 	#print namentry
 
 	# If different, let's save
@@ -162,7 +160,7 @@ for row in reader:
 
 	
 	names.append( namentry )
-	if ( rowlist[0][3] ).strip() == 'scientific name' :
+	if ( row[3] ).strip() == 'scientific name' :
 		scientific = namentry
 
 list_statements.append( statements )
