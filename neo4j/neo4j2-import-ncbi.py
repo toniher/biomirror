@@ -107,7 +107,7 @@ for row in reader:
 	rowlist = row.values.tolist()
 	taxid = int(rowlist[0][0])
 	#print taxid
-	namentry = (rowlist[0][1]).strip().replace('"', '\\"')
+	namentry = str(rowlist[0][1]).strip().replace('"', '\\"')
 	#print namentry
 
 	# If different, let's save
