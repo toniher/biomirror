@@ -13,7 +13,6 @@ import sys
 from pprint import pprint
 
 httplib.HTTPConnection._http_vsn = 10
-
 httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 parser = argparse.ArgumentParser()
@@ -24,15 +23,11 @@ parser.add_argument("names",
 
 opts=parser.parse_args()
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 
 http.socket_timeout = 9999
 
 numiter = 5000
-
-poolnum = 4;
-
-p = Pool(poolnum)
 
 graph = py2neo.Graph()
 graph.bind("http://localhost:7474/db/data/")
@@ -57,6 +52,10 @@ def process_statement( statements ):
     tx.process()
     tx.commit()
 
+
+poolnum = 4;
+
+p = Pool(poolnum)
 
 def create_taxid(line, number):
     taxid = str(line[0]).strip()
@@ -87,7 +86,7 @@ for row in reader:
 		statements = []
 
 list_statements.append( statements )
-res = p.map( process_statement , list_statements )
+res = p.map( process_statement, list_statements )
 
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(rank)")
 
@@ -165,7 +164,7 @@ for row in reader:
 
 list_statements.append( statements )
 
-res = p.map( process_statement , list_statements )
+res = p.map( process_statement, list_statements )
 
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(scientific_name)")
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(name)")

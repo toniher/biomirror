@@ -12,7 +12,6 @@ import argparse
 import pprint
 
 httplib.HTTPConnection._http_vsn = 10
-
 httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 parser = argparse.ArgumentParser()
@@ -25,7 +24,7 @@ parser.add_argument("term2termfile",
 
 opts=parser.parse_args()
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 
 graph = py2neo.Graph()
 graph.bind("http://localhost:7474/db/data/")
@@ -34,9 +33,6 @@ relationshipmap={}
 
 http.socket_timeout = 9999
 
-poolnum = 4;
-
-p = Pool(poolnum)
 numiter = 5000
 
 label = "GO_TERM"
@@ -58,6 +54,9 @@ def process_statement( statements ):
     tx.process()
     tx.commit()
 
+poolnum = 4;
+
+p = Pool(poolnum)
 
 def create_go_term(line):
 	if(line[6]=='1'):
@@ -92,7 +91,7 @@ for row in reader:
 
 list_statements.append( statements )
 
-res = p.map( process_statement , list_statements )
+res = p.map( process_statement, list_statements )
 
 logging.info('adding definitions')
 reader = csv.reader(open(opts.termdeffile),delimiter="\t")
@@ -119,7 +118,7 @@ for row in reader:
         statements = []
 
 list_statements.append( statements )
-res = p.map( process_statement , list_statements )
+res = p.map( process_statement, list_statements )
 
 
 logging.info('adding relationships')
@@ -147,5 +146,5 @@ for row in reader:
 p = Pool(1)
 
 list_statements.append( statements )
-res = p.map( process_statement , list_statements )
+res = p.map( process_statement, list_statements )
 
