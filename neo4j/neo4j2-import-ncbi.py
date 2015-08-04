@@ -2,12 +2,19 @@
 import py2neo
 from py2neo.packages.httpstream import http
 from py2neo.cypher import cypher_escape
+from multiprocessing import Pool
+
+import httplib
 
 import logging
 import argparse
 import pandas
 import sys
 from pprint import pprint
+
+httplib.HTTPConnection._http_vsn = 10
+
+httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 
 parser = argparse.ArgumentParser()
 parser.add_argument("nodes",
@@ -23,16 +30,33 @@ http.socket_timeout = 9999
 
 numiter = 5000
 
+poolnum = 4;
+
+p = Pool(poolnum)
+
 graph = py2neo.Graph()
 graph.bind("http://localhost:7474/db/data/")
-
-tx = graph.cypher.begin()
 
 label = "TAXID"
 
 parentid={}
 
 idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.taxid IS UNIQUE")
+
+def process_statement( statements ):
+    
+    tx = graph.cypher.begin()
+
+    #print statements
+    logging.info('proc sent')
+
+    for statement in statements:
+        #print statement
+        tx.append(statement)
+
+    tx.process()
+    tx.commit()
+
 
 def create_taxid(line, number):
     taxid = str(line[0]).strip()
@@ -49,26 +73,27 @@ def create_taxid(line, number):
 logging.info('creating nodes')
 reader = pandas.read_csv(opts.nodes, iterator=True, index_col=False, engine="c", chunksize=1, header=None, delimiter="|")
 iter = 0
+
+list_statements =  []
+statements = []
+
 for row in reader:
-    rowlist = row.values.tolist()
-    statement = create_taxid(rowlist[0], iter)
-    tx.append(statement)
-    iter = iter + 1
-    if ( iter > numiter ):
-        tx.process()
-        tx.commit()
-        tx = graph.cypher.begin()
+	rowlist = row.values.tolist()
+	statement = create_taxid(rowlist[0], iter)
+	statements.append( statement )
+	iter = iter + 1
+	if ( iter > numiter ):
+		list_statements.append( statements )
+		iter = 0
+		statements = []
 
-        iter = 0
-
-tx.process()
-tx.commit()
+list_statements.append( statements )
+res = p.map( process_statement , list_statements )
 
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(rank)")
 
-
+# We keep no pool for relationship
 tx = graph.cypher.begin()
-
 
 logging.info('adding relationships')
 iter = 0
@@ -101,7 +126,8 @@ taxidsave = 1
 scientific = ''
 names = []
 
-tx = graph.cypher.begin()
+list_statements =  []
+statements = []
 
 for row in reader:
 	rowlist = row.values.tolist()
@@ -120,7 +146,7 @@ for row in reader:
 		namestr = "[" + ",".join(names) + "]"
 		statement = "MATCH (n { id: "+str(taxidsave)+" }) SET n.scientific_name = '"+scientific+"', n.name = "+namestr+" RETURN 1"
 		#print statement
-		tx.append(statement)
+		statements.append( statement )
 
 		# Empty
 		names = []
@@ -129,17 +155,19 @@ for row in reader:
 
 		iter = iter + 1
 		if ( iter > numiter ):
-			tx.process()
-			tx.commit()
-			tx = graph.cypher.begin()
+
+			list_statements.append( statements )
 			iter = 0
+			statements = []
+
 	
 	names.append( namentry )
 	if ( rowlist[0][3] ).strip() == 'scientific name' :
 		scientific = namentry
 
-tx.process()
-tx.commit()
+list_statements.append( statements )
+
+res = p.map( process_statement , list_statements )
 
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(scientific_name)")
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(name)")
