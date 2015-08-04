@@ -64,7 +64,7 @@ def create_taxid(line, number):
     statement = "CREATE (n:"+label+" { id : "+taxid+", rank: \""+rank+"\" })"
     #print statement
     
-    parentid[taxid] = line[1]
+    parentid[taxid] = str(line[1]).strip()
     
     return statement
 
