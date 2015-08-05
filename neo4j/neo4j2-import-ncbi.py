@@ -64,10 +64,8 @@ def create_taxid(line, number):
     taxid = str(line[0]).strip()
     rank = line[2].strip()
     
-    scientific = scientific_list[taxid]
-    namestr = names_list[taxid]
-    
-    statement = "CREATE (n:"+label+" { id : "+taxid+", rank: \""+rank+"\", scientific_name:'"+scientific+"', name:"+namestr+" })"
+    # We assume always al params
+    statement = "CREATE (n:"+label+" { id : "+taxid+", rank: \""+rank+"\", scientific_name:'"+scientific_list[taxid]+"', name:"+names_list[taxid]+" })"
     #print statement
     
     parentid[taxid] = str(line[1]).strip()
@@ -116,6 +114,9 @@ for row in reader:
     if ( row[3] ).strip() == 'scientific name' :
         scientific = namentry
 
+#Adding last one!
+scientific_list[str(taxidsave)] = scientific
+names_list[str(taxidsave)] = namestr
 
 logging.info('creating nodes')
 reader = csv.reader(open(opts.nodes),delimiter="|")
