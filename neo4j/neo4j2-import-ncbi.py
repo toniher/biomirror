@@ -34,7 +34,10 @@ graph.bind("http://localhost:7474/db/data/")
 
 label = "TAXID"
 
+# Hashes for storing stuff
 parentid={}
+scientific_list={}
+names_list={}
 
 idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.id IS UNIQUE")
 
@@ -61,12 +64,64 @@ def create_taxid(line, number):
     taxid = str(line[0]).strip()
     rank = line[2].strip()
     
-    statement = "CREATE (n:"+label+" { id : "+taxid+", rank: \""+rank+"\" })"
+    scientific = scientific_list[taxid]
+    namestr = names_list[taxid]
+    
+    statement = "CREATE (n:"+label+" { id : "+taxid+", rank: \""+rank+"\", scientific_name:'"+scientific+"', name:"+namestr+" })"
     #print statement
     
     parentid[taxid] = str(line[1]).strip()
     
     return statement
+
+
+logging.info('storing name info')
+reader =  csv.reader(open(opts.names),delimiter="|")
+
+iter = 0
+taxidsave = 1
+scientific = ''
+names = []
+
+for row in reader:
+    taxid = int(row[0])
+    #print taxid
+    #Escaping names
+    namentry = str(row[1]).strip().replace('"', '\\"')
+    #print namentry
+    
+    # If different, let's save
+    if taxid != taxidsave :
+        namestr = ""
+        
+        for i in xrange( 0 ,len(names)):
+            names[i] = '"' + names[i] + '"'
+    
+        namestr = "[" + ",".join(names) + "]"
+        # Escaping scientific
+        scientific = scientific.replace("'", "\\'")
+        
+        scientific_list[str(taxidsave)] = scientific
+        names_list[str(taxidsave)] = namestr
+        #statement = "MATCH (n { id: "+str(taxidsave)+" }) SET n.scientific_name = '"+scientific+"', n.name = "+namestr+" RETURN 1"
+        #print statement
+        #statements.append( statement )
+    
+        # Empty
+        names = []
+        scientific = ''
+        taxidsave = taxid
+    
+        iter = iter + 1
+        if ( iter > numiter ):
+    
+            list_statements.append( statements )
+            iter = 0
+            statements = []
+            
+    names.append( namentry )
+    if ( row[3] ).strip() == 'scientific name' :
+        scientific = namentry
 
 
 logging.info('creating nodes')
@@ -116,62 +171,5 @@ for key in parentid:
 tx.process()
 tx.commit()
 
-logging.info('adding name info')
-reader =  csv.reader(open(opts.names),delimiter="|")
-
-iter = 0
-taxidsave = 1
-scientific = ''
-names = []
-
-list_statements =  []
-statements = []
-
-for row in reader:
-	taxid = int(row[0])
-	#print taxid
-	#Escaping names
-	namentry = str(row[1]).strip().replace('"', '\\"')
-	#print namentry
-
-	# If different, let's save
-	if taxid != taxidsave :
-		namestr = ""
-		
-		for i in xrange( 0 ,len(names)):
-			names[i] = '"' + names[i] + '"'
-
-		namestr = "[" + ",".join(names) + "]"
-		# Escaping scientific
-		scientific = scientific.replace("'", "\\'")
-		statement = "MATCH (n { id: "+str(taxidsave)+" }) SET n.scientific_name = '"+scientific+"', n.name = "+namestr+" RETURN 1"
-		#print statement
-		statements.append( statement )
-
-		# Empty
-		names = []
-		scientific = ''
-		taxidsave = taxid
-
-		iter = iter + 1
-		if ( iter > numiter ):
-
-			list_statements.append( statements )
-			iter = 0
-			statements = []
-
-	
-	names.append( namentry )
-	if ( row[3] ).strip() == 'scientific name' :
-		scientific = namentry
-
-list_statements.append( statements )
-
-res = p.map( process_statement, list_statements )
-
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(scientific_name)")
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(name)")
-
-
-
-
