@@ -130,6 +130,7 @@ statements = []
 for row in reader:
 	taxid = int(row[0])
 	#print taxid
+	#Escaping names
 	namentry = str(row[1]).strip().replace('"', '\\"')
 	#print namentry
 
@@ -141,6 +142,8 @@ for row in reader:
 			names[i] = '"' + names[i] + '"'
 
 		namestr = "[" + ",".join(names) + "]"
+		# Escaping scientific
+		scientific = scientific.replace("'", "\\'")
 		statement = "MATCH (n { id: "+str(taxidsave)+" }) SET n.scientific_name = '"+scientific+"', n.name = "+namestr+" RETURN 1"
 		#print statement
 		statements.append( statement )
