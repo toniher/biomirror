@@ -111,13 +111,6 @@ for row in reader:
         names = []
         scientific = ''
         taxidsave = taxid
-    
-        iter = iter + 1
-        if ( iter > numiter ):
-    
-            list_statements.append( statements )
-            iter = 0
-            statements = []
             
     names.append( namentry )
     if ( row[3] ).strip() == 'scientific name' :
