@@ -36,7 +36,7 @@ label = "TAXID"
 
 parentid={}
 
-idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.taxid IS UNIQUE")
+idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.id IS UNIQUE")
 
 def process_statement( statements ):
     
