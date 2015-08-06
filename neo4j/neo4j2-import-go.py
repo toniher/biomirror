@@ -30,6 +30,7 @@ graph = py2neo.Graph()
 graph.bind("http://localhost:7474/db/data/")
 
 relationshipmap={}
+definition_list={}
 
 http.socket_timeout = 9999
 
@@ -39,6 +40,17 @@ label = "GO_TERM"
 
 idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.acc IS UNIQUE")
 idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.id IS UNIQUE")
+
+logging.info('adding definitions')
+reader = csv.reader(open(opts.termdeffile),delimiter="\t")
+
+for row in reader:
+	
+	definition = row[1]
+	#definition = definition.replace("'", "\\'")
+	definition = definition.replace('"', '\\"')
+	definition_list[str(row[0])] = definition
+
 
 def process_statement( statements ):
     
@@ -66,12 +78,17 @@ def create_go_term(line):
 	gotype = line[2]
 	goname = line[1]
 
-	statement = "CREATE (n:"+label+" { id : "+goid+", acc : \""+goacc+"\", term_type: \""+gotype+"\", name: \""+goname+"\" })"
-	
+	defclause = ""
+	if str(goid) in definition_list:
+		defclause = ", definition: \""+definition_list[str(goid)]+"\""
+
+	statement = "CREATE (n:"+label+" { id : "+goid+", acc : \""+goacc+"\", term_type: \""+gotype+"\", name: \""+goname+"\", "+defclause+" })"
+
 	return statement
 
 
 logging.info('creating terms')
+
 reader = csv.reader(open(opts.termfile),delimiter="\t")
 iter = 0
 
@@ -91,33 +108,6 @@ for row in reader:
 
 list_statements.append( statements )
 
-res = p.map( process_statement, list_statements )
-
-logging.info('adding definitions')
-reader = csv.reader(open(opts.termdeffile),delimiter="\t")
-
-iter = 0
-
-list_statements =  []
-statements = []
-
-for row in reader:
-    
-    definition = row[1]
-    definition = definition.replace("'", "\\'")
-    definition = definition.replace('"', '\\"')
-    
-    statement = "MATCH (n { id: "+row[0]+" }) SET n.definition = '"+definition+"' RETURN 1"
-    statements.append( statement )
-
-    
-    iter = iter + 1
-    if ( iter > numiter ):
-        list_statements.append( statements )
-        iter = 0
-        statements = []
-
-list_statements.append( statements )
 res = p.map( process_statement, list_statements )
 
 
