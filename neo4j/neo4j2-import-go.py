@@ -82,7 +82,7 @@ def create_go_term(line):
 	if str(goid) in definition_list:
 		defclause = ", definition: \""+definition_list[str(goid)]+"\""
 
-	statement = "CREATE (n:"+label+" { id : "+goid+", acc : \""+goacc+"\", term_type: \""+gotype+"\", name: \""+goname+"\", "+defclause+" })"
+	statement = "CREATE (n:"+label+" { id : "+goid+", acc : \""+goacc+"\", term_type: \""+gotype+"\", name: \""+goname+"\""+defclause+" })"
 
 	return statement
 
