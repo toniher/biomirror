@@ -2,14 +2,14 @@
 	"programs": [
 		{
 			"name": "ncbi-blast+",
-			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.2.30+/bin/makeblastdb",
+			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.2.31+/bin/makeblastdb",
 			"version": "2.2.30",
 			"command": "#PROG -dbtype prot -in #ORIG ; mv #ORIG.* #END",
 			"group": ["proteome"]
 		},
 		{
 			"name": "ncbi-blast+",
-			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.2.30+/bin/makeblastdb",
+			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.2.31+/bin/makeblastdb",
 			"version": "2.2.30",
 			"command": "#PROG -dbtype nucl -in #ORIG ; mv #ORIG.* #END",
 			"group": ["genome", "ncrna", "transcriptome"]
@@ -43,6 +43,13 @@
 			"command": "#PROG #ORIG #DEST",
 			"group": ["genome"],
 			"chrom": 1
+		},
+		{
+			"name": "bowtie2",
+			"path": "/software/bi/el6.3/version/bowtie2/bowtie2-2.2.3/bowtie2-build",
+			"version": "2.2.3",
+			"command": "#PROG #ORIG #DEST",
+			"group": ["genome"]
 		},
 		{
 			"name": "bwa",
