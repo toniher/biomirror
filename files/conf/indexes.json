@@ -52,6 +52,13 @@
 			"group": ["genome"]
 		},
 		{
+			"name": "bowtie2",
+			"path": "/software/bi/el6.3/version/bowtie2/bowtie2-2.2.3/bowtie2-build",
+			"version": "2.2.3",
+			"command": "#PROG #ORIG #DEST",
+			"group": [ "ncrna", "transcriptome" ]
+		},
+		{
 			"name": "bwa",
 			"path": "/software/bi/el6.3/version/bwa/bwa-0.7.12/bwa",
 			"version": "0.7.10",
