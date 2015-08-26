@@ -89,7 +89,8 @@
 			"command": "#PROG -i #ORIG -o #DEST.gem",
 			"group": [ "ncrna", "transcriptome" ]
 		}
-	]
+	],
+	"procs": 4
 }
 
 
