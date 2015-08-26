@@ -6,12 +6,16 @@ use JSON qw( decode_json );
 use LWP::Simple;
 use Config::JSON;
 use Data::Dumper;
+use Parallel::ForkManager;
 
 # Get JSON Config
 # We assume same path as script
 my $config = Config::JSON->new("../conf/indexes.json");
 
 my $list_programs = $config->get("programs");
+# Max num processes
+my $procs = $config->get("procs") // 4;
+my $pm = new Parallel::ForkManager($procs); 
 
 #Dir where ensembl release
 my $dir = shift;
@@ -46,6 +50,8 @@ foreach my $indir (@listdir) {
 
 	my ( @subdirs ) = checkWhere( $dir."/".$indir );
 
+	$pm->start and next; # do the fork
+
 	if ( $#subdirs > -1 ) {
 	
 		foreach my $subdir ( @subdirs ) {
@@ -70,6 +76,8 @@ foreach my $indir (@listdir) {
 	
 	#last; # Use for only testing one
 }
+
+$pm->wait_all_children;
 
 #exit;
 
