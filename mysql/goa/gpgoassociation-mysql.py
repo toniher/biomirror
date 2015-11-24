@@ -52,7 +52,7 @@ def main(argv):
                 key `qualifier` (`qualifier`),
                 key `GO` (`GO`),
                 key `REF` (`REF`),
-                key `ECO` (`ECO`),
+                key `ECO` (`ECO`)
                 )ENGINE=MyISAM ;"""
         cursor.execute(sql)
     
