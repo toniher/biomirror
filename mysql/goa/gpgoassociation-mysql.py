@@ -41,10 +41,18 @@ def main(argv):
 
         cursor.execute("DROP TABLE IF EXISTS goassociation")
         sql = """CREATE TABLE `goassociation` (
-                `UniProtKB-AC` varchar(25),
+                `DB` varchar(25),
+                `ID` varchar(25),
+                `qualifier` varchar(25),
                 `GO` varchar(20),
-                key `UNIPROT` (`UniProtKB-AC`),
-                key `GO` (`GO`)
+                `REF` varchar(25),
+                `ECO` varchar(20),
+                key `DB` (`DB`),
+                key `ID` (`ID`),
+                key `qualifier` (`qualifier`),
+                key `GO` (`GO`),
+                key `REF` (`REF`),
+                key `ECO` (`ECO`),
                 )ENGINE=MyISAM ;"""
         cursor.execute(sql)
     
@@ -62,7 +70,7 @@ def main(argv):
                         if ( row[0].startswith('!') ): #Avoid row with !
                                 continue
                         #print row[0]+"-"+row[1]+"\n"
-                        cursor.execute('INSERT INTO goassociation VALUES("'+row[1]+'", "'+row[3]+'")')
+                        cursor.execute('INSERT INTO goassociation VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'")')
                         i = i+1
                         if (i == limit):
                                 i=0
