@@ -3,7 +3,7 @@ import os
 import os.path
 import csv
 import MySQLdb
-        
+import json
 
 def main(argv):
         if len(sys.argv) < 2:
@@ -12,8 +12,26 @@ def main(argv):
         host = "localhost"
         user = "xxx"
         pwd = "xxx"
-        database = sys.argv[2]
+        database = "xxx"
+
+        configfile = "config.json"
+
+        if sys.argv[2] :
+                configfile = sys.argv[2]
+
+        with open(configfile) as json_data_file:
+                data = json.load(json_data_file)
         
+        if data.has_key("mysql"):
+                if data["mysql"].has_key("db"):
+                        database = data["mysql"]["db"]
+                if data["mysql"].has_key("host"):
+                        host = data["mysql"]["host"]
+                if data["mysql"].has_key("user"):
+                        user = data["mysql"]["user"]
+                if data["mysql"].has_key("password"):
+                        pwd = data["mysql"]["password"]
+
         db=MySQLdb.connect(host=host,user=user,
                   passwd=pwd,db=database)
         
