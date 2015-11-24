@@ -4,6 +4,7 @@ import os.path
 import csv
 import MySQLdb
 import json
+import gzip
 
 def main(argv):
         if len(sys.argv) < 2:
@@ -54,7 +55,8 @@ def main(argv):
         i = 0
         limit = 10000
 
-        with open(sys.argv[1],'r') as f:
+        # Open gzipped file
+        with gzip.open(sys.argv[1],'r') as f:
                 reader=csv.reader(f,delimiter='\t')
                 for row in reader:
                         if ( row[0].startswith('!') ): #Avoid row with !
