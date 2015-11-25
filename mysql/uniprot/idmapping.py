@@ -22,6 +22,16 @@ def main(argv):
 
         with open(configfile) as json_data_file:
                 data = json.load(json_data_file)
+
+        if data.has_key("mysql"):
+                if data["mysql"].has_key("db"):
+                        database = data["mysql"]["db"]
+                if data["mysql"].has_key("host"):
+                        host = data["mysql"]["host"]
+                if data["mysql"].has_key("user"):
+                        user = data["mysql"]["user"]
+                if data["mysql"].has_key("password"):
+                        pwd = data["mysql"]["password"]
         
         db=MySQLdb.connect(host=host,user=user,
                   passwd=pwd,db=database)
@@ -47,7 +57,7 @@ def main(argv):
         i = 0
         limit = 10000
 
-        with open(sys.argv[1],'r') as f:
+        with gzip.open(sys.argv[1],'r') as f:
                 reader=csv.reader(f,delimiter='\t')
                 for row in reader:
                         if ( row[0].startswith('!') ): #Avoid row with !
