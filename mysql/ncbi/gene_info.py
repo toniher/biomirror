@@ -69,10 +69,17 @@ def main(argv):
                         if ( row[0].startswith('#') ): #Avoid row with !
                                 continue
 
-                        desc = row[8].replace("'", "\\'")
-                        desc = desc.replace("\"", "\\\"")
+                        taxid = row[0]
+                        geneid = row[1]
+                        symbol = row[2]
+                        locus = row[3]
+                        synonyms = row[4]
+                        chrom = row[6]
+                        loc = row[7]
+                        desc = row[8]
+                        typegene = row[9]
 
-                        cursor.execute('INSERT INTO gene_info VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[6]+'", "'+row[7]+'", "'+desc+'", "'+row[9]+'")')
+                        cursor.execute('INSERT INTO gene_info VALUES( %s, %s, %s, %s, %s, %s, %s, %s, %s )', ( taxid, geneid, symbol, locus, synonyms, chrom, loc, desc, typegene ) )
                         i = i+1
                         if (i == limit):
                                 i=0
