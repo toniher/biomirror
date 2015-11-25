@@ -49,7 +49,7 @@ def main(argv):
   `chromosome` varchar(16) NOT NULL default '',
   `map_location` varchar(16) NOT NULL default '',
   `description` text NOT NULL default '',
-  `type_of_gene` varchar(16) NOT NULL default ''
+  `type_of_gene` varchar(16) NOT NULL default '',
   KEY `index_geneid` (`GeneID`),
   KEY `index_symbol` (`Symbol`),
   KEY `index_tax_id` (`tax_id`)
