@@ -41,7 +41,7 @@ def main(argv):
 
         cursor.execute("DROP TABLE IF EXISTS gene_group")
         sql = """CREATE TABLE `gene_group` (
-  `GeneID` int(11) NOT NULL default '0',,
+  `GeneID` int(11) NOT NULL default '0',
   `relationship` varchar(50) NOT NULL default '',
   `GeneID_match` int(11) NOT NULL default '0',
   KEY `index_geneid` (`GeneID`),
