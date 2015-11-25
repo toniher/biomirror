@@ -69,7 +69,7 @@ KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`)
                         if ( row[0].startswith('#') ): #Avoid row with !
                                 continue
 
-                        cursor.execute('INSERT INTO gene2accession VALUES("'+row[1]+'", "'+row[4]+'", "'+row[6]+', "'+row[8]+'", "'+row[9]+', "'+row[10]+'", "'+row[11]+', "'+row[12]+'")')
+                        cursor.execute('INSERT INTO gene2accession VALUES("'+row[1]+'", "'+row[4]+'", "'+row[6]+'", "'+row[8]+'", "'+row[9]+'", "'+row[10]+'", "'+row[11]+'", "'+row[12]+'")')
                         i = i+1
                         if (i == limit):
                                 i=0
