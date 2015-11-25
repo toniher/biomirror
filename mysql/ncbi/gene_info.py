@@ -70,8 +70,9 @@ def main(argv):
                                 continue
 
                         desc = row[8].replace("'", "\\'")
+                        desc = desc.replace("\"", "\\\"")
 
-                        cursor.execute('INSERT INTO gene_info VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[6]+'", "'+row[7]+'", "'+desc+', "'+row[9]+'")')
+                        cursor.execute('INSERT INTO gene_info VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[6]+'", "'+row[7]+'", "'+desc+'", '+row[9]+'")')
                         i = i+1
                         if (i == limit):
                                 i=0
