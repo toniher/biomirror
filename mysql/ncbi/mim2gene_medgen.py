@@ -41,7 +41,7 @@ def main(argv):
         cursor.execute("DROP TABLE IF EXISTS mim2gene_medgen")
         sql = """CREATE TABLE `mim2gene_medgen` (
   `MIM` int(11) NOT NULL default '0',
-  `GeneID` int(11) NOT NULL default '0',,
+  `GeneID` int(11) NOT NULL default '0',
   `mimtype` varchar(20) NOT NULL default '',
   `source` varchar(20) NOT NULL default '',
   `MedGenCUI` varchar(20) NOT NULL default '',
@@ -50,7 +50,7 @@ def main(argv):
   KEY `index_geneid` (`GeneID`),
   KEY `index_type` (`mimtype`),
   KEY `index_source` (`source`),
-  KEY `index_MedGenCUI` (`MedGenCUI`),
+  KEY `index_MedGenCUI` (`MedGenCUI`)
 ) ENGINE=MyISAM;"""
         cursor.execute(sql)
     
