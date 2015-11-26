@@ -46,7 +46,7 @@ def main(argv):
   `source` varchar(20) NOT NULL default '',
   `MedGenCUI` varchar(20) NOT NULL default '',
   `comment` text NOT NULL default '',
-  KEY `index_mim` (`MIM`)
+  KEY `index_mim` (`MIM`),
   KEY `index_geneid` (`GeneID`),
   KEY `index_type` (`mimtype`),
   KEY `index_source` (`source`),
