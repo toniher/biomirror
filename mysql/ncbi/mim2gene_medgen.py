@@ -67,7 +67,7 @@ def main(argv):
                         if ( row[0].startswith('#') ): #Avoid row with !
                                 continue
 
-                        cursor.execute('INSERT INTO mim2gene_medgen VALUES( %s, %s, %s, %s, %s, %s)', ( row[0], row[1], row[2].strip(), row[3].strip(), row[4].strip(), row[5] ) )
+                        cursor.execute('INSERT INTO mim2gene_medgen VALUES( %s, %s, %s, %s, %s, %s)', ( row[0], row[1], row[2].strip(), row[3].strip(), row[4].strip(), row[5].strip() ) )
                         i = i+1
                         if (i == limit):
                                 i=0
