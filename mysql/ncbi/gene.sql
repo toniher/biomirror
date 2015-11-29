@@ -32,7 +32,7 @@ KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`)
 
 drop table if exists `gene_group`;
 CREATE TABLE `gene_group` (
-  `GeneID` int(11) NOT NULL default '0',,
+  `GeneID` int(11) NOT NULL default '0',
   `relationship` varchar(50) NOT NULL default '',
   `GeneID_match` int(11) NOT NULL default '0',
   KEY `index_geneid` (`GeneID`),
@@ -42,7 +42,7 @@ CREATE TABLE `gene_group` (
 
 drop table if exists `gene2pubmed`;
 CREATE TABLE `gene2pubmed` (
-  `GeneID` int(11) NOT NULL default '0',,
+  `GeneID` int(11) NOT NULL default '0',
   `PubmedID` int(11) NOT NULL default '0',
   KEY `index_geneid` (`GeneID`),
   KEY `index_pubmedid` (`PubmedID`)
@@ -50,7 +50,7 @@ CREATE TABLE `gene2pubmed` (
 
 drop table if exists `gene2go`;
 CREATE TABLE `gene2go` (
-  `GeneID` int(11) NOT NULL default '0',,
+  `GeneID` int(11) NOT NULL default '0',
   `GO` varchar(20) NOT NULL default '',
   `evidence` varchar(8) NOT NULL default '',
   KEY `index_geneid` (`GeneID`),
@@ -72,4 +72,19 @@ CREATE TABLE `mim2gene_medgen` (
   KEY `index_source` (`source`),
   KEY `index_MedGenCUI` (`MedGenCUI`)
 ) ENGINE=MyISAM;
+
+drop table if exists `gene2refseq`;
+CREATE TABLE `gene2refseq` (
+`GeneID` int(11) NOT NULL default '0',
+`status` varchar(20) NOT NULL default '',
+`RNA_nucleotide_acc` varchar(20) NOT NULL default '',
+`protein_acc` varchar(20) NOT NULL default '',
+`genomic_nucleotide_acc` varchar(20) NOT NULL default '',
+KEY `index_geneid` (`GeneID`),
+KEY `index_status` (`status`),
+KEY `index_protein_acc` (`protein_acc`),
+KEY `index_genomic_nucleotide_acc` (`genomic_nucleotide_acc`),
+KEY `index_RNA_nucleotide_acc` (`RNA_nucleotide_acc`)
+) ENGINE=MyISAM;
+
 
