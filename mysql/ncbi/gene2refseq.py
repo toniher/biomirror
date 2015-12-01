@@ -40,17 +40,24 @@ def main(argv):
         cursor = db.cursor()
 
         cursor.execute("DROP TABLE IF EXISTS gene2refseq")
-        sql = """CREATE TABLE `gene2refseq` (
+        sql = """drop table if exists `gene2refseq`;
+CREATE TABLE `gene2refseq` (
 `GeneID` int(11) NOT NULL default '0',
 `status` varchar(20) NOT NULL default '',
 `RNA_nucleotide_acc` varchar(20) NOT NULL default '',
+`RNA_nucleotide_gi` varchar(16) NOT NULL default '',
 `protein_acc` varchar(20) NOT NULL default '',
+`protein_gi` varchar(16) NOT NULL default '',
 `genomic_nucleotide_acc` varchar(20) NOT NULL default '',
+`genomic_nucleotide_gi` varchar(16) NOT NULL default '', 
 KEY `index_geneid` (`GeneID`),
 KEY `index_status` (`status`),
 KEY `index_protein_acc` (`protein_acc`),
 KEY `index_genomic_nucleotide_acc` (`genomic_nucleotide_acc`),
-KEY `index_RNA_nucleotide_acc` (`RNA_nucleotide_acc`)
+KEY `index_RNA_nucleotide_acc` (`RNA_nucleotide_acc`),
+KEY `index_protein_gi` (`protein_gi`),
+KEY `index_genomic_nucleotide_gi` (`genomic_nucleotide_gi`),
+KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`)
 ) ENGINE=MyISAM;"""
         cursor.execute(sql)
     
@@ -67,7 +74,7 @@ KEY `index_RNA_nucleotide_acc` (`RNA_nucleotide_acc`)
                         if ( row[0].startswith('#') ): #Avoid row with !
                                 continue
 
-                        cursor.execute('INSERT INTO gene2refseq VALUES("'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[5]+'", "'+row[7]+'")')
+                        cursor.execute('INSERT INTO gene2refseq VALUES("'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'", "'+row[6]+'", "'+row[7]+'", "'+row[8]+'")')
                         i = i+1
                         if (i == limit):
                                 i=0
