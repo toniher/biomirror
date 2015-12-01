@@ -40,8 +40,7 @@ def main(argv):
         cursor = db.cursor()
 
         cursor.execute("DROP TABLE IF EXISTS gene2refseq")
-        sql = """drop table if exists `gene2refseq`;
-CREATE TABLE `gene2refseq` (
+        sql = """CREATE TABLE `gene2refseq` (
 `GeneID` int(11) NOT NULL default '0',
 `status` varchar(20) NOT NULL default '',
 `RNA_nucleotide_acc` varchar(20) NOT NULL default '',
@@ -60,7 +59,7 @@ KEY `index_genomic_nucleotide_gi` (`genomic_nucleotide_gi`),
 KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`)
 ) ENGINE=MyISAM;"""
         cursor.execute(sql)
-    
+
         cursor.execute("SET autocommit=0;")
         cursor.execute("SET unique_checks=0;")
         cursor.execute("SET foreign_key_checks=0;")
@@ -79,9 +78,9 @@ KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`)
                         if (i == limit):
                                 i=0
                                 db.commit()
-        
+
         db.commit()
-        cursor.close
+        cursor.close()
         
 
 if __name__ == "__main__":
