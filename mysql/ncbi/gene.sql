@@ -78,13 +78,19 @@ CREATE TABLE `gene2refseq` (
 `GeneID` int(11) NOT NULL default '0',
 `status` varchar(20) NOT NULL default '',
 `RNA_nucleotide_acc` varchar(20) NOT NULL default '',
+`RNA_nucleotide_gi` varchar(16) NOT NULL default '',
 `protein_acc` varchar(20) NOT NULL default '',
+`protein_gi` varchar(16) NOT NULL default '',
 `genomic_nucleotide_acc` varchar(20) NOT NULL default '',
+`genomic_nucleotide_gi` varchar(16) NOT NULL default '', 
 KEY `index_geneid` (`GeneID`),
 KEY `index_status` (`status`),
 KEY `index_protein_acc` (`protein_acc`),
 KEY `index_genomic_nucleotide_acc` (`genomic_nucleotide_acc`),
-KEY `index_RNA_nucleotide_acc` (`RNA_nucleotide_acc`)
+KEY `index_RNA_nucleotide_acc` (`RNA_nucleotide_acc`),
+KEY `index_protein_gi` (`protein_gi`),
+KEY `index_genomic_nucleotide_gi` (`genomic_nucleotide_gi`),
+KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`)
 ) ENGINE=MyISAM;
 
 
