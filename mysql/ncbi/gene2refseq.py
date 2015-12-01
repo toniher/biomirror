@@ -74,7 +74,7 @@ KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`)
                         if ( row[0].startswith('#') ): #Avoid row with !
                                 continue
 
-                        cursor.execute('INSERT INTO gene2refseq VALUES("'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'", "'+row[6]+'", "'+row[7]+'", "'+row[8]+'")')
+                        cursor.execute('INSERT INTO gene2refseq VALUES( %s, %s, %s, %s, %s, %s, %s, %s )', ( row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8] ) )
                         i = i+1
                         if (i == limit):
                                 i=0
