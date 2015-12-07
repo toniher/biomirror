@@ -57,7 +57,7 @@ my $messagesend = "Please, be patient";
 system ("$emailbin '$subjsend' '$messagesend'");
 
 # List of included DB
-my @listinclude = ('16SMicrobial', 'Representative_Genomes', 'alu.a', 'alu.n', 'drosoph.aa', 'drosoph.nt', 'env_nr', 'env_nt', 'est_human', 'est_mouse', 'est_others', 'mito.aa', 'mito.nt', 'nr', 'nt', 'pataa', 'patnt', 'pdbaa', 'pdbnt', 'swissprot', 'vector', 'yeast');
+my @listinclude = ('16SMicrobial', 'Representative_Genomes', 'alu.a', 'alu.n', 'drosoph.aa', 'drosoph.nt', 'env_nr', 'env_nt', 'est_human', 'est_mouse', 'est_others', 'mito.aa', 'mito.nt', 'nr', 'nt', 'pataa', 'patnt', 'pdbaa', 'pdbnt', 'swissprot', 'vector', 'yeast', 'refseq_genomic', 'refseq_protein', 'refseq_rna');
 #my @listinclude = ('nr');
 
 print STDERR $data_dir, "\n";
