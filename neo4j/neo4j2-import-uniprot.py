@@ -59,7 +59,7 @@ def create_molid(line, number):
     moltype = str(line[4]).strip()
 
     # We assume always al params
-    statement = "CREATE (n:"+label+" { id : "+molid+", name:"+name+", type:"+moltype+" })"
+    statement = "CREATE (n:"+label+" { id:\""+molid+"\", name:\""+name+"\", type:\""+moltype+"\" })"
     #print statement
         
     return statement
@@ -114,7 +114,7 @@ for row in reader:
 	taxid = str(line[5]).strip()
 	taxid.replace("taxon:", "")
 	
-	statement = "MATCH (c:"+label+" {id:"+molid+"}), (p:TAXID {id:"+taxid+"}) CREATE (c)-[:has_taxon]->(p)"
+	statement = "MATCH (c:"+label+" {id:\""+molid+"\"}), (p:TAXID {id:"+taxid+"}) CREATE (c)-[:has_taxon]->(p)"
 	
 	tx.append(statement)
 	
