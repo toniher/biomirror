@@ -32,11 +32,6 @@ graph.bind("http://localhost:7474/db/data/")
 
 label = "MOL"
 
-# Hashes for storing stuff
-parentid={}
-scientific_list={}
-names_list={}
-
 idxout = graph.cypher.execute("CREATE CONSTRAINT ON (n:"+label+") ASSERT n.id IS UNIQUE")
 
 def process_statement( statements ):
@@ -84,6 +79,10 @@ list_statements =  []
 statements = []
 
 for row in reader:
+	
+	if row[0].startswith( '!' ):
+		continue
+	
 	statement = create_molid(row, iter)
 	statements.append( statement )
 	iter = iter + 1
@@ -105,6 +104,10 @@ reader =  csv.reader(open(opts.info),delimiter="\t")
 iter = 0
 
 for row in reader:
+	
+	if row[0].startswith( '!' ):
+		continue
+	
 	statement = create_relation(row, iter)
 	
 	molid = str(line[0]).strip()
