@@ -75,8 +75,11 @@ reader =  csv.reader(open(opts.info),delimiter="\t")
 
 iter = 0
 
-list_statements =  []
-statements = []
+# list_statements =  []
+# statements = []
+
+tx = graph.cypher.begin()
+
 
 for row in reader:
 	
@@ -84,15 +87,22 @@ for row in reader:
 		continue
 	
 	statement = create_molid(row, iter)
-	statements.append( statement )
+	tx.append( statement )
 	iter = iter + 1
 	if ( iter > numiter ):
-		list_statements.append( statements )
+		tx.process()
+		tx.commit()
+		tx = graph.cypher.begin()
 		iter = 0
-		statements = []
+		#statements = []
 
-list_statements.append( statements )
-res = p.map( process_statement, list_statements )
+
+tx.process()
+tx.commit()
+
+# list_statements.append( statements )
+# res = p.map( process_statement, list_statements )
+logging.info('end')
 
 # We keep no pool for relationship
 tx = graph.cypher.begin()
