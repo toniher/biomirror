@@ -54,15 +54,18 @@ poolnum = 4;
 p = Pool(poolnum)
 
 def create_molid(line, number):
-    molid = str(line[0]).strip()
-    name = str(line[2]).strip()
-    moltype = str(line[4]).strip()
+	molid = str(line[0]).strip()
+	name = str(line[2]).strip()
+	moltype = str(line[4]).strip()
+	name = name.replace("\\", "\\\\")
+	name = name.replace("\"", "\\\"")
+					
 
-    # We assume always al params
-    statement = "CREATE (n:"+label+" { id:\""+molid+"\", name:\""+name+"\", type:\""+moltype+"\" })"
-    #print statement
-        
-    return statement
+	# We assume always al params
+	statement = "CREATE (n:"+label+" { id:\""+molid+"\", name:\""+name+"\", type:\""+moltype+"\" })"
+	#print statement
+		
+	return statement
 
 def create_relation( line, number):
 	
@@ -75,11 +78,8 @@ reader =  csv.reader(open(opts.info),delimiter="\t")
 
 iter = 0
 
-# list_statements =  []
-# statements = []
-
-tx = graph.cypher.begin()
-
+list_statements =  []
+statements = []
 
 for row in reader:
 	
@@ -87,22 +87,15 @@ for row in reader:
 		continue
 	
 	statement = create_molid(row, iter)
-	tx.append( statement )
+	statements.append( statement )
 	iter = iter + 1
 	if ( iter > numiter ):
-		tx.process()
-		tx.commit()
-		tx = graph.cypher.begin()
+		list_statements.append( statements )
 		iter = 0
-		#statements = []
+		statements = []
 
-
-tx.process()
-tx.commit()
-
-# list_statements.append( statements )
-# res = p.map( process_statement, list_statements )
-logging.info('end')
+list_statements.append( statements )
+res = p.map( process_statement, list_statements )
 
 # We keep no pool for relationship
 tx = graph.cypher.begin()
@@ -122,7 +115,7 @@ for row in reader:
 	
 	molid = str(line[0]).strip()
 	taxid = str(line[5]).strip()
-	taxid.replace("taxon:", "")
+	taxid = taxid.replace("taxon:", "")
 	
 	statement = "MATCH (c:"+label+" {id:\""+molid+"\"}), (p:TAXID {id:"+taxid+"}) CREATE (c)-[:has_taxon]->(p)"
 	
