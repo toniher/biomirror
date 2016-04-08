@@ -21,11 +21,11 @@ parser.add_argument("info",
 
 opts=parser.parse_args()
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 http.socket_timeout = 9999
 
-numiter = 5000
+numiter = 1000
 
 graph = py2neo.Graph()
 graph.bind("http://localhost:7474/db/data/")
@@ -49,7 +49,7 @@ def process_statement( statements ):
     tx.commit()
 
 
-poolnum = 4;
+poolnum = 7;
 
 p = Pool(poolnum)
 
@@ -96,41 +96,6 @@ for row in reader:
 
 list_statements.append( statements )
 res = p.map( process_statement, list_statements )
-
-# We keep no pool for relationship
-tx = graph.cypher.begin()
-
-logging.info('adding relationships')
-# restart
-reader =  csv.reader(open(opts.info),delimiter="\t")
-
-iter = 0
-
-for row in reader:
-	
-	if row[0].startswith( '!' ):
-		continue
-	
-	statement = create_relation(row, iter)
-	
-	molid = str(line[0]).strip()
-	taxid = str(line[5]).strip()
-	taxid = taxid.replace("taxon:", "")
-	
-	statement = "MATCH (c:"+label+" {id:\""+molid+"\"}), (p:TAXID {id:"+taxid+"}) CREATE (c)-[:has_taxon]->(p)"
-	
-	tx.append(statement)
-	
-	iter = iter + 1
-	if ( iter > numiter ):
-		tx.process()
-		tx.commit()
-		tx = graph.cypher.begin()
-		
-		iter = 0
-
-tx.process()
-tx.commit()
 
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(type)")
 idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(name)")
