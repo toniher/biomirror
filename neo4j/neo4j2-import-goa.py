@@ -57,7 +57,7 @@ for row in reader:
 	dbref = str(row[4]).strip()
 	evidence = str(row[5]).strip()
 	
-	statement = "MATCH (c:"+label+" {id:\""+molid+"\"}), (p:GO_TERM {acc:\""+goacc+"\"}) CREATE (c)-[:has_go { evidence: \""+evidence+"\", dbref: \""+dbref+"\", qualifier: \""+qual+"\" }]->(p)"
+	statement = "MATCH (c:"+label+" {id:\""+molid+"\"}), (p:GO_TERM {acc:\""+goacc+"\"}) CREATE (c)-[:has_go { evidence: \""+evidence+"\", ref: \""+dbref+"\", qualifier: \""+qual+"\" }]->(p)"
 	
 	tx.append(statement)
 	
