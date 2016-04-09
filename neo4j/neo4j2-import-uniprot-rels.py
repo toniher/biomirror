@@ -42,25 +42,30 @@ reader =  csv.reader(open(opts.info),delimiter="\t")
 iter = 0
  
 for row in reader:
- 	
- 	if row[0].startswith( '!' ):
- 		continue
- 	
- 	molid = str(row[0]).strip()
- 	taxid = str(row[5]).strip()
- 	taxid = taxid.replace("taxon:", "")
- 	
- 	statement = "MATCH (c:"+label+" {id:\""+molid+"\"}), (p:TAXID {id:"+taxid+"}) CREATE (c)-[:has_taxon]->(p)"
- 	
- 	tx.append(statement)
- 	
- 	iter = iter + 1
- 	if ( iter > numiter ):
- 		tx.process()
- 		tx.commit()
- 		tx = graph.cypher.begin()
- 		
- 		iter = 0
+
+	if row[0].startswith( '!' ):
+		continue
+	
+	molid = str(row[0]).strip()
+	taxid = str(row[5]).strip()
+	
+	#If we're not dealing with taxon (e.g. isoforms, let's skip)
+	if not taxid.startswith( 'taxon' ):
+		continue
+	
+	taxid = taxid.replace("taxon:", "")
+	
+	statement = "MATCH (c:"+label+" {id:\""+molid+"\"}), (p:TAXID {id:"+taxid+"}) CREATE (c)-[:has_taxon]->(p)"
+	
+	tx.append(statement)
+	
+	iter = iter + 1
+	if ( iter > numiter ):
+		tx.process()
+		tx.commit()
+		tx = graph.cypher.begin()
+		
+		iter = 0
  
 tx.process()
 tx.commit()
