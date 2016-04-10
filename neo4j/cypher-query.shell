@@ -1,0 +1,9 @@
+# Adding nodes
+import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out CREATE (n:MOL { id:{id}, name:{name}, type:{type} })
+
+# Adding relationships to Taxon
+import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:TAXID {id:{taxon}}) CREATE (c)-[:has_taxon]->(p)
+
+# Adding relationships to GO
+import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:GO_TERM {acc:{goacc}}) CREATE (c)-[:has_go { evidence: {evidence}, ref: {ref}, qualifier: {qualifier} }]->(p)
+
