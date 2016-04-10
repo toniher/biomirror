@@ -8,7 +8,7 @@ echo -e "id\ttaxon:int"|cat - gp_information.goa_uniprot.reduced > /tmp/out && m
 import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:TAXID {id:{taxon}}) CREATE (c)-[:has_taxon]->(p)
 
 # Adding relationships to GO
-perl -lane ' if ($F[0]!~/^\!/ && $F[0]=~/^UniProt/ ) { print join("\t", @F[1..5]); } ' gp_association.goa_uniprot > gp_association.goa_uniprot.reduced
+cut -f 1,2,3,4,5,6 gp_association.goa_uniprot | perl -lane ' if ($F[0]!~/^\!/ && $F[0]=~/^UniProt/ ) { print join("\t", @F[1..5]); } '  > gp_association.goa_uniprot.reduced
 echo -e "id\tqualifier\tgoacc\tref\tevidence"|cat - gp_association.goa_uniprot.reduced > /tmp/out && mv /tmp/out gp_association.goa_uniprot.reduced
 
 import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:GO_TERM {acc:{goacc}}) CREATE (c)-[:has_go { evidence: {evidence}, ref: {ref}, qualifier: {qualifier} }]->(p)
