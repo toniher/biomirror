@@ -3,13 +3,13 @@ import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out CREATE 
 
 # Adding relationships to Taxon
 cut -f 1,6 gp_information.goa_uniprot | perl -lane ' if ($F[0]!~/^\!/ && $F[1]=~/^taxon/ ) { my $id=$F[0]; my $tax=$F[1]; $tax=~s/taxon\://g; print $id, "\t", $tax; } ' > yourfile
-echo "id\ttaxon:int"|cat - yourfile > /tmp/out && mv /tmp/out yourfile
+echo -e "id\ttaxon:int"|cat - yourfile > /tmp/out && mv /tmp/out yourfile
 
 import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:TAXID {id:{taxon}}) CREATE (c)-[:has_taxon]->(p)
 
 # Adding relationships to GO
 cut -f 1,2,3,4,5,6 gp_association.goa_uniprot | perl -lane ' if ($F[0]!~/^\!/ && $F[0]=~/^UniProt/ ) { print join("\t", @F[1..5]); } ' > yourfile
-echo "id\tqualifier\tgoacc\tref\tevidence"|cat - yourfile > /tmp/out && mv /tmp/out yourfile
+echo -e "id\tqualifier\tgoacc\tref\tevidence"|cat - yourfile > /tmp/out && mv /tmp/out yourfile
 
 import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:GO_TERM {acc:{goacc}}) CREATE (c)-[:has_go { evidence: {evidence}, ref: {ref}, qualifier: {qualifier} }]->(p)
 
