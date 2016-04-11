@@ -4,6 +4,7 @@ import csv
 import logging
 import argparse
 import sys
+import os.path
 from pprint import pprint
 
 
@@ -11,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("info",
                     help="The info file")
 parser.add_argument("dirout",
-                    dirout="Where to place files")
+                    help="Where to place files")
 
 opts=parser.parse_args()
 
@@ -22,10 +23,6 @@ numiter = 1000000
 
 synonyms = {}
 
-
-poolnum = 7;
-
-p = Pool(poolnum)
 
 def add_synonym(line):
 	molid = str(line[0]).strip()
@@ -64,7 +61,7 @@ def prepare_synonym( molid, item ):
 def process_synonyms( synonyms, itervar ):
 	
 	
-	fo = open( opts.dirout + "/" + opts.info + "-" + itervar , "wb")
+	fo = open( opts.dirout + "/" + os.path.basename( opts.info ) + "-" + str(itervar) , "wb")
 	
 	for mol in synonyms.keys():
 		statement = prepare_synonym( mol, synonyms[ mol ] )
