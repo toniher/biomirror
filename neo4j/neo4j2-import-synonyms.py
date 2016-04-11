@@ -112,5 +112,5 @@ for mol in synonyms.keys():
 list_statements.append( statements )
 res = p.map( process_statement, list_statements )
 
-idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(synonyms)")
+#idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(synonyms)")
 
