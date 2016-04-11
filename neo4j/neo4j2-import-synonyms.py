@@ -68,7 +68,7 @@ def add_synonym(line):
 	if origin in ["GI", "RefSeq", "UniProtKB-ID"] :
 		synonyms[molid].append( name )
 
-def process_names( array ):
+def process_names( names ):
 
 	namestr = ""
 	
