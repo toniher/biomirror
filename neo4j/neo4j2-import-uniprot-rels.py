@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.ERROR)
 
 http.socket_timeout = 9999
 
-numiter = 1000
+numiter = 2500
 
 graph = py2neo.Graph()
 graph.bind("http://localhost:7474/db/data/")
