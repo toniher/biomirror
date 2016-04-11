@@ -9,4 +9,5 @@ Versions for Py2neo 1.6 and Py2neo 2.x
 	* ftp://ftp.ncbi.nih.gov/pub/taxonomy/
 	* Argument files: nodes.dmp, names.dmp
 
+* cypher-query.shell (queries to speed up relationships addition, to be used with: https://github.com/jexp/neo4j-shell-tools )
 
