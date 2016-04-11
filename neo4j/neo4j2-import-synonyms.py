@@ -86,7 +86,7 @@ def prepare_synonym( molid, item ):
 
 	label = "MOL"
 	statement = "MATCH (n:"+label+" { id:\""+molid+"\" } ) SET n.synonyms = "+array_names+" RETURN n "
-	print statement
+	return statement
 
 logging.info('storing synonyms info')
 reader =  csv.reader(open(opts.info),delimiter="\t")
@@ -111,3 +111,6 @@ for mol in synonyms.keys():
 
 list_statements.append( statements )
 res = p.map( process_statement, list_statements )
+
+idxout = graph.cypher.execute("CREATE INDEX ON :"+label+"(synonyms)")
+
