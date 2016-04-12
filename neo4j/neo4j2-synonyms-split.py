@@ -58,7 +58,7 @@ def prepare_synonym( molid, item ):
 def process_synonyms( synonyms, itervar ):
 	
 	
-	fo = open( opts.dirout + "/" + opts.info + "-" + itervar , "wb")
+	fo = open( opts.dirout + "/" + opts.info + "-" + str(itervar) , "wb")
 	
 	for mol in synonyms.keys():
 		statement = prepare_synonym( mol, synonyms[ mol ] )
