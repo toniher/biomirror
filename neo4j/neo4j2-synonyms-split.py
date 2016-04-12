@@ -60,6 +60,8 @@ def process_synonyms( synonyms, itervar ):
 	
 	fo = open( opts.dirout + "/" + opts.info + "-" + str(itervar) , "wb")
 	
+	fo.write( "id\tsynonyms\n" )
+	
 	for mol in synonyms.keys():
 		statement = prepare_synonym( mol, synonyms[ mol ] )
 		fo.write( statement )
