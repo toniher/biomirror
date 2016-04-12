@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("info",
                     help="The info file")
 parser.add_argument("dirout",
-                    dirout="Where to place files")
+                    help="Where to place files")
 
 opts=parser.parse_args()
 
