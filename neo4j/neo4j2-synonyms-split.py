@@ -4,6 +4,7 @@ import csv
 import logging
 import argparse
 import sys
+import os.path
 from pprint import pprint
 
 
@@ -58,7 +59,7 @@ def prepare_synonym( molid, item ):
 def process_synonyms( synonyms, itervar ):
 	
 	
-	fo = open( opts.dirout + "/" + opts.info + "-" + str(itervar) , "wb")
+	fo = open( opts.dirout + "/" + opts.path.basename( opts.info ) + "-" + str(itervar) , "wb")
 	
 	fo.write( "id\tsynonyms\n" )
 	
