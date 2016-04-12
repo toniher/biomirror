@@ -22,11 +22,6 @@ numiter = 1000000
 
 synonyms = {}
 
-
-poolnum = 7;
-
-p = Pool(poolnum)
-
 def add_synonym(line):
 	molid = str(line[0]).strip()
 	origin = str(line[1]).strip()
@@ -57,8 +52,7 @@ def prepare_synonym( molid, item ):
 	
 	array_names = process_names ( item )
 
-	label = "MOL"
-	statement = "MATCH (n:"+label+" { id:\""+molid+"\" } ) SET n.synonyms = "+array_names+" RETURN n "
+	statement = molid+"\t"+array_names+"\n"
 	return statement
 
 def process_synonyms( synonyms, itervar ):
@@ -68,7 +62,7 @@ def process_synonyms( synonyms, itervar ):
 	
 	for mol in synonyms.keys():
 		statement = prepare_synonym( mol, synonyms[ mol ] )
-		fo.write( statement + "\n" )
+		fo.write( statement )
 
 	fo.close()
 
