@@ -59,7 +59,7 @@ def prepare_synonym( molid, item ):
 def process_synonyms( synonyms, itervar ):
 	
 	
-	fo = open( opts.dirout + "/" + opts.path.basename( opts.info ) + "-" + str(itervar) , "wb")
+	fo = open( opts.dirout + "/" + os.path.basename( opts.info ) + "-" + str(itervar) , "wb")
 	
 	fo.write( "id\tsynonyms\n" )
 	
