@@ -29,8 +29,6 @@ echo -e "id\tqualifier\tgoacc\tref\tevidence"|cat - gp_association.goa_uniprot.r
 
 import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:GO_TERM {acc:{goacc}}) CREATE (c)-[:has_go { evidence: {evidence}, ref: {ref}, qualifier: {qualifier} }]->(p)
 
-import-cypher -b 10000 -d"\t" -i $file -o /data/toniher/out MATCH (n:MOL {id:{id}}) set n.synonyms = {synonyms} 
-
 CREATE INDEX ON :has_go(evidence);
 CREATE INDEX ON :has_go(ref);
 CREATE INDEX ON :has_go(qualifier);
