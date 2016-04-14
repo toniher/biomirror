@@ -34,7 +34,9 @@ def process_synonyms( listid, listinfo ):
 	variter = 0
 	for val in vals :
 		if val is None:
-			val = "[\""+listid[ variter ]+"\"]"
+			val = listid[ variter ]
+			val = val.replace( " ", "" );
+			val = val.replace( "\"", "" );
 		print "\t".join( listinfo[ variter ] )+"\t"+ val
 		variter = variter + 1
 

@@ -1,34 +1,27 @@
 # Base entries
-cut -f 1,3,5,6 gp_information.goa_uniprot | perl -F'\t' -lane ' if ($F[0]!~/^\!/ ) { print join( "\t", @F[0..2] ); } ' > gp_information.goa_uniprot.base
+cut -f 1,3,5,6 gp_information.goa_uniprot | perl -F'\t' -lane ' if ($F[0]!~/^\!/ ) { $F[1]=~s/\"/\\"/g; print join( "\t", @F[0..2] ); } ' > gp_information.goa_uniprot.base
 
 cut -f 1,2,3 gp_information.goa_uniprot.base | perl -F'\t' -lane ' if ($F[2]=~/^protein/ ) { print $_; } ' > gp_information.goa_uniprot.protein
 
 python neo4j2-synonyms-add-from-redis.py /data/db/go/goa/gp_information.goa_uniprot.protein > /data/db/go/goa/gp_information.goa_uniprot.extra
 
-echo -e "id\tname\ttype\tsynonyms" |cat - gp_information.goa_uniprot.extra > out && mv out gp_information.goa_uniprot.extra
+mkdir -p /data/db/go/goa/mol; cd /data/db/go/goa/mol; split -l 10000000 ../gp_information.goa_uniprot.extra gp_information.goa_uniprot.extra
 
-CREATE CONSTRAINT ON (n:MOL) ASSERT n.id IS UNIQUE;
+nohup ./mols-dir.sh /data/db/go/goa/mol &
 
-# Adding nodes
-import-cypher -b 10000 -d"\t" -i gp_information.goa_uniprot.extra -o out CREATE (n:MOL { id:{id}, name:{name}, type:{type}, synonyms: { synonyms } })
-
-
-CREATE INDEX ON :MOL(synonyms);
-CREATE INDEX ON :MOL(name);
-CREATE INDEX ON :MOL(type);
 
 # Adding relationships to Taxon
 cut -f 1,6 gp_information.goa_uniprot | perl -F'\t' -lane ' if ($F[0]!~/^\!/ && $F[1]=~/^taxon/ ) { my $id=$F[0]; my $tax=$F[1]; $tax=~s/taxon\://g; print $id, "\t", $tax; } ' > gp_information.goa_uniprot.reduced
-echo -e "id\ttaxon:int"|cat - gp_information.goa_uniprot.reduced > out && mv out gp_information.goa_uniprot.reduced
 
-import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:TAXID {id:{taxon}}) CREATE (c)-[:has_taxon]->(p)
+mkdir -p /data/db/go/goa/rels; cd /data/db/go/goa/rels; split -l 10000000 ../gp_information.goa_uniprot.reduced gp_information.goa_uniprot.reduced
+
+nohup ./mols-taxon-dir.sh /data/db/go/goa/rels &
+
 
 # Adding relationships to GO
 cut -f 1,2,3,4,5,6 gp_association.goa_uniprot | perl -F'\t' -lane ' if ($F[0]!~/^\!/ && $F[0]=~/^UniProt/ ) { print join("\t", @F[1..5]); } '  > gp_association.goa_uniprot.reduced
-echo -e "id\tqualifier\tgoacc\tref\tevidence"|cat - gp_association.goa_uniprot.reduced > out && mv out gp_association.goa_uniprot.reduced
 
-import-cypher -b 10000 -d"\t" -i /home/toniher/test -o /home/toniher/out MATCH (c:MOL {id:{id}}), (p:GO_TERM {acc:{goacc}}) CREATE (c)-[:has_go { evidence: {evidence}, ref: {ref}, qualifier: {qualifier} }]->(p)
+mkdir -p /data/db/go/goa/relsgo; cd /data/db/go/goa/relsgo; split -l 10000000 ../gp_association.goa_uniprot.reduced gp_association.goa_uniprot.reduced
 
-CREATE INDEX ON :has_go(evidence);
-CREATE INDEX ON :has_go(ref);
-CREATE INDEX ON :has_go(qualifier);
+nohup ./mols-go-dir.sh /data/db/go/goa/relsgo &
+
