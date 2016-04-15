@@ -28,5 +28,3 @@ do
         /data/soft/neo4j-community-2.3.3/bin/neo4j-shell -file /data/toniher/script >> syn.out 2>> syn.err
 done
 
-echo "CREATE INDEX ON :has_go(evidence); CREATE INDEX ON :has_go(ref); CREATE INDEX ON :has_go(qualifier);" > /data/toniher/script
-/data/soft/neo4j-community-2.3.3/bin/neo4j-shell -file /data/toniher/script >> syn.out 2>> syn.err
