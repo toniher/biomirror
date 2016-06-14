@@ -29,19 +29,9 @@ rm $INFOFILE.base
 cd $MAPPINGDIR
 gunzip *gz
 
-DIR=$MAPPINGDIR/tmp
-mkdir -p $MAPPINGDIR/tmp
-python $SCRIPTPATH/neo4j2-synonyms-split.py $MAPPINGDIR/idmapping.dat $MAPPINGDIR/tmp
-
-for file in $DIR/*
-do
-	python $SCRIPTPATH/neo4j2-synonyms-redis.py $file
-done
-
+python $SCRIPTPATH/neo4j2-synonyms-redis.py $MAPPINGDIR/idmapping.dat
 python $SCRIPTPATH/neo4j2-synonyms-add-from-redis.py $GOADIR/$INFOFILE.protein > $GOADIR/$INFOFILE.extra
 
-# Cleaning
-rm -rf $MAPPINGDIR/tmp
 
 # Adding mols
 
