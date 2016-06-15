@@ -24,7 +24,7 @@ parser.add_argument("term2termfile",
 
 opts=parser.parse_args()
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 graph = py2neo.Graph()
 graph.bind("http://localhost:7474/db/data/")
@@ -77,6 +77,7 @@ def create_go_term(line):
 	goacc = line[3]
 	gotype = line[2]
 	goname = line[1]
+	goname = goname.replace('"', '\\"')
 
 	defclause = ""
 	if str(goid) in definition_list:
