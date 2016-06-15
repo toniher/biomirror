@@ -65,6 +65,7 @@ do
        $NEO4JSHELL -file $MOMENTDIR/script >> $MOMENTDIR/syn.out 2>> $MOMENTDIR/syn.err
 done
 
+cd $GOADIR
 
 # Adding relationships to Taxon
 cut -f 1,6 $INFOFILE | perl -F'\t' -lane ' if ($F[0]!~/^\!/ && $F[1]=~/^taxon/ ) { my $id=$F[0]; my $tax=$F[1]; $tax=~s/taxon\://g; print $id, "\t", $tax; } ' > $INFOFILE.reduced
@@ -89,6 +90,8 @@ do
        $NEO4JSHELL -file $MOMENTDIR/script >> $MOMENTDIR/syn.out 2>> $MOMENTDIR/syn.err
 done
 
+cd $GOADIR
+
 rm $INFOFILE.reduced
 
 
@@ -108,8 +111,6 @@ do
 
 done
 
-rm $INFOFILE.reduced
-
 
 echo "CREATE INDEX ON :has_go(evidence);" > $MOMENTDIR/script
 $NEO4JSHELL -file $MOMENTDIR/script >> $MOMENTDIR/syn.out 2>> $MOMENTDIR/syn.err
@@ -127,4 +128,8 @@ do
 	echo "import-cypher -b 10000 -d\"\t\" -i $file -o $MOMENTDIR/out MATCH (c:MOL {id:{id}}), (p:GO_TERM {acc:{goacc}}) CREATE (c)-[:has_go { evidence: {evidence}, ref: {ref}, qualifier: {qualifier} }]->(p)" > $MOMENTDIR/script
        $NEO4JSHELL -file $MOMENTDIR/script >> $MOMENTDIR/syn.out 2>> $MOMENTDIR/syn.err
 done
+
+cd $GOADIR
+
+rm $INFOFILE.reduced
 
