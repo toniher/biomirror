@@ -6,6 +6,8 @@ import MySQLdb
 import json
 import gzip
 
+csv.field_size_limit(sys.maxsize)
+
 def main(argv):
         if len(sys.argv) < 2:
                 sys.exit()
