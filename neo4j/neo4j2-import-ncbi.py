@@ -23,7 +23,7 @@ parser.add_argument("names",
 
 opts=parser.parse_args()
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 http.socket_timeout = 9999
 
