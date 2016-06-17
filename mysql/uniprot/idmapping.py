@@ -46,7 +46,6 @@ def main(argv):
         `uniprot` varchar(16) NOT NULL DEFAULT '',
         `db` varchar(24) NOT NULL DEFAULT '',
         `external` varchar(48) NOT NULL DEFAULT '',
-        PRIMARY KEY (`uniprot`,`db`,`external`),
         KEY `index_uniprot` (`uniprot`),
         KEY `index_db` (`db`),
         KEY `index_external` (`external`)
