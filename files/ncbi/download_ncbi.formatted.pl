@@ -87,18 +87,12 @@ $ftp->cwd($ftpdir) or die "Can't go to $ftpdir: $!";
 
 # get list of ftp directories
 my %ftp_files = ();
-my %ftp_sizes = ();
 
 # get file list
 my @files = $ftp->ls();
 
 # add array to hash
 $ftp_files{'ncbi'} = \@files;
-
-# retrieve size of files
-foreach my $filed (@files) {
-	$ftp_sizes{'ncbi'}{$filed} = check_size_ftp($ftp, $ftpdir."/".$filed); 
-}
 
 # FASTA Files
 $ftp->cwd($fastadir) or die "Can't go to $fastadir: $!";
@@ -108,25 +102,11 @@ my @fastafiles = $ftp->ls();
 # add array to hash
 $ftp_files{'ncbifasta'} = \@fastafiles;
 
-foreach my $filed (@fastafiles) {
-	$ftp_sizes{'ncbifasta'}{$filed} = check_size_ftp($ftp, $fastadir."/".$filed); 
-}
-
-
 # return to FTP root
 $ftp->cwd() or die "Can't go to FTP root: $!";
 
 #-- close ftp connection
 $ftp->quit or die "Error closing ftp connection: $!";
-
-sub check_size_ftp {
-	
-	my $ftp = shift;
-	my $fpath = shift;
-	#print STDERR $fpath, " - ", $ftp->size($fpath), "\n";
-	return($ftp->size($fpath));
-}
-
 
 sub checksum{
 	
@@ -143,7 +123,7 @@ sub checksum{
 			my $ctx = Digest::MD5->new;
 	
 			$ctx->addfile(*FILE);
-			my $filemd5 = $ctx->digest;
+			my $filemd5 = $ctx->hexdigest;
 			close(FILE);
 			
 			if ($filemd5 eq $md5) {return(1);}
@@ -262,19 +242,18 @@ if ($pdown > 0) {
 			system("wget -t 0 -c -N ftp://$host$ftpdir/$file");
 			#Check size file against DB
 			my $wc = 0;
-			while ( compare_size(cwd()."/".$file, $ftp_sizes{'ncbi'}{$file}) < 1 ) {
+
 					
-					#Remove file and try again
-					#Maybe after 10 times (network problems) -> to die
+			#Remove file and try again
+			#Maybe after 10 times (network problems) -> to die
 					
-					while ( checksum($file, "ftp://$host$ftpdir/$file.md5") < 1 ) {
+			while ( checksum($file, "ftp://$host$ftpdir/$file.md5") < 1 ) {
 						
-						system("rm $file");
-						system("wget -t 0 -c -N ftp://$host$ftpdir/$file");
-						$wc++;
-						if ($wc > 20) {die "network problem with $file\n";}
+				system("rm $file");
+				system("wget -t 0 -c -N ftp://$host$ftpdir/$file");
+				$wc++;
+				if ($wc > 20) {die "network problem with $file\n";}
 					
-					}
 			}
 			
 			open (FILEOUT, ">>LOG") || die "Cannot write";
@@ -308,20 +287,19 @@ if ($pdown > 0) {
 				system("wget -t 0 -c -N ftp://$host$fastadir/$file");
 				#Check size file against DB
 				my $wc = 0;
-				while ( compare_size(cwd()."/".$file, $ftp_sizes{'ncbifasta'}{$file}) < 1 ) {
 						
-						#Remove file and try again
-						#Maybe after 10 times (network problems) -> to die
+				#Remove file and try again
+				#Maybe after 10 times (network problems) -> to die
 						
-						while ( checksum($file, "ftp://$host$fastadir/$file.md5") < 1 ) {
+				while ( checksum($file, "ftp://$host$fastadir/$file.md5") < 1 ) {
 							
-							system("rm $file");
-							system("wget -t 0 -c -N ftp://$host$fastadir/$file");
-							$wc++;
-							if ($wc > 20) {die "network problem with $file\n";}
+					system("rm $file");
+					system("wget -t 0 -c -N ftp://$host$fastadir/$file");
+					$wc++;
+					if ($wc > 20) {die "network problem with $file\n";}
 						
-						}
 				}
+				
 				
 				open (FILEOUT, ">>LOG") || die "Cannot write";
 				print FILEOUT $file, "\n";
