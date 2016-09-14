@@ -8,17 +8,20 @@ use Config::JSON;
 use Data::Dumper;
 use Parallel::ForkManager;
 
-# Get JSON Config
-# We assume same path as script
-my $config = Config::JSON->new("../conf/indexes.json");
+#Dir where ensembl release
+my $dir = shift;
+
+my $confile = shift;
+if ( ! $confile ) {
+	$confile = "../conf/indexes.json";	
+}
+
+my $config = Config::JSON->new($confile);
 
 my $list_programs = $config->get("programs");
 # Max num processes
 my $procs = $config->get("procs") // 4;
-my $pm = new Parallel::ForkManager($procs); 
-
-#Dir where ensembl release
-my $dir = shift;
+my $pm = new Parallel::ForkManager($procs);
 
 # We allow here filtering by organism
 my $organism = shift;
