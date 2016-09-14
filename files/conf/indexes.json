@@ -17,7 +17,7 @@
 		{
 			"name": "samtools",
 			"path": "/software/bi/bin/samtools",
-			"version": "1.0",
+			"version": "1.2",
 			"command": "cd #END;ln -fs #ORIG; #PROG faidx #DEST",
 			"group": ["genome", "ncrna", "transcriptome"]
 		},
