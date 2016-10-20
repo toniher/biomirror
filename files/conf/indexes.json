@@ -2,15 +2,15 @@
 	"programs": [
 		{
 			"name": "ncbi-blast+",
-			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.3.0+/bin/makeblastdb",
-			"version": "2.3.0",
+			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.4.0+/bin/makeblastdb",
+			"version": "2.4.0",
 			"command": "#PROG -dbtype prot -in #ORIG ; mv #ORIG.* #END",
 			"group": ["proteome"]
 		},
 		{
 			"name": "ncbi-blast+",
-			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.3.0+/bin/makeblastdb",
-			"version": "2.3.0",
+			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.4.0+/bin/makeblastdb",
+			"version": "2.4.0",
 			"command": "#PROG -dbtype nucl -in #ORIG ; mv #ORIG.* #END",
 			"group": ["genome", "ncrna", "transcriptome"]
 		},
