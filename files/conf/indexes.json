@@ -2,73 +2,73 @@
 	"programs": [
 		{
 			"name": "ncbi-blast+",
-			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.2.31+/bin/makeblastdb",
-			"version": "2.2.30",
+			"path": "/software/bi/el7.2/version/ncbi-blast+/ncbi-blast-2.6.0+/bin/makeblastdb",
+			"version": "2.6.0",
 			"command": "#PROG -dbtype prot -in #ORIG ; mv #ORIG.* #END",
 			"group": ["proteome"]
 		},
 		{
 			"name": "ncbi-blast+",
-			"path": "/software/bi/el6.3/version/ncbi-blast+/ncbi-blast-2.2.31+/bin/makeblastdb",
-			"version": "2.2.30",
+			"path": "/software/bi/el7.2/version/ncbi-blast+/ncbi-blast-2.6.0+/bin/makeblastdb",
+			"version": "2.6.0",
 			"command": "#PROG -dbtype nucl -in #ORIG ; mv #ORIG.* #END",
 			"group": ["genome", "ncrna", "transcriptome"]
 		},
 		{
 			"name": "samtools",
-			"path": "/software/bi/bin/samtools",
-			"version": "1.0",
+			"path": "/software/bi/el7.2/version/samtools/samtools-1.3.1/samtools",
+			"version": "1.3.1",
 			"command": "cd #END;ln -fs #ORIG; #PROG faidx #DEST",
 			"group": ["genome", "ncrna", "transcriptome"]
 		},
 		{
 			"name": "faToTwoBit",
-			"path": "/software/galaxy/bin/faToTwoBit",
+			"path": "/software/bi/el7.2/version/hgdownload/201702/faToTwoBit",
 			"version": "0.0.0",
 			"command": "#PROG #ORIG #DEST.2bit",
 			"group": ["genome", "ncrna", "transcriptome"]
 		},
 		{
 			"name": "bowtie",
-			"path": "/software/bi/el6.3/version/bowtie/bowtie-1.1.1/bowtie-build",
-			"version": "1.1.0",
+			"path": "/software/bi/el7.2/version/bowtie/bowtie-1.2/bowtie-build",
+			"version": "1.2",
 			"command": "#PROG #ORIG #DEST",
 			"group": ["genome"],
 			"chrom": 1
 		},
 		{
 			"name": "bowtie2",
-			"path": "/software/bi/el6.3/version/bowtie2/bowtie2-2.2.3/bowtie2-build",
-			"version": "2.2.3",
+			"path": "/software/bi/el7.2/version/bowtie2/bowtie2-2.3.0/bowtie2-build",
+			"version": "2.3.0",
 			"command": "#PROG #ORIG #DEST",
 			"group": ["genome"],
 			"chrom": 1
 		},
 		{
 			"name": "bowtie2",
-			"path": "/software/bi/el6.3/version/bowtie2/bowtie2-2.2.3/bowtie2-build",
-			"version": "2.2.3",
+			"path": "/software/bi/el7.2/version/bowtie2/bowtie2-2.3.0/bowtie2-build",
+			"version": "2.3.0",
 			"command": "#PROG #ORIG #DEST",
 			"group": ["genome"]
 		},
 		{
 			"name": "bowtie2",
-			"path": "/software/bi/el6.3/version/bowtie2/bowtie2-2.2.3/bowtie2-build",
-			"version": "2.2.3",
+			"path": "/software/bi/el7.2/version/bowtie2/bowtie2-2.3.0/bowtie2-build",
+			"version": "2.3.0",
 			"command": "#PROG #ORIG #DEST",
 			"group": [ "ncrna", "transcriptome" ]
 		},
 		{
 			"name": "bwa",
-			"path": "/software/bi/el6.3/version/bwa/bwa-0.7.12/bwa",
-			"version": "0.7.10",
+			"path": "/software/bi/el7.2/version/bwa/bwa-0.7.15/bwa",
+			"version": "0.7.15",
 			"command": "#PROG index -a bwtsw -p #DEST #ORIG",
 			"group": ["genome"],
 			"chrom": 1
 		},
 		{
 			"name": "GEM",
-			"path": "/software/bi/el6.3/version/gemtools/gemtools-1.7.1-i3/bin/gemtools index",
+			"path": "/software/bi/el7.2/version/gemtools/gemtools-1.7.1-i3/bin/gemtools index",
 			"version": "1.7.1-i3",
 			"command": "#PROG -i #ORIG -o #DEST.gem",
 			"group": ["genome"],
@@ -76,7 +76,7 @@
 		},
 		{
 			"name": "fastaindex",
-			"path": "/software/bi/el6.3/version/exonerate/exonerate-2.2.0-x86_64/bin/fastaindex",
+			"path": "/software/bi/el7.2/version/exonerate/exonerate-2.2.0-x86_64/bin/fastaindex",
 			"version": "2.2.0",
 			"command": "#PROG #ORIG #DEST.ix",
 			"group": ["genome"],
@@ -84,13 +84,13 @@
 		},
 		{
 			"name": "GEM",
-			"path": "/software/bi/el6.3/version/gemtools/gemtools-1.7.1-i3/bin/gemtools index",
+			"path": "/software/bi/el7.2/version/gemtools/gemtools-1.7.1-i3/bin/gemtools index",
 			"version": "1.7.1-i3",
 			"command": "#PROG -i #ORIG -o #DEST.gem",
 			"group": [ "ncrna", "transcriptome" ]
 		}
 	],
-	"procs": 4
+	"procs": 8
 }
 
 
