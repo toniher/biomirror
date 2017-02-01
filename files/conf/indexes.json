@@ -76,7 +76,7 @@
 		},
 		{
 			"name": "fastaindex",
-			"path": "/software/bi/el7.2/version/exonerate/exonerate-2.2.0-x86_64/bin/fastaindex",
+			"path": "/software/bi/el7.2/version/exonerate/install/bin/fastaindex",
 			"version": "2.2.0",
 			"command": "#PROG #ORIG #DEST.ix",
 			"group": ["genome"],
