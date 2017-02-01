@@ -53,7 +53,7 @@ foreach my $indir (@listdir) {
 
 	my ( @subdirs ) = checkWhere( $dir."/".$indir );
 
-	$pm->start and next; # do the fork
+	#$pm->start and next; # do the fork
 
 	if ( $#subdirs > -1 ) {
 	
@@ -63,7 +63,8 @@ foreach my $indir (@listdir) {
 				# Skip organisms not in param
 				next;
 			}
-	
+			
+			$pm->start and next;
 			processPrograms( "$dir/$indir/$subdir", $list_programs);
 		}
 		
@@ -74,6 +75,7 @@ foreach my $indir (@listdir) {
 			next;
 		}
 	
+		$pm->start and next;
 		processPrograms( "$dir/$indir", $list_programs);
 	}
 	
