@@ -25,18 +25,12 @@ use Config::JSON;
 my $pdown = "1";
 my $pextr = "1";
 
-my $USAGE = "perl get_ensemb_file.pl -d -e [-d download] [-e extract]\n";
-my ($download_force, $extract_force, $show_help);
+my $jsonfile = shift // "../conf/ensemblgenomes.json";
 
-
-&GetOptions(
-                        'download|d'                 => \$download_force,
-			'extract|e'                 => \$extract_force,
-           );
 
 # Get JSON Config
 # We assume same path as script
-my $config = Config::JSON->new("../conf/ensemblgenomes.json");
+my $config = Config::JSON->new( $jsonfile );
 
 my $list_taxon = $config->get("organisms");
 
@@ -164,7 +158,7 @@ foreach my $taxon ( @{ $list_taxon} ) {
 	print STDERR $data_dir, "\n";
 	
 	#Exit if arrived to the end
-	if (downloaded_latest_ensembl($currelease, $fstampfile) > 0 && !$download_force && !$extract_force) { exit;}
+	if (downloaded_latest_ensembl($currelease, $fstampfile) > 0 ) { exit; }
 	#If everything downloaded OK, only extract
 	if (downloaded_latest_ensembl($currelease, $stampfile) > 0) { $pdown=0;}
 	
@@ -243,7 +237,7 @@ foreach my $taxon ( @{ $list_taxon} ) {
 	
 	# get directory list
 	
-	if ($pdown > 0 || $download_force) {
+	if ($pdown > 0 ) {
 	
 	#Warn about downloading
 	system ("$emailbin '$subjsend' '$messagesend'");
@@ -326,7 +320,7 @@ foreach my $taxon ( @{ $list_taxon} ) {
 	##########################
 	# Extract the data files #
 	##########################
-	if ($pextr > 0 || $extract_force) {
+	if ($pextr > 0 ) {
 	
 		# change to data dir
 		chdir $data_dir;
@@ -539,7 +533,7 @@ foreach my $taxon ( @{ $list_taxon} ) {
 		
 		print STDERR "...".$patro."...\n";
 		
-		unless (downloaded_latest_ensembl($currelease, $logfile) > 0 && !$extract_force) {
+		unless (downloaded_latest_ensembl($currelease, $logfile) > 0 ) {
 		
 			my $endfile = $endpath."/".$patro.".fa";
 			print STDERR $endfile, "\n";
