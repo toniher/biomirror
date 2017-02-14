@@ -132,6 +132,14 @@ sub downloaded_latest_ensembl {
 	return($detect);
 }
 
+my $base = "";
+my $stampfile = $base."/db/.mirror/ensemblgenomes/FASTA";
+# TODO: Evaluate filtering by species
+my $fstampfile = $base."/db/ensemblgenomes/FASTA";
+
+
+# TODO: Approach should be changed maybe
+
 foreach my $taxon ( @{ $list_taxon} ) {
 
 	# TODO: Dealing with no subsection, only in bacteria
@@ -144,15 +152,13 @@ foreach my $taxon ( @{ $list_taxon} ) {
 	
 	
 	# other variables
-	my $base = "";
-	my $data_dir = $base."/db/.mirror/ensemblgenomes/$currelease/fasta"; 
-	my $stampfile = $base."/db/.mirror/ensemblgenomes/FASTA";
-	my $data_link = $base."/db/.mirror/ensemblgenomes/current_fasta";
+
+	my $data_dir = $base."/db/.mirror/ensemblgenomes/$currelease/$subsection/$name/fasta"; 
+
 	my %data_ori = ('dna' => 'genome', 'cdna' => 'transcriptome', 'pep' => 'proteome', 'ncrna' => 'ncrna');
 	
 	my $final_dir = $base."/db/ensemblgenomes/$currelease/$subsection/$name";
-	# TODO: Evaluate filtering by species
-	my $fstampfile = $base."/db/ensemblgenomes/FASTA";
+
 	
 	
 	print STDERR $data_dir, "\n";
@@ -297,11 +303,6 @@ foreach my $taxon ( @{ $list_taxon} ) {
 		}
 	}
 
-	
-	#PRINT STAMPFILE
-	open (FILEOUT, ">>$stampfile") || die "Cannot write";
-	print FILEOUT $currelease, "\n";
-	close (FILEOUT);
 	
 	}
 	
@@ -570,15 +571,19 @@ foreach my $taxon ( @{ $list_taxon} ) {
 	}
 	
 	
-	open (FILEOUT, ">>$fstampfile") || die "Cannot write";
-	print FILEOUT $currelease, "\n";
-	close (FILEOUT);
-	
-	#SYMLINK
-	system("unlink $data_link");
-	system("ln -s $data_dir $data_link");
+
 
 }
+
+#PRINT STAMPFILE
+open (FILEOUT, ">>$stampfile") || die "Cannot write";
+print FILEOUT $currelease, "\n";
+close (FILEOUT);
+
+open (FILEOUT, ">>$fstampfile") || die "Cannot write";
+print FILEOUT $currelease, "\n";
+close (FILEOUT);
+	
 
 my $subjsend2 = "Finished mirroring and processing ENSEMBL GENOMES ".$currelease;
 my $messagesend2 = "Please check everything went OK";
