@@ -132,6 +132,9 @@ my $stampfile = $base."/db/.mirror/ensemblgenomes/FASTA";
 my $fstampfile = $base."/db/ensemblgenomes/FASTA";
 
 
+#Warn about downloading
+system ("$emailbin '$subjsend' '$messagesend'");
+
 # TODO: Approach should be changed maybe
 
 foreach my $taxon ( @{ $list_taxon} ) {
