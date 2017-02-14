@@ -239,8 +239,7 @@ foreach my $taxon ( @{ $list_taxon} ) {
 	
 	if ($pdown > 0 ) {
 	
-	#Warn about downloading
-	system ("$emailbin '$subjsend' '$messagesend'");
+
 	
 	#REMOVE files if there
 	if (-d $data_dir) {
