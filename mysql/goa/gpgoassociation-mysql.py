@@ -56,7 +56,7 @@ def main(argv):
                 key `REF` (`REF`),
                 key `ECO` (`ECO`),
                 key `Date` (`Date`)
-                )ENGINE=MyISAM ;"""
+                );"""
         cursor.execute(sql)
     
         cursor.execute("SET autocommit=0;")
@@ -66,7 +66,7 @@ def main(argv):
         i = 0
         limit = 10000
 
-	## pp = pprint.PrettyPrinter(depth=4)
+	pp = pprint.PrettyPrinter(depth=4)
         # Open gzipped file
         with gzip.open(sys.argv[1],'r') as f:
                 reader=csv.reader(f,delimiter='\t')

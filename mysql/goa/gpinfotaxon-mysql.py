@@ -43,9 +43,10 @@ def main(argv):
         sql = """CREATE TABLE `goataxon` (
                 `UniProtKB-AC` varchar(25),
                 `Taxon` int(12),
+		`Desc` text,
                 key `UNIPROT` (`UniProtKB-AC`),
                 key `Taxon` (`Taxon`)
-                )ENGINE=MyISAM ;"""
+                );"""
         cursor.execute(sql)
     
         cursor.execute("SET autocommit=0;")
@@ -63,9 +64,13 @@ def main(argv):
                                 continue
                         #print row[0]+"-"+row[1]+"\n"
 
+			desc = None
+			if row[2] != "" :
+				desc = row[2]
+
                         taxon = row[5].replace("taxon:", "")
 
-                        cursor.execute('INSERT INTO goataxon VALUES("'+row[0]+'", "'+taxon+'")')
+                        cursor.execute('INSERT INTO goataxon VALUES("'+row[0]+'", "'+taxon+'", "'+desc+'" )')
                         i = i+1
                         if (i == limit):
                                 i=0
