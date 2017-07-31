@@ -42,17 +42,19 @@ def main(argv):
         cursor.execute("DROP TABLE IF EXISTS goassociation")
         sql = """CREATE TABLE `goassociation` (
                 `DB` varchar(25),
-                `ID` varchar(25),
-                `qualifier` varchar(25),
-                `GO` varchar(20),
-                `REF` varchar(25),
-                `ECO` varchar(20),
+                `ID` varchar(35),
+                `qualifier` varchar(25) default NULL,
+                `GO` varchar(20) default NULL,
+                `REF` varchar(50) default NULL,
+                `ECO` varchar(20) default NULL,
+                `Date` date default NULL,
                 key `DB` (`DB`),
                 key `ID` (`ID`),
                 key `qualifier` (`qualifier`),
                 key `GO` (`GO`),
                 key `REF` (`REF`),
-                key `ECO` (`ECO`)
+                key `ECO` (`ECO`),
+                kye `Date` (`Date`)
                 )ENGINE=MyISAM ;"""
         cursor.execute(sql)
     
