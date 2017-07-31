@@ -54,7 +54,7 @@ def main(argv):
                 key `GO` (`GO`),
                 key `REF` (`REF`),
                 key `ECO` (`ECO`),
-                kye `Date` (`Date`)
+                key `Date` (`Date`)
                 )ENGINE=MyISAM ;"""
         cursor.execute(sql)
     
