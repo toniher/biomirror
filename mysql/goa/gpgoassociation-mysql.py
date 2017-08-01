@@ -6,6 +6,7 @@ import MySQLdb
 import json
 import gzip
 import pprint
+import re
 
 def main(argv):
         if len(sys.argv) < 2:
@@ -66,14 +67,24 @@ def main(argv):
         i = 0
         limit = 10000
 
-	pp = pprint.PrettyPrinter(depth=4)
+        pp = pprint.PrettyPrinter(depth=4)
         # Open gzipped file
         with gzip.open(sys.argv[1],'r') as f:
                 reader=csv.reader(f,delimiter='\t')
                 for row in reader:
                         if ( row[0].startswith('!') or row[0].startswith('gpa') ): #Avoid row with !
                                 continue
-                        cursor.execute('INSERT INTO goassociation VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'", "'+row[6]+'" )')
+                        
+                        
+                        date = row[6]
+                        
+                        if date.isdigit():
+                                result = re.search("(\d{4})\d{2}\d{2}", date )
+                                date = "-".join( result )
+                        else :
+                                date = None
+                        
+                        cursor.execute('INSERT INTO goassociation VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'", "'+date+'" )')
                         i = i+1
                         if (i == limit):
                                 i=0
