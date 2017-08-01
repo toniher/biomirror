@@ -76,14 +76,12 @@ def main(argv):
                                 continue
                         
                         
-                        date = row[6]
-                        
+                        date = row[8]
                         if date.isdigit():
-                                result = re.search("(\d{4})\d{2}\d{2}", date )
-                                date = "-".join( result )
-                        else :
-                                date = None
-                        
+                                result = re.search("(\d{4})(\d{2})(\d{2})", date )
+				
+                                date = result.group(1)+"-"+result.group(2)+"-"+result.group(3)
+
                         cursor.execute('INSERT INTO goassociation VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'", "'+date+'" )')
                         i = i+1
                         if (i == limit):
