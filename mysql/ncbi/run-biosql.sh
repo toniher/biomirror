@@ -1,12 +1,13 @@
 #!/bin/sh
 
-server=localhost
-month=`date +%Y%m`
-user=myuser
-db=biosql
-passwd=mypasswd
+while read line; do
+    declare "$line"
+done < "../config.sh"
 
-path=`pwd`
+path=./files
+
+mkdir -p $path
+cd $path
 
 rm -f *gz
 wget -c -t0 ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz -o /dev/null
@@ -17,6 +18,8 @@ wget -c -t0 ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz -o /dev/null
 wget -c -t0 ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_group.gz -o /dev/null
 wget -c -t0 ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_refseq_uniprotkb_collab.gz -o /dev/null
 gunzip *.gz
+
+cd ../
 
 
 mysql -s -u$user -p$passwd -h$server $db < biosql.sql
