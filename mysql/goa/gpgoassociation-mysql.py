@@ -56,7 +56,8 @@ def main(argv):
                 key `GO` (`GO`),
                 key `REF` (`REF`),
                 key `ECO` (`ECO`),
-                key `Date` (`Date`)
+                key `Date` (`Date`),
+                key `ID-GO` (`ID`, `GO`)
                 );"""
         cursor.execute(sql)
     
