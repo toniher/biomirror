@@ -24,7 +24,7 @@ rm $FILEDIR/idmapping.dat
 
 DIR=$FILEDIR/parts
 
-mkdir -p $DIR; cd $DIR; split --bytes=1G ../idmapping.new.dat idmapping.new.dat
+mkdir -p $DIR; cd $DIR; split --lines=10000000 ../idmapping.new.dat idmapping.new.dat
 
 cd ..
 
