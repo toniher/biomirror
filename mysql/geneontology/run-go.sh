@@ -13,11 +13,20 @@ cd $path
 
 rm -f *gz
 
-wget -c -t0 http://archive.geneontology.org/latest-full/go_monthly-assocdb-data.gz -o /dev/null
+wget -c -t0 http://archive.geneontology.org/latest-lite/go_weekly-assocdb-tables.tar.gz -o /dev/null
 
-gunzip go_monthly-assocdb-data.gz
+tar zxf go_weekly-assocdb-tables.tar.gz
 
-cd ..
+cd go_weekly-assocdb-tables
 
-mysql -s -u$user -p$passwd -h$server $db < $path/go_monthly-assocdb-data
+sed -i -e 's/MyISAM/InnoDB/g' *.sql
+
+cd ../..
+
+cat $path/go_weekly-assocdb-tables/*sql > $path/go_weekly-assocdb-tables.sql
+
+mysql -s -u$user -p$passwd -h$server $db < $path/go_weekly-assocdb-tables.sql
+
+mysqlimport --local -u$user -p$passwd -h$server $db $path/go_weekly-assocdb-tables/*txt
+
 
