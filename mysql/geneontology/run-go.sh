@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-while read line; do
-    declare "$line"
-done < "../config.sh"
+set -ueo pipefail
+
+source "../config.sh"
 
 
 path=./files
