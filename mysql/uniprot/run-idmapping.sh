@@ -1,9 +1,8 @@
-#!/bin/sh
+#!/bin/bash
+
 set -ueo pipefail
 
-while read line; do
-    declare "$line"
-done < "../config.sh"
+source "../config.sh"
 
 FILEDIR=files
 SCRIPTDIR=`pwd`
@@ -26,7 +25,7 @@ DIR=$FILEDIR/parts
 
 mkdir -p $DIR; cd $DIR; split --lines=10000000 ../idmapping.new.dat idmapping.new.dat
 
-cd ..
+cd ../..
 
 mysql -s -u$user -p$passwd -h$server $db < $SCRIPTDIR/idmapping.sql
 
