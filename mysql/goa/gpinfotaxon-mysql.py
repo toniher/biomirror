@@ -54,7 +54,7 @@ def main(argv):
         cursor.execute("SET foreign_key_checks=0;")
 
         i = 0
-        limit = 10000
+        limit = 25000
 
         # Open gzipped file
         with gzip.open(sys.argv[1],'r') as f:
@@ -66,7 +66,7 @@ def main(argv):
 
 			desc = None
 			if row[2] != "" :
-				desc = row[2]
+				desc = row[2].replace("'", r"\'")
 
                         taxon = row[5].replace("taxon:", "")
                         if row[0] is not None and taxon is not None and desc is not None :
