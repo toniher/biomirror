@@ -66,12 +66,13 @@ def main(argv):
 
 			desc = None
 			if row[2] != "" :
-				desc = row[2].replace("'", r"\'")
+				desc = row[2]
 
                         taxon = row[5].replace("taxon:", "")
                         if row[0] is not None and taxon is not None and desc is not None :
 
-                                cursor.execute('INSERT INTO goataxon VALUES("'+row[0]+'", "'+taxon+'", "'+desc+'" )')
+				sqlquery = "INSERT INTO goataxon ( `UniProtKB-AC`, `Taxon`, `Desc` ) VALUES ( %s, %s, %s )"
+                                cursor.execute( sqlquery, ( row[0], taxon, desc ) )
                                 i = i+1
                         if (i == limit):
                                 i=0
