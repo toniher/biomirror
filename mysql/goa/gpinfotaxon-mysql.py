@@ -46,15 +46,15 @@ def main(argv):
 		`Desc` text,
                 key `UNIPROT` (`UniProtKB-AC`),
                 key `Taxon` (`Taxon`)
-                );"""
+                ) ENGINE=Aria;"""
         cursor.execute(sql)
     
-        cursor.execute("SET autocommit=0;")
-        cursor.execute("SET unique_checks=0;")
-        cursor.execute("SET foreign_key_checks=0;")
+#        cursor.execute("SET autocommit=0;")
+#        cursor.execute("SET unique_checks=0;")
+#        cursor.execute("SET foreign_key_checks=0;")
 
         i = 0
-        limit = 25000
+        limit = 100000
 
         # Open gzipped file
         with gzip.open(sys.argv[1],'r') as f:
@@ -71,14 +71,14 @@ def main(argv):
                         taxon = row[5].replace("taxon:", "")
                         if row[0] is not None and taxon is not None and desc is not None :
 
-				sqlquery = "INSERT INTO goataxon ( `UniProtKB-AC`, `Taxon`, `Desc` ) VALUES ( %s, %s, %s )"
-                                cursor.execute( sqlquery, ( row[0], taxon, desc ) )
+				print "\t".join( [ row[0], taxon, desc ] )
+                                #cursor.execute( sqlquery, ( row[0], taxon, desc ) )
                                 i = i+1
                         if (i == limit):
                                 i=0
-                                db.commit()
-        
-        db.commit()
+                                # db.commit()
+ 
+#        db.commit()
         cursor.close
         
 

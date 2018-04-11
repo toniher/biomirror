@@ -18,7 +18,7 @@ CREATE TABLE `gene_info` (
   KEY `index_geneid` (`GeneID`),
   KEY `index_symbol` (`Symbol`),
   KEY `index_tax_id` (`tax_id`)
-) ENGINE=InnoDB;
+) ENGINE=Aria;
 
 drop table if exists `gene2accession`;
 CREATE TABLE `gene2accession` (
@@ -41,7 +41,7 @@ KEY `index_protein_gi` (`protein_gi`),
 KEY `index_genomic_nucleotide_gi` (`genomic_nucleotide_gi`),
 KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`),
 KEY `index_tax_id` (`tax_id`)
-) ENGINE=InnoDB;
+) ENGINE=Aria;
 
 drop table if exists `gi2uniprot`;
 CREATE TABLE `gi2uniprot` (
@@ -50,7 +50,7 @@ CREATE TABLE `gi2uniprot` (
   PRIMARY KEY  (`gi`,`uniprot`),
   KEY `index_gi` (`gi`),
   KEY `index_uniprot` (`uniprot`)
-) ENGINE=InnoDB;
+) ENGINE=Aria;
 
 drop table if exists `gene2go`;
 CREATE TABLE `gene2go` (
@@ -68,7 +68,7 @@ KEY `index_evidence` (`Evidence`),
 KEY `index_qualifier` (`Qualifier`),
 KEY `index_category` (`Category`),
 KEY `index_tax_id` (`tax_id`)
-) ENGINE=InnoDB;
+) ENGINE=Aria;
 
 drop table if exists `gene2pubmed`;
 CREATE TABLE `gene2pubmed` (
@@ -78,7 +78,7 @@ CREATE TABLE `gene2pubmed` (
 KEY `index_geneid` (`GeneID`),
 KEY `index_pubmed_id` (`pubmed_id`),
 KEY `index_tax_id` (`tax_id`)
-) ENGINE=InnoDB;
+) ENGINE=Aria;
 
 drop table if exists `gene2refseq`;
 CREATE TABLE `gene2refseq` (
@@ -106,7 +106,7 @@ KEY `index_RNA_nucleotide_gi` (`RNA_nucleotide_gi`),
 KEY `index_mature_peptide_gi` (`mature_peptide_gi`),
 KEY `index_symbol` (`Symbol`),
 KEY `index_tax_id` (`tax_id`)
-) ENGINE=InnoDB;
+) ENGINE=Aria;
 
 drop table if exists `gene_group`;
 CREATE TABLE `gene_group` (
@@ -120,7 +120,7 @@ KEY `index_tax_id` (`tax_id`),
 KEY `index_other_geneid` (`Other_GeneID`),
 KEY `index_other_tax_id` (`Other_tax_id`),
 KEY `index_relationship` (`relationship`)
-) ENGINE=InnoDB;
+) ENGINE=Aria;
 
 drop table if exists `gene_refseq_uniprotkb_collab`;
 CREATE TABLE `gene_refseq_uniprotkb_collab` (
@@ -128,4 +128,4 @@ CREATE TABLE `gene_refseq_uniprotkb_collab` (
 `UniProtKB_protein_accession` varchar(16) NOT NULL default '',
 KEY `index_ncbi_protein_accession` (`NCBI_protein_accession`),
 KEY `index_uniprotkb_protein_accession` (`UniProtKB_protein_accession`)
-) ENGINE=InnoDB;
+) ENGINE=Aria;

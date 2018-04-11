@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -ueo pipefail
 
 source "../config.sh"
@@ -21,16 +20,7 @@ sed -i '/^$/d' $FILEDIR/idmapping.new.dat
 
 rm $FILEDIR/idmapping.dat
 
-DIR=$FILEDIR/parts
-
-mkdir -p $DIR; cd $DIR; split --lines=10000000 ../idmapping.new.dat idmapping.new.dat
-
-cd ../..
-
 mysql -s -u$user -p$passwd -h$server $db < $SCRIPTDIR/idmapping.sql
 
-for file in $DIR/*
-do
-    mysql -s -u$user -p$passwd -h$server $db -e "SET @@session.unique_checks = 0; SET @@session.foreign_key_checks = 0; LOAD DATA LOCAL INFILE '${file}' INTO TABLE idmapping FIELDS TERMINATED BY '\t' ENCLOSED BY '' "
-done
+mysql -s -u$user -p$passwd -h$server $db -e "SET @@session.unique_checks = 0; SET @@session.foreign_key_checks = 0; LOAD DATA LOCAL INFILE '$FILEDIR/idmapping.new.dat' INTO TABLE idmapping FIELDS TERMINATED BY '\t' ENCLOSED BY '' "
 

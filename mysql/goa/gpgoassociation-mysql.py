@@ -58,7 +58,7 @@ def main(argv):
                 key `ECO` (`ECO`),
                 key `Date` (`Date`),
                 key `ID-GO` (`ID`, `GO`)
-                );"""
+                ) ENGINE=Aria ;"""
         cursor.execute(sql)
     
         cursor.execute("SET autocommit=0;")
@@ -83,13 +83,14 @@ def main(argv):
 				
                                 date = result.group(1)+"-"+result.group(2)+"-"+result.group(3)
 
-                        cursor.execute('INSERT INTO goassociation VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'", "'+date+'" )')
+                        # cursor.execute('INSERT INTO goassociation VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'", "'+date+'" )')
+			print "\t".join(  [ row[0] , row[1] , row[2] , row[3] , row[4], row[5] , date ] )
                         i = i+1
                         if (i == limit):
                                 i=0
-                                db.commit()
+                                # db.commit()
         
-        db.commit()
+        #db.commit()
         cursor.close        
 
 

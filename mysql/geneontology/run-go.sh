@@ -19,7 +19,7 @@ tar zxf go_weekly-assocdb-tables.tar.gz
 
 cd go_weekly-assocdb-tables
 
-sed -i -e 's/MyISAM/InnoDB/g' *.sql
+sed -i -e 's/MyISAM/Aria/g' *.sql
 
 cd ../..
 
