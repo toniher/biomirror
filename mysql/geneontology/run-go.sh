@@ -19,7 +19,7 @@ tar zxf go_weekly-assocdb-tables.tar.gz
 
 cd go_weekly-assocdb-tables
 
-sed -i -e 's/MyISAM/Aria/g' *.sql
+sed -i -e 's/MyISAM/Aria CHARACTER SET latin1 COLLATE latin1_swedish_ci/g' *.sql
 
 cd ../..
 

@@ -58,7 +58,7 @@ def main(argv):
                 key `ECO` (`ECO`),
                 key `Date` (`Date`),
                 key `ID-GO` (`ID`, `GO`)
-                ) ENGINE=Aria ;"""
+                ) ENGINE=Aria CHARACTER SET latin1 COLLATE latin1_swedish_ci ;"""
         cursor.execute(sql)
     
         cursor.execute("SET autocommit=0;")

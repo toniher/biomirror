@@ -6,7 +6,7 @@ CREATE TABLE `ncbi_names` (
   KEY `tax_id` (`tax_id`),
   KEY `name_class` (`name_class`),
   KEY `name_txt` (`name_txt`)
-);
+) ENGINE=Aria CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 CREATE TABLE `ncbi_nodes` (
   `tax_id` mediumint(11) unsigned NOT NULL default '0',
   `parent_tax_id` mediumint(8) unsigned NOT NULL default '0',
@@ -23,4 +23,4 @@ CREATE TABLE `ncbi_nodes` (
   `comments` varchar(255) default NULL,
   PRIMARY KEY  (`tax_id`),
   KEY `parent_tax_id` (`parent_tax_id`)
-);
+) ENGINE=Aria CHARACTER SET latin1 COLLATE latin1_swedish_ci;

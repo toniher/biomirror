@@ -43,10 +43,10 @@ def main(argv):
         sql = """CREATE TABLE `goataxon` (
                 `UniProtKB-AC` varchar(25),
                 `Taxon` int(12),
-		`Desc` text,
+		        `Desc` text,
                 key `UNIPROT` (`UniProtKB-AC`),
                 key `Taxon` (`Taxon`)
-                ) ENGINE=Aria;"""
+                ) ENGINE=Aria CHARACTER SET latin1 COLLATE latin1_swedish_ci ; """
         cursor.execute(sql)
     
 #        cursor.execute("SET autocommit=0;")
