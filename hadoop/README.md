@@ -4,3 +4,7 @@ Stuff related to Hadoop, Spark, HBASE, etc.
 
     hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.columns=map:uniprot,map:db,HBASE_ROW_KEY idmapping /user/hbase/idmappingall
 
+retrieve:
+
+     hdfs dfs -getmerge idmappingall idmappingall.csv
+
