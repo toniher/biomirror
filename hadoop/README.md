@@ -1,4 +1,6 @@
-Idmapping data can be downloaded from: ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping.dat.gz
+Idmapping data can be downloaded from: 
+
+    ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping.dat.gz
 
 Stuff related to Hadoop, Spark, HBASE, etc.
 
