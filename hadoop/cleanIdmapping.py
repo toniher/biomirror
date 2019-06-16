@@ -22,7 +22,7 @@ df = ( sqlContext
     .option("header", "false")
     .option("delimiter", "\t")
     .option("mode", "DROPMALFORMED")
-    .load("hdfs:///user/hbase/idmapping.new.dat")
+    .load("hdfs:///user/toniher/idmapping.new.dat")
 #    .load("hdfs:///user/hbase/idmapping.10000")
     .dropDuplicates(['extern'])
     .filter( length(col("extern")) > 4) )
@@ -32,7 +32,7 @@ print df.count()
 
 # df.coalesce(1).write.format('com.databricks.spark.csv').options(delimiter="\t").save('/user/hbase/testall')
 # df.repartition(1).coalesce(1).write.csv("/user/toniher/idmappingall.csv", header='true', sep='\t')
-df.write.format('com.databricks.spark.csv').options(delimiter="\t").save('/user/hbase/idmappingall')
+df.write.format('com.databricks.spark.csv').options(delimiter="\t").save('/user/toniher/idmappingall')
 
 #df.printSchema()
 
