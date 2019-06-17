@@ -28,7 +28,7 @@ df = ( sqlContext
     .filter( length(col("extern")) > 4) )
 
 
-print df.count()
+#print df.count()
 
 # df.coalesce(1).write.format('com.databricks.spark.csv').options(delimiter="\t").save('/user/hbase/testall')
 # df.repartition(1).coalesce(1).write.csv("/user/toniher/idmappingall.csv", header='true', sep='\t')
