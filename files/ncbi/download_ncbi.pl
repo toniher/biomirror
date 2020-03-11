@@ -23,7 +23,7 @@ use POSIX qw/strftime/;
 
 # Control parameters
 my $pdown = "1";
-my $pextr = "1";
+my $pextr = "0" // shift;
 
 # variables for FTP connection
 my $host = "ftp.ncbi.nlm.nih.gov";
@@ -57,10 +57,8 @@ system ("$emailbin '$subjsend' '$messagesend'");
 #my $formatnucl = "/software/bi/bin/makeblastdb -parse_seqids -dbtype nucl -in";
 
 # List of included DB
-my @listinclude = ('alu.a', 'alu.n', 'drosoph.aa', 'drosoph.nt', 'env_nr', 'env_nt', 'est_human', 'est_mouse', 'est_others', 'mito.aa', 'mito.nt', 'nr', 'nt', 'pataa', 'patnt', 'pdbaa', 'pdbnt', 'swissprot', 'vector', 'yeast.aa', 'yeast.nt');
+my @listinclude = ('nr', 'nt', 'pdbaa', 'swissprot');
 
-# Databases which are proteins
-my @listprot = ('alu.a', 'drosoph.aa', 'env_nr', 'igSeqProt', 'mito.aa', 'month.aa', 'nr', 'pataa', 'pdbaa', 'swissprot', 'yeast.aa');
 
 print STDERR $data_dir, "\n";
 
