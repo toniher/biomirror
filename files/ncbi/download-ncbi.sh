@@ -6,6 +6,10 @@ LISTDB=$1
 SCRIPT=/db/.scripts/update_blastdb.pl
 BASEDIR=/db/ncbi/
 DATE=`date +%Y%m`
+TIMEOUT=360
+PASSIVE=""
+#Alternative
+#PASSIVE="--passive"
 
 ENDDIR=$BASEDIR$DATE/blastdb/db
 
@@ -15,9 +19,8 @@ if [ ! -d $ENDDIR ]; then
 	mkdir -p $ENDDIR
 fi
 
-cd $ENDDIR
+cd $ENDDIR || exit
 
 while IFS='' read -r line || [[ -n "$line" ]]; do
-   perl $SCRIPT --passive --decompress $line	 
+   perl $SCRIPT $PASSIVE --timeout $TIMEOUT --decompress $line
 done < "$LISTDB"
-
