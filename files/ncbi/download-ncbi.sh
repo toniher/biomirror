@@ -11,7 +11,8 @@ PASSIVE=""
 #Alternative
 #PASSIVE="--passive"
 
-#TODO: Repeat if log Error less down-ncbi-202008.2020.log |grep 'Failed'
+# TODO: Repeat if log error
+# perl -lane 'print $1 if $_=~/Failed to download (\S+?)\./' down-ncbi-202008.2020.log
 
 ENDDIR=$BASEDIR$DATE/blastdb/db
 
