@@ -2,7 +2,7 @@
 
 #UTILITY to download UniProt+UniRef
 #author ernesto.lowy@crg.eu
-#author toni.hermoso@crg.eu 
+#author toni.hermoso@crg.eu
 
 use Net::FTP;
 use strict;
@@ -77,9 +77,9 @@ sub checkCurrRelease {
     my $release;
     open FH,"<$hidden_outputdir/relnotes.txt" or die ("Cannot open $hidden_outputdir/relnotes.txt:$!\n");
     while(<FH>) {
-	chomp;
-	my $line=$_;
-	$release=$1 if $line=~/^UniProt Release (.+)/;
+    	chomp;
+    	my $line=$_;
+    	$release=$1 if $line=~/^UniProt Release (.+)/;
     }
     close FH;
     print STDERR "[INFO] Current release at ftp server is $release\n";
@@ -89,7 +89,7 @@ sub checkCurrRelease {
 #polymorphic function to download uniref and knowledgebase (including 'complete' 'proteomes' mirrors)
 sub douniprotMirror {
     my ($curr_release,$type,$subtype)=@_;
-    
+
     # connect to ensembl ftp server
     my $ftp = Net::FTP->new($host, KeepAlive=>1) or die "Error connecting to $host: $!";
 
@@ -100,31 +100,38 @@ sub douniprotMirror {
     $ftp->binary;
 
     print STDERR "[INFO] Doing mirror for $type/$subtype\n";
-    #create hidden dir to allocate $type/$subtype files                                      
+    #create hidden dir to allocate $type/$subtype files
     system("mkdir -p $hidden_outputdir/$curr_release/$type/$subtype")==0 or die("Error running system command\n");
     print STDERR "[INFO] Descending into /current_release/$type/$subtype\n";
     $ftp->cwd("$ftpdir/current_release/$type/$subtype") or die "Can't go to $ftpdir/current_release/$type/$subtype:",$ftp->message;
 
-    # get file list              
+    # get file list
     my @files = $ftp->ls();
 
     foreach my $this_file (@files) {
         next unless $this_file=~/fasta/;
         print STDERR "[INFO] Getting $this_file\n";
-	$ftp->get($this_file,"$hidden_outputdir/$curr_release/$type/$subtype/$this_file");   
+	      $ftp->get($this_file,"$hidden_outputdir/$curr_release/$type/$subtype/$this_file");
     }
 
     #move to /db/uniprot/$curr_release/$type/$subtype, unzip and format for blast
     system("mkdir -p $outputdir/$curr_release/$type/$subtype/blast/db")==0 or die("Error running system command\n");
     print STDERR "[INFO] copying *.fasta files to $outputdir/$curr_release/$type/$subtype/blast/db\n";
-    system("cp $hidden_outputdir/$curr_release/$type/$subtype/*.fasta* $outputdir/$curr_release/$type/$subtype/blast/db")==0 or die("Error running system command\n");                               
+    system("cp $hidden_outputdir/$curr_release/$type/$subtype/*.fasta* $outputdir/$curr_release/$type/$subtype/blast/db")==0 or die("Error running system command\n");
     print STDERR "[INFO] decompressing files at $outputdir/$curr_release/$type/$subtype/blast/db\n";
-    system("gzip -d $outputdir/$curr_release/$type/$subtype/blast/db/*.gz")==0 or die("Error running system command\n");                                                                              
-    #get fasta files at $outputdir/$curr_release/$type/$subtype/blast/db          
+    system("gzip -d $outputdir/$curr_release/$type/$subtype/blast/db/*.gz")==0 or die("Error running system command\n");
+    #get fasta files at $outputdir/$curr_release/$type/$subtype/blast/db
     my $dir_to_process="/$outputdir/$curr_release/$type/$subtype/blast/db";
     opendir DH, $dir_to_process or die "Cannot open $dir_to_process: $!";
+
+    # Hack to join sprot and trembl
+    if ($type eq 'knowledgebase') {
+      system("cat $dir_to_process/uniprot_sprot.fasta $dir_to_process/uniprot_trembl.fasta > $dir_to_process/uniprot_all.fasta")
+    }
+
     my @fasta_files= grep {/fasta$/} readdir DH;
     closedir DH;
+
     foreach my $this_file (@fasta_files) {
         print STDERR "[INFO] formatdb of $this_file\n";
 
@@ -137,7 +144,7 @@ sub douniprotMirror {
 	$command =~ s/\#PROG/$listprogs{$prog}{'path'}/g;
 	# ORIG -> Origin file
 	$command =~ s/\#ORIG/$endusefile/g;
-			
+
         system($command)==0 or die("Error running $command\n");
     }
     print STDERR "[INFO] mirror for $type/$subtype finished\n";
@@ -171,6 +178,3 @@ sub getlistprogs {
 
 	return(%hash);
 }
-
-
-
