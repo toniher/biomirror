@@ -11,6 +11,8 @@ PASSIVE=""
 #Alternative
 #PASSIVE="--passive"
 
+#TODO: Repeat if log Error less down-ncbi-202008.2020.log |grep 'Failed'
+
 ENDDIR=$BASEDIR$DATE/blastdb/db
 
 echo $ENDDIR
