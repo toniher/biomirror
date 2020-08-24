@@ -101,7 +101,7 @@ sub douniprotMirror {
 
     print STDERR "[INFO] Doing mirror for $type/$subtype\n";
     #create hidden dir to allocate $type/$subtype files
-    system("mkdir -p $hidden_outputdir/$curr_release/$type/$subtype")==0 or die("Error running system command\n");
+    system("mkdir -p $hidden_outputdir/$curr_release/$type/$subtype")==0 or die("Error creating dir $hidden_outputdir/$curr_release/$type/$subtype\n");
     print STDERR "[INFO] Descending into /current_release/$type/$subtype\n";
     $ftp->cwd("$ftpdir/current_release/$type/$subtype") or die "Can't go to $ftpdir/current_release/$type/$subtype:",$ftp->message;
 
@@ -115,11 +115,11 @@ sub douniprotMirror {
     }
 
     #move to /db/uniprot/$curr_release/$type/$subtype, unzip and format for blast
-    system("mkdir -p $outputdir/$curr_release/$type/$subtype/blast/db")==0 or die("Error running system command\n");
+    system("mkdir -p $outputdir/$curr_release/$type/$subtype/blast/db")==0 or die("Error creating dir $outputdir/$curr_release/$type/$subtype/blast/db\n");
     print STDERR "[INFO] copying *.fasta files to $outputdir/$curr_release/$type/$subtype/blast/db\n";
-    system("cp $hidden_outputdir/$curr_release/$type/$subtype/*.fasta* $outputdir/$curr_release/$type/$subtype/blast/db")==0 or die("Error running system command\n");
+    system("cp $hidden_outputdir/$curr_release/$type/$subtype/*.fasta* $outputdir/$curr_release/$type/$subtype/blast/db")==0 or die("Error copying to $outputdir/$curr_release/$type/$subtype/blast/db\n");
     print STDERR "[INFO] decompressing files at $outputdir/$curr_release/$type/$subtype/blast/db\n";
-    system("gzip -d $outputdir/$curr_release/$type/$subtype/blast/db/*.gz")==0 or die("Error running system command\n");
+    system("gzip -d $outputdir/$curr_release/$type/$subtype/blast/db/*.gz")==0 or die("Error gunzipping at $outputdir/$curr_release/$type/$subtype/blast/db/\n");
     #get fasta files at $outputdir/$curr_release/$type/$subtype/blast/db
     my $dir_to_process="/$outputdir/$curr_release/$type/$subtype/blast/db";
     opendir DH, $dir_to_process or die "Cannot open $dir_to_process: $!";
