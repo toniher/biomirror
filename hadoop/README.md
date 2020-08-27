@@ -13,3 +13,9 @@ retrieve:
 
      hdfs dfs -getmerge idmappingall idmappingall.csv
 
+## TODO
+
+Put Dockerfile and simplify with Spark
+
+    docker run --network docker-spark_default --name my-spark-app -e ENABLE_INIT_DAEMON=false --link spark-master:spark-master -ti bde2020/spark-master:3.0.0-hadoop3.2 /bin/bash
+
