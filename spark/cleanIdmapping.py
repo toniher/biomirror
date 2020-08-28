@@ -11,6 +11,7 @@ import pprint
 
 spark = SparkSession.builder.master("local[1]") \
                     .appName('cleanIdmapping') \
+                    .config('spark.local.dir', '/scratch/tmp') \
                     .getOrCreate()
 
 parser = argparse.ArgumentParser(description="""Script cleaning Idmapping file""")
