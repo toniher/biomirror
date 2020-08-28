@@ -13,9 +13,13 @@ retrieve:
 
      hdfs dfs -getmerge idmappingall idmappingall.csv
 
-## TODO
+## ONGOING
+
+    Using: https://github.com/big-data-europe/docker-spark
+    docker-compose up
 
 Put Dockerfile and simplify with Spark
 
     docker build -t cleanidmapping .
     docker run --volume /scratch/tmp:/scratch --network docker-spark_default --name cleanidmapping -e ENABLE_INIT_DAEMON=false --link spark-master:spark-master -ti cleanidmapping /bin/bash
+    python3 /app/cleanIdmapping.py -input /scratch/idmapping.dat.gz -output /scratch/out.csv
