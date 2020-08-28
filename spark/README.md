@@ -21,5 +21,5 @@ retrieve:
 Put Dockerfile and simplify with Spark
 
     docker build -t cleanidmapping .
-    docker run --volume /scratch/tmp:/scratch --network docker-spark_default --name cleanidmapping -e ENABLE_INIT_DAEMON=false --link spark-master:spark-master -ti cleanidmapping /bin/bash
-    python3 /app/cleanIdmapping.py -input /scratch/idmapping.dat.gz -output /scratch/out.csv
+	docker run -d --volume /scratch/tmp:/scratch --network docker-spark_default --name cleanidmapping -e ENABLE_INIT_DAEMON=false --link spark-master:spark-master  cleanidmapping tail -f /dev/null
+	nohup  docker exec cleanidmapping python3 /app/cleanIdmapping.py -input /scratch/idmapping.dat -output /scratch/out.csv &> log & 
