@@ -34,4 +34,4 @@ df = spark.read.format("csv") \
      .dropDuplicates(['extern']) \
      .filter(length(col("extern")) > 4)
 
-df.write.csv(args.output).option(delimiter="\t")
+df.write.csv(args.output, sep="\t")
