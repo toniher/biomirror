@@ -10,5 +10,6 @@ mysql -s -u$user -p$passwd -h$server $db < $SCRIPTDIR/idmapping.sql
 
 for file in ${FILEDIR}/*csv
 do
-  mysql -s -u$user -p$passwd -h$server $db -e "SET @@session.unique_checks = 0; SET @@session.foreign_key_checks = 0; LOAD DATA LOCAL INFILE '$FILEDIR/$file' INTO TABLE idmapping FIELDS TERMINATED BY '\t' ENCLOSED BY '' "
+  echo $file
+  mysql -s -u$user -p$passwd -h$server $db -e "SET @@session.unique_checks = 0; SET @@session.foreign_key_checks = 0; LOAD DATA LOCAL INFILE '$file' INTO TABLE idmapping FIELDS TERMINATED BY '\t' ENCLOSED BY '' "
 done
