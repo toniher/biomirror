@@ -9,7 +9,7 @@ BLASTVER=4
 DATE=`date +%Y-%m-%d`
 
 cd $OUTPUT/data/structures/divided
-rsync -rlpt -v -z --delete --port=33444 rsync.rcsb.org::ftp_data/structures/divided/pdb ./pdb
+rsync -rlpt -v -z --delete --port=33444 rsync.rcsb.org::ftp_data/structures/divided/pdb .
 
 cd $OUTPUT/derived_data
 rsync -rlpt -v -z --delete --port=33444 rsync.rcsb.org::ftp_derived/ .
