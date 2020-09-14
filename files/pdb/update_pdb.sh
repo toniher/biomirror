@@ -4,7 +4,7 @@
 
 OUTPUT=/nfs/db/pdb
 BLASTPATH=/software/bi/el7.2/version/ncbi-blast+/ncbi-blast-2.10.1+/bin
-BLASTVER=4
+BLASTVER=5
 
 DATE=`date +%Y-%m-%d`
 
