@@ -15,7 +15,7 @@ cd $OUTPUT/derived_data
 rsync -rlpt -v -z --delete --port=33444 rsync.rcsb.org::ftp_derived/ .
 
 mkdir -p $OUTPUT/derived_data_format/blast/$DATE
-cp $OUTPUT/derived_data/pdb_seqres.txt $OUTPUT/derived_data_format/blast/$DATE
+cp $OUTPUT/derived_data/pdb_seqres.txt $OUTPUT/derived_data_format/blast/${DATE}/pdb_seqres.fa
 cd $OUTPUT/derived_data_format/blast/$DATE
 
 ${BLASTPATH}/makeblastdb -dbtype prot -parse_seqids -blastdb_version $BLASTVER -in pdb_seqres.fa
