@@ -7,8 +7,8 @@ CURRENT=`date +%Y%m`
 
 DATE=${1:-${CURRENT}}
 
-NCBIBLAST=singularity exec -e /software/bi/singularity/ncbi-blast/ncbi-blast-2.10.1.sif
-DIAMOND=singularity exec -e /software/bi/singularity/diamond/diamond-0.9.30.sif
+NCBIBLAST="singularity exec -e /software/bi/singularity/ncbi-blast/ncbi-blast-2.10.1.sif"
+DIAMOND="singularity exec -e /software/bi/singularity/diamond/diamond-0.9.30.sif"
 
 LISTDB=(cdd_delta env_nr landmark nr pdbaa refseq_protein swissprot tsa_nr)
 
