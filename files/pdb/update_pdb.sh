@@ -4,7 +4,7 @@
 
 OUTPUT=/nfs/db/pdb
 BLASTPATH=/software/bi/el7.2/version/ncbi-blast+/ncbi-blast-2.10.1+/bin
-BLASTVER=5
+BLASTVER=4
 
 DATE=`date +%Y-%m-%d`
 
@@ -18,7 +18,8 @@ mkdir -p $OUTPUT/derived_data_format/blast/$DATE
 cp $OUTPUT/derived_data/pdb_seqres.txt $OUTPUT/derived_data_format/blast/${DATE}/pdb_seqres.fa
 cd $OUTPUT/derived_data_format/blast/$DATE
 
-${BLASTPATH}/makeblastdb -dbtype prot -parse_seqids -blastdb_version $BLASTVER -in pdb_seqres.fa
+${BLASTPATH}/makeblastdb -dbtype prot -blastdb_version $BLASTVER -in pdb_seqres.fa
 
-# cd $OUTPUT/derived_data_format/blast
-# ln -s $DATE latest
+cd $OUTPUT/derived_data_format/blast
+unlink latest
+ln -s $DATE latest
