@@ -56,7 +56,7 @@ def main(argv):
     limit = 100000
 
     # Open gzipped file
-    with gzip.open(sys.argv[1], 'r') as f:
+    with gzip.open(sys.argv[1], mode="rt") as f:
         reader = csv.reader(f, delimiter='\t')
         for row in reader:
             # Avoid row with !
