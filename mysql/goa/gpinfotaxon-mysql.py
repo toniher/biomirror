@@ -22,7 +22,7 @@ def main(argv):
 
         with open(configfile) as json_data_file:
                 data = json.load(json_data_file)
-        
+
         if data.has_key("mysql"):
                 if data["mysql"].has_key("db"):
                         database = data["mysql"]["db"]
@@ -35,8 +35,8 @@ def main(argv):
 
         db=MySQLdb.connect(host=host,user=user,
                   passwd=pwd,db=database)
-        
-        
+
+
         cursor = db.cursor()
 
         cursor.execute("DROP TABLE IF EXISTS goataxon")
@@ -48,7 +48,7 @@ def main(argv):
                 key `Taxon` (`Taxon`)
                 ) ENGINE=Aria CHARACTER SET latin1 COLLATE latin1_swedish_ci ; """
         cursor.execute(sql)
-    
+
 #        cursor.execute("SET autocommit=0;")
 #        cursor.execute("SET unique_checks=0;")
 #        cursor.execute("SET foreign_key_checks=0;")
@@ -63,24 +63,22 @@ def main(argv):
                         if ( row[0].startswith('!') ): #Avoid row with !
                                 continue
                         #print row[0]+"-"+row[1]+"\n"
-
-			desc = None
-			if row[2] != "" :
-				desc = row[2]
+                        desc = None
+                        if row[2] != "" :
+                            desc = row[2]
 
                         taxon = row[5].replace("taxon:", "")
                         if row[0] is not None and taxon is not None and desc is not None :
-
-				print "\t".join( [ row[0], taxon, desc ] )
+                                print( "\t".join( [ row[0], taxon, desc ] ) )
                                 #cursor.execute( sqlquery, ( row[0], taxon, desc ) )
                                 i = i+1
                         if (i == limit):
                                 i=0
                                 # db.commit()
- 
+
 #        db.commit()
         cursor.close
-        
+
 
 if __name__ == "__main__":
         main(sys.argv[1:])

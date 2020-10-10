@@ -11,7 +11,7 @@ import re
 def main(argv):
         if len(sys.argv) < 2:
                 sys.exit()
-        
+
         host = "localhost"
         user = "xxx"
         pwd = "xxx"
@@ -24,7 +24,7 @@ def main(argv):
 
         with open(configfile) as json_data_file:
                 data = json.load(json_data_file)
-        
+
         if data.has_key("mysql"):
                 if data["mysql"].has_key("db"):
                         database = data["mysql"]["db"]
@@ -37,8 +37,8 @@ def main(argv):
 
         db=MySQLdb.connect(host=host,user=user,
                   passwd=pwd,db=database)
-        
-        
+
+
         cursor = db.cursor()
 
         cursor.execute("DROP TABLE IF EXISTS goassociation")
@@ -60,7 +60,7 @@ def main(argv):
                 key `ID-GO` (`ID`, `GO`)
                 ) ENGINE=Aria CHARACTER SET latin1 COLLATE latin1_swedish_ci ;"""
         cursor.execute(sql)
-    
+
         cursor.execute("SET autocommit=0;")
         cursor.execute("SET unique_checks=0;")
         cursor.execute("SET foreign_key_checks=0;")
@@ -75,23 +75,21 @@ def main(argv):
                 for row in reader:
                         if ( row[0].startswith('!') or row[0].startswith('gpa') ): #Avoid row with !
                                 continue
-                        
-                        
+
                         date = row[8]
                         if date.isdigit():
                                 result = re.search("(\d{4})(\d{2})(\d{2})", date )
-				
                                 date = result.group(1)+"-"+result.group(2)+"-"+result.group(3)
 
                         # cursor.execute('INSERT INTO goassociation VALUES("'+row[0]+'", "'+row[1]+'", "'+row[2]+'", "'+row[3]+'", "'+row[4]+'", "'+row[5]+'", "'+date+'" )')
-			print "\t".join(  [ row[0] , row[1] , row[2] , row[3] , row[4], row[5] , date ] )
+                        print( "\t".join(  [ row[0] , row[1] , row[2] , row[3] , row[4], row[5] , date ] ) )
                         i = i+1
                         if (i == limit):
                                 i=0
                                 # db.commit()
-        
+
         #db.commit()
-        cursor.close        
+        cursor.close
 
 
 if __name__ == "__main__":
