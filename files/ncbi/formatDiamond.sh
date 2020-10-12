@@ -21,6 +21,10 @@ LOCATION=${BASEDIR}/${DATE}/blastdb/db
 
 cd $LOCATION
 
+cp ${BASEDIR}/${DATE}/taxonomy/db/accession2taxid/prot.accession2taxid.gz .
+cp ${BASEDIR}/${DATE}/taxonomy/db/nodes.dmp .
+cp ${BASEDIR}/${DATE}/taxonomy/db/names.dmp .
+
 for i in ${LISTDB[@]}; do
 
   COUNT=$(find . -name "*${i}*" | wc -l)
@@ -31,7 +35,7 @@ for i in ${LISTDB[@]}; do
 
   if [ -f "${i}.fa" ]; then
     if [ "$TAXON" -ne "0" ]; then
-      EXTRA="--taxonmap ${BASEDIR}/${DATE}/taxonomy/db/accession2taxid/prot.accession2taxid.gz --taxonnodes ${BASEDIR}/${DATE}/taxonomy/db/nodes.dmp --taxonnames ${BASEDIR}/${DATE}/taxonomy/db/names.dmp"
+      EXTRA="--taxonmap prot.accession2taxid.gz --taxonnodes nodes.dmp --taxonnames names.dmp"
     fi
     ${DIAMOND} diamond makedb --in ${i}.fa --db ${i} $EXTRA
   fi
