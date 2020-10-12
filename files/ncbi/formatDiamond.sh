@@ -6,6 +6,7 @@ BASEDIR=/db/ncbi/
 CURRENT=`date +%Y%m`
 
 DATE=${1:-${CURRENT}}
+TAXON=${2:-0}
 
 NCBIBLAST="singularity exec -e /software/bi/singularity/ncbi-blast/ncbi-blast-2.10.1.sif"
 DIAMOND="singularity exec -e /software/bi/singularity/diamond/diamond-0.9.30.sif"
@@ -29,7 +30,10 @@ for i in ${LISTDB[@]}; do
   fi
 
   if [ -f "${i}.fa" ]; then
-    ${DIAMOND} diamond makedb --in ${i}.fa --db ${i}
+    if [ "$TAXON" -ne "0" ]; then
+      EXTRA="--taxonmap ${BASEDIR}/${DATE}/taxonomy/db/accession2taxid/prot.accession2taxid.gz --taxonnodes ${BASEDIR}/${DATE}/taxonomy/db/nodes.dmp --taxonnames ${BASEDIR}/${DATE}/taxonomy/db/names.dmp"
+    fi
+    ${DIAMOND} diamond makedb --in ${i}.fa --db ${i} $EXTRA
   fi
 
   if [ -f "${i}.dmnd" ]; then
