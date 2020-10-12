@@ -21,9 +21,13 @@ LOCATION=${BASEDIR}/${DATE}/blastdb/db
 
 cd $LOCATION
 
-cp ${BASEDIR}/${DATE}/taxonomy/db/accession2taxid/prot.accession2taxid.gz .
-cp ${BASEDIR}/${DATE}/taxonomy/db/nodes.dmp .
-cp ${BASEDIR}/${DATE}/taxonomy/db/names.dmp .
+if [ "$TAXON" -ne "0" ]; then
+
+  cp ${BASEDIR}/${DATE}/taxonomy/db/accession2taxid/prot.accession2taxid.gz .
+  cp ${BASEDIR}/${DATE}/taxonomy/db/nodes.dmp .
+  cp ${BASEDIR}/${DATE}/taxonomy/db/names.dmp .
+
+fi
 
 for i in ${LISTDB[@]}; do
 
@@ -34,6 +38,7 @@ for i in ${LISTDB[@]}; do
   fi
 
   if [ -f "${i}.fa" ]; then
+    EXTRA=""
     if [ "$TAXON" -ne "0" ]; then
       EXTRA="--taxonmap prot.accession2taxid.gz --taxonnodes nodes.dmp --taxonnames names.dmp"
     fi
