@@ -249,7 +249,9 @@ foreach my $dir (@dirs) {
 				# change to correct directory
 				chdir $path;
 
-				system("rm $file");
+				if ( -f "$file" ) {
+				      system("rm $file");
+        }
 				# retrieve the file
 				system("wget -t 0 -c -N ftp://$host$ftpdir/$dir/$file");
 				#Check size file against DB
