@@ -47,15 +47,15 @@ my $messagesend = "Please, be patient";
 
 
 sub check_latest_ensembl {
-	
+
 	my ($host, $username, $password, $path) = @_;
-	
+
 	# connect to ensembl ftp server
 	my $ftp = Net::FTP->new($host, KeepAlive=>1) or die "Error connecting to $host: $!";
- 
+
 	# ftp login
 	$ftp->login($username, $password) or die "Login failed: $!";
- 
+
 	# chdir to $ftpdir
 	$ftp->cwd($path) or die "Can't go to $path: $!";
 
@@ -65,36 +65,37 @@ sub check_latest_ensembl {
 	my @releases;
 	foreach my $dir (@dirs) {
 
-		if ($dir=~/release\-/) {
+		if ($dir=~/release\-(\d+)/) {
 
-			push(@releases, $dir);
+      my $num = $1;
+			push(@releases, $num);
 		}
 	}
 
-	my @ordreleases = sort(@releases);
-	return($ordreleases[-1]);
+  my @ordreleases = sort { $a <=> $b } @releases;
+	return("release-".$ordreleases[-1]);
 }
 
 sub downloaded_latest_ensembl {
-	
+
 	my ($release, $file) = @_;
 	my $detect = 0;
-		
+
 	open (FILE, $file) || return(0);
-	
+
 	while (<FILE>) {
-		
+
 		chomp($_);
 		print STDERR $_, "\n";
 		if ($_ eq $release) {
 			$detect = 1;
 		}
-		
+
 	}
-	
+
 	close (FILE);
 	print STDERR "detect: ", $detect, "\n";
-	
+
 	return($detect);
 }
 
@@ -128,10 +129,10 @@ if (downloaded_latest_ensembl($currelease, $stampfile) > 0) { $pdown=0;}
 
 # connect to ensembl ftp server
 my $ftp = Net::FTP->new($host, KeepAlive=>1) or die "Error connecting to $host: $!";
- 
+
 # ftp login
 $ftp->login($username, $password) or die "Login failed: $!";
- 
+
 # Binary mode
 $ftp->binary;
 
@@ -146,7 +147,7 @@ my %ftp_sizes = ();
 my $fcount = 0;
 
 foreach my $dir (@dirs) {
-	
+
 	$fcount++;
 
 	if ($dir =~ /[a-z]+.*/) {
@@ -157,27 +158,27 @@ foreach my $dir (@dirs) {
 		print "Retrieving FTP directory structure for $dir...\n";
 
 		# let's check if exists
-				
+
 		my $indir = $newdir;
 		$ftp->cwd($indir) or next;
-				
+
 		# get file list
 		my @files = $ftp->ls();
-				
+
 		# add array to hash
 		$ftp_files{$dir} = \@files;
-				
+
 		# retrieve size of files
 		foreach my $filed (@files) {
-			$ftp_sizes{$dir}{$filed} = check_size_ftp($ftp, $indir."/".$filed); 
+			$ftp_sizes{$dir}{$filed} = check_size_ftp($ftp, $indir."/".$filed);
 		}
-				
+
 		# return to FTP root
 		$ftp->cwd() or die "Can't go to FTP root: $!";
-			
+
 		print "Done!\n\n"
 	}
-	
+
 	#if ($fcount > 2) {last;} #Finish download  -> REMOVE LATER
 }
 
@@ -185,14 +186,14 @@ foreach my $dir (@dirs) {
 $ftp->quit or die "Error closing ftp connection: $!";
 
 sub check_size_ftp {
-	
+
 	my $ftp = shift;
 	my $fpath = shift;
 
 	#print STDERR $fpath, " - ", $ftp->size($fpath), "\n";
 	return($ftp->size($fpath));
 
-	
+
 }
 
 ########################
@@ -223,38 +224,38 @@ my $count = 0;
 foreach my $dir (@dirs) {
 	$count++; # Counter
 	print STDERR $dir, "\n";
-	
+
 	# build local directory structure
 	unless (-d $data_dir) {
 		make_path($data_dir);
 	}
-	
+
 
 	my $files_ref = $ftp_files{$dir};
-	
 
-		
+
+
 		my $path = File::Spec->catfile($data_dir, $dir);
 		unless (-d $path) {
 			make_path($path);
 		}
-	
+
 		my @files = @{$files_ref};
 		my $logfile = $path."/LOG-GTF";
-	
+
 		foreach my $file (@files) {
-			
+
 			unless (downloaded_latest_ensembl($file, $logfile) > 0) {
 				# change to correct directory
 				chdir $path;
-				
+
 				system("rm $file");
 				# retrieve the file
 				system("wget -t 0 -c -N ftp://$host$ftpdir/$dir/$file");
 				#Check size file against DB
 				my $wc = 0;
 				while ( compare_size(cwd()."/".$file, $ftp_sizes{$dir}{$file}) < 1 ) {
-					
+
 					#Remove file and try again
 					#Maybe after 10 times (network problems) -> to die
 					system("rm $file");
@@ -262,16 +263,16 @@ foreach my $dir (@dirs) {
 					$wc++;
 					if ($wc > 10) {die "network problem with $dir/$file\n";}
 				}
-				
+
 				open (FILEOUT, ">>LOG-GTF") || die "Cannot write";
 				print FILEOUT $file, "\n";
 				close (FILEOUT);
 
 			}
 		}
-	
+
 	#if ($count > 2) {last;} #Finish download -> REMOVE LATER
-}			
+}
 
 #PRINT STAMPFILE
 open (FILEOUT, ">>$stampfile") || die "Cannot write";
@@ -281,17 +282,17 @@ close (FILEOUT);
 }
 
 sub compare_size {
-	
+
 	my $file = shift;
 	my $lfile = shift;
-	
+
 	print STDERR "$file\t$lfile\n";
-	
+
 	if ((stat($file)->size) == $lfile) {
-		
+
 		return("1");
 	}
-	
+
 	else {return("0!");}
 
 }
@@ -315,14 +316,14 @@ closedir $dh;
 
 # traverse directories
 foreach my $dir (@dirs) {
-	
+
 
 	# change into each directory in turn
 	chdir "$data_dir/$dir";
-	
+
 	print "Extracting data for $dir (please be patient)...\n";
 
-		
+
 	# get list of files
 	opendir($dh, "$data_dir/$dir") or die "Can't opendir $data_dir/$dir: $!";
 	my @files = grep {!/^\./ && -f "$data_dir/$dir/$_" && /\.gz$/} readdir($dh); #NOT EXTRACT CHECKSUMS
@@ -345,7 +346,7 @@ foreach my $dir (@dirs) {
 
 
              system("cd $endpath; cp $orifile $endfile;  gunzip $endfile;") == 0 or die "zcat failed: $?";
- 
+
 	}
 
 
