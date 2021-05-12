@@ -54,15 +54,15 @@ my $messagesend = "Please, be patient";
 
 
 sub check_latest_ensembl {
-	
+
 	my ($host, $username, $password, $path) = @_;
-	
+
 	# connect to ensembl ftp server
 	my $ftp = Net::FTP->new($host, KeepAlive=>1) or die "Error connecting to $host: $!";
- 
+
 	# ftp login
 	$ftp->login($username, $password) or die "Login failed: $!";
- 
+
 	# chdir to $ftpdir
 	$ftp->cwd($path) or die "Can't go to $path: $!";
 
@@ -72,36 +72,37 @@ sub check_latest_ensembl {
 	my @releases;
 	foreach my $dir (@dirs) {
 
-		if ($dir=~/release\-/) {
+		if ($dir=~/release\-(\d+)/) {
 
-			push(@releases, $dir);
+      my $num = $1;
+			push(@releases, $num);
 		}
 	}
 
-	my @ordreleases = sort(@releases);
-	return($ordreleases[-1]);
+  my @ordreleases = sort { $a <=> $b } @releases;
+	return("release-".$ordreleases[-1]);
 }
 
 sub downloaded_latest_ensembl {
-	
+
 	my ($release, $file) = @_;
 	my $detect = 0;
-		
+
 	open (FILE, $file) || return(0);
-	
+
 	while (<FILE>) {
-		
+
 		chomp($_);
 		print STDERR $_, "\n";
 		if ($_ eq $release) {
 			$detect = 1;
 		}
-		
+
 	}
-	
+
 	close (FILE);
 	print STDERR "detect: ", $detect, "\n";
-	
+
 	return($detect);
 }
 
@@ -136,10 +137,10 @@ if (downloaded_latest_ensembl($currelease, $stampfile) > 0) { $pdown=0;}
 
 # connect to ensembl ftp server
 my $ftp = Net::FTP->new($host, KeepAlive=>1) or die "Error connecting to $host: $!";
- 
+
 # ftp login
 $ftp->login($username, $password) or die "Login failed: $!";
- 
+
 # Binary mode
 $ftp->binary;
 
@@ -154,7 +155,7 @@ my %ftp_sizes = ();
 my $fcount = 0;
 
 foreach my $dir (@dirs) {
-	
+
 	$fcount++;
 
 	if ($dir =~ /[a-z]+.*/) {
@@ -167,28 +168,28 @@ foreach my $dir (@dirs) {
 			foreach my $group (keys %data_ori) {
 
 				# let's check if exists
-				
+
 				my $indir = $newdir. "/". $group;
 				$ftp->cwd($indir) or next;
-				
+
 				# get file list
 				my @files = $ftp->ls();
-				
+
 				# add array to hash
 				$ftp_files{$dir}{$group} = \@files;
-				
+
 				# retrieve size of files
 				foreach my $filed (@files) {
-					$ftp_sizes{$dir}{$group}{$filed} = check_size_ftp($ftp, $indir."/".$filed); 
+					$ftp_sizes{$dir}{$group}{$filed} = check_size_ftp($ftp, $indir."/".$filed);
 				}
-				
+
 				# return to FTP root
 				$ftp->cwd() or die "Can't go to FTP root: $!";
 			}
-			
+
 		print "Done!\n\n"
 	}
-	
+
 	#if ($fcount > 2) {last;} #Finish download  -> REMOVE LATER
 }
 
@@ -196,14 +197,14 @@ foreach my $dir (@dirs) {
 $ftp->quit or die "Error closing ftp connection: $!";
 
 sub check_size_ftp {
-	
+
 	my $ftp = shift;
 	my $fpath = shift;
 
 	#print STDERR $fpath, " - ", $ftp->size($fpath), "\n";
 	return($ftp->size($fpath));
 
-	
+
 }
 
 ########################
@@ -233,38 +234,38 @@ my $count = 0;
 foreach my $dir (@dirs) {
 	$count++; # Counter
 	print STDERR $dir, "\n";
-	
+
 	# build local directory structure
 	unless (-d $data_dir) {
 		make_path($data_dir);
 	}
-	
+
 
 	my $files_ref = $ftp_files{$dir};
-	
+
 	foreach my $group (keys %{$files_ref}) {
-		
+
 		my $path = File::Spec->catfile($data_dir, $dir."/".$group);
 		unless (-d $path) {
 			make_path($path);
 		}
-	
+
 		my @files = @{$files_ref->{$group}};
 		my $logfile = $path."/LOG";
-	
+
 		foreach my $file (@files) {
-			
+
 			unless (downloaded_latest_ensembl($file, $logfile) > 0) {
 				# change to correct directory
 				chdir $path;
-				
+
 				system("rm $file");
 				# retrieve the file
 				system("wget -t 0 -c -N ftp://$host$ftpdir/$dir/$group/$file");
 				#Check size file against DB
 				my $wc = 0;
 				while ( compare_size(cwd()."/".$file, $ftp_sizes{$dir}{$group}{$file}) < 1 ) {
-					
+
 					#Remove file and try again
 					#Maybe after 10 times (network problems) -> to die
 					system("rm $file");
@@ -272,7 +273,7 @@ foreach my $dir (@dirs) {
 					$wc++;
 					if ($wc > 10) {die "network problem with $dir/$group/$file\n";}
 				}
-				
+
 				open (FILEOUT, ">>LOG") || die "Cannot write";
 				print FILEOUT $file, "\n";
 				close (FILEOUT);
@@ -280,9 +281,9 @@ foreach my $dir (@dirs) {
 			}
 		}
 	}
-	
+
 	#if ($count > 2) {last;} #Finish download -> REMOVE LATER
-}			
+}
 
 #PRINT STAMPFILE
 open (FILEOUT, ">>$stampfile") || die "Cannot write";
@@ -292,17 +293,17 @@ close (FILEOUT);
 }
 
 sub compare_size {
-	
+
 	my $file = shift;
 	my $lfile = shift;
-	
+
 	print STDERR "$file\t$lfile\n";
-	
+
 	if ((stat($file)->size) == $lfile) {
-		
+
 		return("1");
 	}
-	
+
 	else {return("0!");}
 
 }
@@ -326,24 +327,24 @@ closedir $dh;
 
 # traverse directories
 foreach my $dir (@dirs) {
-	
+
 
 	# change into each directory in turn
 	chdir "$data_dir/$dir";
-	
+
 	print "Extracting data for $dir (please be patient)...\n";
 
 	foreach my $group (keys %{$ftp_sizes{$dir}}) {
-		
+
 		# get list of files
 		opendir($dh, "$data_dir/$dir/$group") or die "Can't opendir $data_dir/$dir/$group: $!";
 		my @files = grep {!/^\./ && -f "$data_dir/$dir/$group/$_" && /\.gz$/} readdir($dh); #NOT EXTRACT CHECKSUMS
 		closedir $dh;
 		@files = sort {$a cmp $b} @files;
-	
+
 		concateninfas(\@files, $group, $dir, $data_dir, $final_dir);
-		
-	
+
+
 	}
 	print "Done!\n";
 
@@ -355,18 +356,18 @@ chdir getcwd();
 
 
 sub concateninfas {
-	
+
 	my ($files, $group, $organism, $origin, $end) = @_;
-	
+
 	#SPECIFIC PROCESSING AHEAD
 	#DNA
 	if ($group eq 'dna') {
-		
+
 		#CHROMOSOMAL
 		#TOPLEVEL
 		my @topfiles;
 		my $toppatro = "";
-		
+
 		#RM
 		my @rmfiles;
 		my $rmpatro = "";
@@ -374,19 +375,19 @@ sub concateninfas {
 		#SM
 		my @smfiles;
 		my $smpatro = "";
-		
+
 		foreach my $file (@{$files}) {
-			
+
 			#CHROMOSOMAL && TOPLEVEL
 			if ($file=~/\.dna\..*toplev/) {
-				
+
 				push(@topfiles, $file);
 				($toppatro)= $file=~/^(\S+dna)\./;
 			}
-			
+
 			#RM
 			if ($file=~/\.dna_rm\..*toplev/) {
-				
+
 				push(@rmfiles, $file);
 				($rmpatro)= $file=~/^(\S+dna_rm)\./;
 
@@ -394,18 +395,18 @@ sub concateninfas {
 
 			#SM
 			if ($file=~/\.dna_sm\..*toplev/) {
-				
+
 				push(@smfiles, $file);
 				($smpatro)= $file=~/^(\S+dna_sm)\./;
 			}
 
 		}
-		
+
 		if ($toppatro=~/^\S+/) {
 			#Send TOPLEVEL
 			sendinconcaten(\@topfiles, $toppatro, $group, $organism, $origin, $end, "normal");
 		}
-		
+
 		if ($rmpatro=~/^\S+/) {
 			#SEND RM
 			sendinconcaten(\@rmfiles, $rmpatro, $group, $organism, $origin, $end, "rm");
@@ -417,103 +418,103 @@ sub concateninfas {
 		}
 
 	}
-	
+
 	#CDNA
 	if ($group eq 'cdna') {
-		
+
 		#ABINITIO
 		my @abfiles;
 		my $abpatro = "";
-		
+
 		#ALL
 		my @callfiles;
 		my $callpatro = "";
-		
+
 		foreach my $file (@{$files}) {
-			
+
 			#ABINITIO
 			if ($file=~/\.cdna\.abinitio/) {
-				
+
 				push(@abfiles, $file);
 				($abpatro)= $file=~/^(\S+cdna\.abinitio)\./;
 			}
-			
+
 			#ALL
 			if ($file=~/\.cdna\.all/) {
-				
+
 				push(@callfiles, $file);
 				($callpatro)= $file=~/^(\S+cdna\.all)\./;
 
 			}
 		}
-		
+
 		if ($abpatro=~/^\S+/) {
 			#Send ABINITIO
 			sendinconcaten(\@abfiles, $abpatro, $group, $organism, $origin, $end, "normal");
 		}
-		
+
 		if ($callpatro=~/^\S+/) {
 			#SEND ALL
 			sendinconcaten(\@callfiles, $callpatro, $group, $organism, $origin, $end, "rm");
 		}
-			
+
 	}
 
 
 	#NCRNA
 	if ($group eq 'ncrna') {
-		
+
 		#FILES
 		my @ncfiles;
 		my $ncpatro;
-		
+
 		foreach my $file (@{$files}) {
-			
+
 			push(@ncfiles, $file);
 			($ncpatro)= $file=~/^(\S+ncrna)\./;
 
 
 		}
 		sendinconcaten(\@ncfiles, $ncpatro, $group, $organism, $origin, $end, "normal");
-		
-		
+
+
 	}
-	
+
 	#PEP
 	if ($group eq 'pep') {
-		
-		
+
+
 		#ABINITIO
 		my @pabfiles;
 		my $pabpatro = "";
-		
+
 		#ALL
 		my @pallfiles;
 		my $pallpatro = "";
-		
+
 		foreach my $file (@{$files}) {
-			
+
 			#ABINITIO
 			if ($file=~/\.pep\.abinitio/) {
-				
+
 				push(@pabfiles, $file);
 				($pabpatro)= $file=~/^(\S+pep\.abinitio)\./;
 			}
-			
+
 			#ALL
 			if ($file=~/\.pep\.all/) {
-				
+
 				push(@pallfiles, $file);
 				($pallpatro)= $file=~/^(\S+pep\.all)\./;
 
 			}
 		}
-		
+
 		if ($pabpatro=~/^\S+/) {
 			#Send ABINITIO
 			sendinconcaten(\@pabfiles, $pabpatro, $group, $organism, $origin, $end, "normal");
 		}
-		
+
 		if ($pallpatro=~/^\S+/) {
 			#SEND ALL
 			sendinconcaten(\@pallfiles, $pallpatro, $group, $organism, $origin, $end, "rm");
@@ -521,55 +522,55 @@ sub concateninfas {
 
 
 	}
-	
-	
+
+
 }
 
 sub sendinconcaten {
-	
+
 	my ($files, $patro, $group, $organism, $origin, $end, $tag) = @_;
-	
+
 	# build directory structure
 	my $endpath = $end."/".$organism."/".$data_ori{$group};
-	
+
 	unless (-d $endpath) {
 		make_path($endpath);
 	}
-	
+
 	my $logfile = $endpath."/LOG-".$tag;
 	#Next if arrived to the end
-	
+
 	print STDERR "...".$patro."...\n";
-	
+
 	unless (downloaded_latest_ensembl($currelease, $logfile) > 0 && !$extract_force) {
-	
+
 		my $endfile = $endpath."/".$patro.".fa";
 		print STDERR $endfile, "\n";
-		
-		
+
+
 		if (-e $endfile) {
-			
+
 			system("rm $endfile");
 			system("rm $endfile.*");
 		}
-		
+
 		foreach my $file (@{$files}) {
-			
+
 			my $orifile = $origin."/".$organism."/".$group."/".$file;
 			if (-e "$endfile.gz") {system("rm $endfile.gz");}
 			system("cp $orifile $endfile.gz; cd $endpath; gunzip $endfile.gz;") == 0 or die "zcat failed: $?";
 			last;
-			
+
 		}
-		
-		
+
+
 		#LOG if things went well
 		open (FILEOUT, ">>$logfile") || die "Cannot write";
 		print FILEOUT $currelease, "\n";
 		close (FILEOUT);
-	
+
 	}
-	
+
 }
 
 

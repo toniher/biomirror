@@ -66,15 +66,15 @@ my $messagesend = "Please, be patient";
 
 
 sub check_latest_ensembl {
-	
+
 	my ($host, $username, $password, $path) = @_;
-	
+
 	# connect to ensembl ftp server
 	my $ftp = Net::FTP->new($host, KeepAlive=>1) or die "Error connecting to $host: $!";
- 
+
 	# ftp login
 	$ftp->login($username, $password) or die "Login failed: $!";
- 
+
 	# chdir to $ftpdir
 	$ftp->cwd($path) or die "Can't go to $path: $!";
 
@@ -84,37 +84,38 @@ sub check_latest_ensembl {
 	my @releases;
 	foreach my $dir (@dirs) {
 
-		if ($dir=~/release\-/) {
+		if ($dir=~/release\-(\d+)/) {
 
-			push(@releases, $dir);
+      my $num = $1;
+			push(@releases, $num);
 		}
 	}
 
-	my @ordreleases = sort(@releases);
-	return($ordreleases[-1]);
+	my @ordreleases = sort { $a <=> $b } @releases;
+	return("release-".$ordreleases[-1]);
 }
 
 
 sub downloaded_latest_ensembl {
-	
+
 	my ($release, $file) = @_;
 	my $detect = 0;
-		
+
 	open (FILE, $file) || return(0);
-	
+
 	while (<FILE>) {
-		
+
 		chomp($_);
 		print STDERR $_, "\n";
 		if ($_ eq $release) {
 			$detect = 1;
 		}
-		
+
 	}
-	
+
 	close (FILE);
 	print STDERR "detect: ", $detect, "\n";
-	
+
 	return($detect);
 }
 
@@ -156,13 +157,13 @@ system ("$emailbin '$subjsend' '$messagesend'");
 
 # connect to ensembl ftp server
 my $ftp = Net::FTP->new($host, KeepAlive=>1) or die "Error connecting to $host: $!";
- 
+
 # ftp login
 $ftp->login($username, $password) or die "Login failed: $!";
- 
+
 # Binary mode
 $ftp->binary;
- 
+
 # chdir to $ftpdir
 $ftp->cwd($ftpdir) or die "Can't go to $ftpdir: $!";
 
@@ -174,10 +175,10 @@ my $fcount = 0;
 
 # traverse the directories
 foreach my $dir (@dirs) {
-	
+
 	$fcount++;
-	
-	
+
+
 	if ($dir =~ /[a-z]+.*/) {
 		# chdir to $dir
 		my $newdir = $ftpdir . "/" . $dir;
@@ -187,13 +188,13 @@ foreach my $dir (@dirs) {
 
 		# get file list
 		my @files = $ftp->ls();
-		
+
 		# add array to hash
 		$ftp_files{$dir} = \@files;
-		
+
 		# return to FTP root
 		$ftp->cwd() or die "Can't go to FTP root: $!";
-		
+
 		print "Done!\n\n"
 	}
 	#if ($fcount > 1) {last;} #Finish download -> REMOVE LATER
@@ -206,19 +207,19 @@ $ftp->quit or die "Error closing ftp connection: $!";
 # Matches in array
 
 sub matchesinarray {
-	
+
 	my $dir = shift;
 	my $arrayre = shift;
-	
+
 	foreach my $re (@{$arrayre}) {
-		
+
 		if ($dir=~ /$re/) {
-			
+
 			return(1);
 		}
-		
+
 	}
-	
+
 	return(0);
 }
 
@@ -236,12 +237,12 @@ my $count = 0;
 
 foreach my $dir (@dirs) {
 	$count++; # Counter
-	
+
 	#Avoid excluded dirs
 	unless (&matchesinarray($dir, $include) > 0) {next;}
-	
+
 	print STDERR $dir, "\n";
-	
+
 	# build local directory structure
 	unless (-d $data_dir) {
 		make_path($data_dir);
@@ -250,7 +251,7 @@ foreach my $dir (@dirs) {
 	unless (-d $path) {
 		mkdir $path;
 	}
-	
+
 	my $files_ref = $ftp_files{$dir};
 	my @files = @$files_ref;
 
@@ -263,14 +264,14 @@ foreach my $dir (@dirs) {
 			chdir $path;
 			#Avoid download again CHECKSUM
 			if ($file=~/^CHECKSUM/ && -e $file) {next;}
-			
+
 			# retrieve the file
 			system("wget -t 0 -c -N ftp://$host$ftpdir/$dir/$file");
 		}
 	}
-	
+
 	#if ($count > 1) {last;} #Finish download
-	}			
+	}
 
 }
 
@@ -295,17 +296,17 @@ closedir $dh;
 
 # traverse directories
 foreach my $dir (@dirs) {
-	
+
 	#Avoid excluded dirs
 	unless (&matchesinarray($dir, $include) > 0) {next;}
-	
+
 	# change into each directory in turn
 	chdir "$data_dir/$dir";
 	my $logfile = $data_dir."/".$dir."/ELOG";
-	
+
 	#Check if already parsed in DB
 	if (downloaded_latest_ensembl($currelease, $logfile) > 0) { next;}
-	
+
 	print "Extracting data for $dir (please be patient)...\n";
 
 	# get list of files
@@ -320,20 +321,20 @@ foreach my $dir (@dirs) {
 			my $input = $file;
 			my $output = substr($file, 0, -3);
 			my $status = 1;
-			
+
 			$status = &checksum($input);
-			
+
 			while (!(-e "$data_dir/$dir/$output")) {
 				gunzip $input => $output or $status = 0;
-				
+
 				# if error in unzip then retrieve file again
 				if ($status == 0) {
 					# delete output file
 					unlink $output;
-					
+
 					# get file again
 					system("wget -t 0 -c -N ftp://$host/$ftpdir/$dir/$input");
-					
+
 					# update status
 					$status = 1;
 				}
@@ -341,7 +342,7 @@ foreach my $dir (@dirs) {
 			unlink $input;
 		}
 	}
-	
+
 	open (FILEOUT, ">>$logfile") || die "Cannot write";
 	print FILEOUT $currelease, "\n";
 	close (FILEOUT);
@@ -361,7 +362,7 @@ close (FILEOUT);
 # CHECKSUM #
 ##########################
 sub checksum{
-	
+
 	my $file = shift;
 	my $csum = `zcat CHECKSUMS.gz | grep -E '\\b$file' | cut -d ' ' -f 1`;
 	my $sum = `sum $file | cut -d ' ' -f 1`;
@@ -399,17 +400,17 @@ closedir $dh;
 
 # traverse directories
 foreach my $dir (@dirs) {
-	
+
 	#Avoid excluded dirs
 	unless (matchesinarray($dir, $include) > 0) {next;}
-	
+
 	# change into each directory in turn
 	chdir "$data_dir/$dir";
 	my $logfile = $data_dir."/".$dir."/LOG";
-	
+
 	#Check if already parsed in DB
 	# if (downloaded_latest_ensembl($currelease, $logfile) > 0) { next;}
-	
+
 	# create the database based on the dir name
 	print "Creating database for $dir...\n";
 	# setup database connection
@@ -428,20 +429,20 @@ foreach my $dir (@dirs) {
 	$dbh->do("CREATE DATABASE IF NOT EXISTS $dir");
 	#system("mysqladmin -h $sql_host -P $sql_port -u $sql_username --password=$sql_password create $dir"); # deprecated - error IF EXISTS
 	$dbh->disconnect();
-	
+
 
 
 	# populate database with tables from .sql file
 	print "Building database structure for $dir...\n";
 	my $sql_file = File::Spec->catfile($data_dir, $dir, $dir . ".sql");
 	system("mysql -h $sql_host -P $sql_port -u $sql_username --password=$sql_password $dir \< $sql_file");
-	
+
 	# get list of files
 	opendir(my $dh, "$data_dir/$dir") or die "Can't opendir $data_dir/$dir: $!";
 	my @files = grep {!/^\./ && -f "$data_dir/$dir/$_" } readdir($dh);
 	closedir $dh;
 	@files = sort {$a cmp $b} @files;
-	
+
 	# setup database connection
 	$dsn = "DBI:mysql:$dir:$sql_host:$sql_port";
 	$dbh = DBI->connect($dsn, $sql_username, $sql_password) or die "Unable to connect: $DBI::errstr\n";
@@ -452,7 +453,7 @@ foreach my $dir (@dirs) {
 			# get variables
 			my $sql_file = File::Spec->catfile($data_dir, $dir, $file);
 			my $table = substr($file, 0, -4);
-			
+
 			# build query and execute
 			my $path_sql_file = "$sql_file";
 			my $timestamp = puttimestamp();
@@ -463,16 +464,16 @@ foreach my $dir (@dirs) {
 			$dbh->do($dostring) or die "Cannot import, $DBI::errstr\n" ;
 		}
 	}
-	
+
 	# disconnect from database
 	$dbh->disconnect();
-	
+
 	open (FILEOUT, ">>$logfile") || die "Cannot write";
 	print FILEOUT $currelease, "\n";
 	close (FILEOUT);
-	
+
 	print "Done!\n";
-	
+
 }
 chdir getcwd();
 
@@ -499,7 +500,7 @@ system ("$emailbin '$subjsend2' '$messagesend2'");
 print "Finished!\n";
 
 sub puttimestamp {
-	
+
 	my ($sec,$min,$hour,$mday,$mon,$year,$wday, $yday,$isdst)=localtime(time);
 	return ("%4d-%02d-%02d %02d:%02d:%02d\n", $year+1900,$mon+1,$mday,$hour,$min,$sec);
 }
@@ -521,6 +522,3 @@ sub checkDBexists {
 
 	return $outcome;
 }
-
-
-
