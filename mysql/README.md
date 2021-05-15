@@ -14,5 +14,6 @@ Some problems that can be found
     FROM INFORMATION_SCHEMA.TABLES
     WHERE TABLE_SCHEMA="biosql"
 
+## TODO
 
-
+* Converge everything on JSON (use jq)
