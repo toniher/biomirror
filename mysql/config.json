@@ -4,6 +4,8 @@
 		"password": "xxx",
 		"db": "xxx",
 		"host": "xxx"
-	}
+	},
+	"workdir": "/tmp",
+	"taxondir": "/db/ncbi/202105/taxonomy/db/"
 
 }

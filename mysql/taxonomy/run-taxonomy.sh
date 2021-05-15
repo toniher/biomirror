@@ -2,17 +2,21 @@
 
 set -ueo pipefail
 
-source "../config.sh"
+JSONFILE=${1:-../config.json}
 
-path=./files
+workdir=$(jq .workdir $JSONFILE)
+taxondir=$(jq .taxondir $JSONFILE)
 
-origin=/db/ncbi/201706/taxonomy/db/
+user=$(jq .mysql.user $JSONFILE)
+password=$(jq .mysql.password $JSONFILE)
+host=$(jq .mysql.host $JSONFILE)
+db=$(jq .mysql.db $JSONFILE)
 
-cp -rf $origin $path
+cp -rf $taxondir/* $workdir
 
-mysql -s -u$user -p$passwd -h$server $db < taxonomy.sql
-mysql -s -u$user -p$passwd -h$server $db -e "LOAD DATA LOCAL INFILE '$path/names.dmp' INTO TABLE ncbi_names FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\t|\n' (tax_id, name_txt, unique_name, name_class);"
-mysql -s -u$user -p$passwd -h$server $db -e "LOAD DATA LOCAL INFILE '$path/nodes.dmp' INTO TABLE ncbi_nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\t|\n' (tax_id, parent_tax_id,rank,embl_code,division_id, inherited_div_flag,genetic_code_id,inherited_GC_flag, mitochondrial_genetic_code_id,inherited_MGC_flag, GenBank_hidden_flag,hidden_subtree_root_flag,comments);"
+mysql -s -u$user -p$password -h$host $db < taxonomy.sql
+mysql -s -u$user -p$password -h$host $db -e "LOAD DATA LOCAL INFILE '$workdir/names.dmp' INTO TABLE ncbi_names FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\t|\n' (tax_id, name_txt, unique_name, name_class);"
+mysql -s -u$user -p$password -h$host $db -e "LOAD DATA LOCAL INFILE '$workdir/nodes.dmp' INTO TABLE ncbi_nodes FIELDS TERMINATED BY '\t|\t' LINES TERMINATED BY '\t|\n' (tax_id, parent_tax_id,rank,embl_code,division_id, inherited_div_flag,genetic_code_id,inherited_GC_flag, mitochondrial_genetic_code_id,inherited_MGC_flag, GenBank_hidden_flag,hidden_subtree_root_flag,comments);"
 
 
 
