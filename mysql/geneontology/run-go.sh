@@ -2,14 +2,19 @@
 
 set -ueo pipefail
 
-source "../config.sh"
+JSONFILE=${1:-../config.json}
 
+curdir="$(dirname "$(realpath "$0")")"
 
-path=./files
+workdir=$(jq .workdir $JSONFILE)
 
-mkdir $path
+user=$(jq .mysql.user $JSONFILE)
+password=$(jq .mysql.password $JSONFILE)
+host=$(jq .mysql.host $JSONFILE)
+db=$(jq .mysql.db $JSONFILE)
 
-cd $path
+mkdir -p $workdir
+cd $workdir
 
 rm -f *gz
 
@@ -21,12 +26,10 @@ cd go_weekly-assocdb-tables
 
 sed -i -e 's/MyISAM/Aria CHARACTER SET latin1 COLLATE latin1_swedish_ci/g' *.sql
 
-cd ../..
+cd $workdir
 
-cat $path/go_weekly-assocdb-tables/*sql > $path/go_weekly-assocdb-tables.sql
+cat $workdir/go_weekly-assocdb-tables/*sql > $workdir/go_weekly-assocdb-tables.sql
 
-mysql -s -u$user -p$passwd -h$server $db < $path/go_weekly-assocdb-tables.sql
+mysql -s -u$user -p$password -h$host $db < $workdir/go_weekly-assocdb-tables.sql
 
-mysqlimport --local -u$user -p$passwd -h$server $db $path/go_weekly-assocdb-tables/*txt
-
-
+mysqlimport --local -u$user -p$password -h$host $db $workdir/go_weekly-assocdb-tables/*txt
