@@ -15,6 +15,7 @@ use POSIX qw/strftime/;
 
 my $kolist = shift // '/nfs/db/kegg/ko_list';
 my $downdir = shift // '/nfs/db/kegg/ko_store';
+my $webChunk = shift // 10;
 
 if ( ! -d $downdir ) {
   system( "mkdir -p $downdir" )
@@ -34,8 +35,7 @@ while (<KOLIST>) {
 
 close (KOLIST);
 
-my $webChunk = 10;
-my @queue = [];
+my @queue = ();
 
 foreach my $ko ( @kolist ) {
 
@@ -44,7 +44,7 @@ foreach my $ko ( @kolist ) {
     my $response = &processByAPI( \@queue );
     &processToFile( $response, $downdir );
 
-    @queue = [];
+    @queue = ();
 
   }
 
@@ -83,7 +83,7 @@ sub processToFile {
     if ( $KO ) {
 
       open FILEOUT, ">", $downdir."/".$KO.".txt";
-      print FILEOUT $response;
+      print FILEOUT $split;
       close FILEOUT;
     }
   }
@@ -95,7 +95,7 @@ sub processToFile {
 sub splitKegg {
 
 	my $text = shift;
-	my @strings = [];
+	my @strings = ();
 
   my ( @lines ) = split(/\n/, $text);
 
