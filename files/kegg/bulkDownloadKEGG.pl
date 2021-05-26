@@ -65,6 +65,8 @@ sub processByAPI {
   my $url = "http://rest.kegg.jp/get/".join("+", @{$arr});
   my $response = get $url;
 
+  sleep( 2 );
+
   return $response;
 
 }
