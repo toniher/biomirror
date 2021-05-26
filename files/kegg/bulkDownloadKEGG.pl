@@ -48,13 +48,13 @@ foreach my $ko ( @kolist ) {
 
   }
 
-  push( @queue, "ko:".$kegg_id );
+  push( @queue, $ko );
 
 
 }
 
 if ( $#queue >= 0 ) {
-  &processByAPI( \@queue );
+  my $response = &processByAPI( \@queue );
   &processToFile( $response, $downdir );
 }
 
