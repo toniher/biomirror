@@ -5,7 +5,6 @@
 
 ## Notes
 
-
 Some problems that can be found
 
 * Fixing table encodings 
@@ -13,7 +12,3 @@ Some problems that can be found
     SELECT CONCAT("ALTER TABLE ", TABLE_SCHEMA, '.', TABLE_NAME," CONVERT TO CHARACTER SET latin1 COLLATE 'latin1_swedish_ci'") AS    ExecuteTheString
     FROM INFORMATION_SCHEMA.TABLES
     WHERE TABLE_SCHEMA="biosql"
-
-## TODO
-
-* Converge everything on JSON (use jq)
