@@ -9,6 +9,7 @@ Place in a local directory, e.g., ```/scratch/tmp```:
 We use available [Spark Docker images from Big Data Europe project](https://github.com/big-data-europe/docker-spark) and run a system in our machine.
 
     git clone https://github.com/big-data-europe/docker-spark
+    cd docker-spark
     git checkout 3.0.0-hadoop3.2
     docker-compose up
 
