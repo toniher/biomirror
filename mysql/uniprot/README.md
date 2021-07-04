@@ -6,3 +6,4 @@
 	* TABLE: ```idmapping``` 
 	* Before uploading this file to a  MySQL server, we suggest to proccess it to reduce its redundancy and drop entries with too short IDs (check Spark directory for a suggested solution).
 
+Spark (more performant version) in *Spark* subdirectory in 2 folders above.
