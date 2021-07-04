@@ -1,3 +1,0 @@
-
-#List with version used to build the indexes
-ncbi-blast+,/software/bi/el7.2/version/ncbi-blast+/ncbi-blast-2.10.1+/bin/makeblastdb,2.10.1,#PROG -parse_seqids -dbtype prot -in #ORIG,1
