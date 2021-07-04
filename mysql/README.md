@@ -1,7 +1,7 @@
 # MySQL scripts
 
 * Different scripts for uploading info. Since it uses Aria Engine, MariaDB must be used (change to MyISAM if using MySQL).
-* Modify config.json accordingly to suit your needs.
+* Modify ```config.json``` accordingly to suit your needs. This example configuration file is used in the different subdirectories.
 
 ## Notes
 
