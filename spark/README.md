@@ -1,6 +1,8 @@
+Spark scripts for processing big data files used in other processes. So far only used in UniProt ```idmapping``` processing previously to import into MySQL database. This is used for cleaning this big file (```idmapping.dat```) by removing redundancy and mapping entries with less than 5 characters.
+
 Idmapping data can be downloaded from:
 
-    ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping.dat.gz
+    https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping.dat.gz
 
 Place in a local directory, e.g., ```/scratch/tmp```:
 
