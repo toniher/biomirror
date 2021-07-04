@@ -1,12 +1,9 @@
 # GeneInfo and Gene Association
 
-* ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
-* ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2accession.gz
-* ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2go.gz
-* ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
-* ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_group.gz
-* ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
-* ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_refseq_uniprotkb_collab.gz
-
-
-
+* https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_info.gz
+* https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2accession.gz
+* https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2go.gz
+* https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2pubmed.gz
+* https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_group.gz
+* https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
+* https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_refseq_uniprotkb_collab.gz
