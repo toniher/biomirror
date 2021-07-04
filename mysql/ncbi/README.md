@@ -7,3 +7,5 @@
 * https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_group.gz
 * https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
 * https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_refseq_uniprotkb_collab.gz
+
+Run: ```bash run-biosql.sh ../config.json``` 
