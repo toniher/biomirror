@@ -1,0 +1,1 @@
+Several scripts for downloading and indexing [NCBI datasets](https://ftp.ncbi.nlm.nih.gov/blast/db/) intended to be used with NCBI BLAST or similar programs (e.g. [DIAMOND](https://github.com/bbuchfink/diamond) as well).
