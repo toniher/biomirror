@@ -4,4 +4,5 @@ Scripts for storing files and generating indexes.
 * Simplify parameters
 * Add JSON configuration if necessary
 * Better error handling
+* Provide Singularity container images
 
