@@ -1,0 +1,10 @@
+{
+	"basedir": "/db/ncbi",
+  "subdir": "blastdb/db",
+  "timeout": 360,
+  "passive": "",
+  "containers": {
+    "blast": "ncbi/blast:2.10.1",
+    "diamond": "quay.io/biocontainers/diamond:0.9.30--h56fc30b_0"
+  }
+}

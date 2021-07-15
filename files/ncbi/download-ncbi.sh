@@ -1,20 +1,27 @@
 #!/bin/sh
 
-# List of DB to download. Extracted from update_blastdb.pl --showall
-LISTDB=$1
-# Script below from NCBI Blast+ package
-SCRIPT=/db/.scripts/update_blastdb.pl
-BASEDIR=/db/ncbi/
-DATE=`date +%Y%m`
-TIMEOUT=360
-PASSIVE=""
+JSONFILE=${1:-../conf/ncbi.json}
+LISTDB=${2:-../conf/ncbi-files.txt}
+
+BASEDIR=$(jq .basedir $JSONFILE)
+SUBDIR=$(jq .subdir $JSONFILE)
+TIMEOUT=$(jq .timeout $JSONFILE)
+PASSIVE=$(jq .passive $JSONFILE)
 #Alternative
 #PASSIVE="--passive"
+
+BLAST_IMG=$(jq .containers.blast $JSONFILE)
+
+DATE=`date +%Y%m`
+
+# List of DB to download. Extracted from update_blastdb.pl --showall
+# Script below from NCBI Blast+ package
+SCRIPT="singularity exec -e $BLAST_IMG update_blastdb.pl"
 
 # TODO: Repeat if log error
 # perl -lane 'print $1 if $_=~/Failed to download (\S+?)\./' down-ncbi-202008.2020.log
 
-ENDDIR=$BASEDIR$DATE/blastdb/db
+ENDDIR=$BASEDIR$DATE/$SUBDIR
 
 echo $ENDDIR
 
@@ -25,5 +32,5 @@ fi
 cd $ENDDIR || exit
 
 while IFS='' read -r line || [[ -n "$line" ]]; do
-   perl $SCRIPT $PASSIVE --timeout $TIMEOUT --decompress $line
+	$SCRIPT $PASSIVE --timeout $TIMEOUT --decompress $line
 done < "$LISTDB"
