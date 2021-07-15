@@ -11,3 +11,9 @@ You can see a list of available NCBI datasets to populate a ```ncbi-files.txt```
 ```
 singularity exec -e ncbi/blast:2.10.1 update_blastdb.pl --showall
 ```
+
+* Format for DIAMOND NCBI databases:
+
+```
+bash formatDiamond.sh ../conf/ncbi.json ../conf/ncbi-files.txt
+```

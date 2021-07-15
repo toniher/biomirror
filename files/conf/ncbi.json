@@ -1,6 +1,7 @@
 {
 	"basedir": "/db/ncbi",
   "subdir": "blastdb/db",
+	"subtaxdir": "taxonomy/db",
   "timeout": 360,
   "passive": "",
   "containers": {

@@ -2,34 +2,47 @@
 
 set -ueo pipefail
 
-BASEDIR=/db/ncbi/
 CURRENT=`date +%Y%m`
 
-DATE=${1:-${CURRENT}}
-TAXON=${2:-0}
+JSONFILE=${1:-../conf/ncbi.json}
+LISTDB=${2:-../conf/ncbi-files.txt}
+DATE=${3:-${CURRENT}}
+TAXON=${4:-0}
 
-NCBIBLAST="singularity exec -e /software/bi/singularity/ncbi-blast/ncbi-blast-2.10.1.sif"
-DIAMOND="singularity exec -e /software/bi/singularity/diamond/diamond-0.9.30.sif"
+BASEDIR=$(jq .basedir $JSONFILE)
+SUBDIR=$(jq .subdir $JSONFILE)
+SUBTAXDIR=$(jq .subtaxdir $JSONFILE)
 
-LISTDB=(cdd_delta env_nr landmark nr pdbaa refseq_protein swissprot tsa_nr)
+BLAST_IMG=$(jq .containers.blast $JSONFILE)
+DIAMOND_IMG=$(jq .containers.diamond $JSONFILE)
 
-if [ ! -d ${BASEDIR}/${DATE}/blastdb/db ]; then
+#LISTARRAY=(cdd_delta env_nr landmark nr pdbaa refseq_protein swissprot tsa_nr)
+IFS=$'\n' read -d '' -r -a LISTARRAY < $LISTDB
+
+NCBIBLAST="singularity exec -e $BLAST_IMG"
+DIAMOND="singularity exec -e $DIAMOND_IMG"
+
+if [ ! -d ${BASEDIR}/${DATE}/${SUBDIR} ]; then
   exit 1
 fi
 
-LOCATION=${BASEDIR}/${DATE}/blastdb/db
+LOCATION=${BASEDIR}/${DATE}/${SUBDIR}
 
 cd $LOCATION
 
 if [ "$TAXON" -ne "0" ]; then
 
-  cp ${BASEDIR}/${DATE}/taxonomy/db/accession2taxid/prot.accession2taxid.gz .
-  cp ${BASEDIR}/${DATE}/taxonomy/db/nodes.dmp .
-  cp ${BASEDIR}/${DATE}/taxonomy/db/names.dmp .
+  if [ ! -d ${BASEDIR}/${DATE}/${SUBTAXDIR} ]; then
+    exit 1
+  fi
+
+  cp ${BASEDIR}/${DATE}/${SUBTAXDIR}/accession2taxid/prot.accession2taxid.gz .
+  cp ${BASEDIR}/${DATE}/${SUBTAXDIR}/nodes.dmp .
+  cp ${BASEDIR}/${DATE}/${SUBTAXDIR}/names.dmp .
 
 fi
 
-for i in ${LISTDB[@]}; do
+for i in ${LISTARRAY[@]}; do
 
   COUNT=$(find . -name "*${i}*" | wc -l)
 

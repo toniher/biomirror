@@ -21,7 +21,7 @@ SCRIPT="singularity exec -e $BLAST_IMG update_blastdb.pl"
 # TODO: Repeat if log error
 # perl -lane 'print $1 if $_=~/Failed to download (\S+?)\./' down-ncbi-202008.2020.log
 
-ENDDIR=$BASEDIR$DATE/$SUBDIR
+ENDDIR=${BASEDIR}/${DATE}/${SUBDIR}
 
 echo $ENDDIR
 
