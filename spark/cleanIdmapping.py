@@ -9,6 +9,7 @@ from pyspark.sql.types import StructType, StructField
 from pyspark.sql.types import StringType
 import pprint
 
+# Comment config if needed
 spark = SparkSession.builder.master("local[1]") \
                     .appName('cleanIdmapping') \
                     .config('spark.local.dir', '/scratch/tmp') \
