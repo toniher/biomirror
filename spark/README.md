@@ -26,3 +26,17 @@ We can execute the process our specific Docker image:
     nohup docker exec cleanidmapping python3 /app/cleanIdmapping.py -input /scratch/idmapping.rew.dat -output /scratch/idmapping.processed.csv &> log & 
 
 
+# TODO
+
+Alternative processing in Amazon EMR based on: https://github.com/toniher/terraform-emr-pyspark
+
+Additional codes:
+
+```
+nohup pigz -dc idmapping.dat.gz > idmapping.dat  &
+cat idmapping.dat|cut -f1|sort -u|perl -lane 'print "$F[0]\tUniProtKB-AC\t$F[0]"' > idmapping.rew.part &
+cat idmapping.dat idmapping.rew.part > idmapping.rew.dat
+nohup pigz -c idmapping.rew.dat &
+```
+
+
