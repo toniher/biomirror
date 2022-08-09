@@ -42,5 +42,5 @@ nohup pigz -c idmapping.rew.dat &
 Example run in AWS EMR:
 
 ```
-nohup python3 cleanIdmapping.py -input "s3a://thermoso-test/input/idmapping.rew.dat.gz" -output "s3a://thermoso-test/output/clean.dat.gz" &> log 
+nohup python3 cleanIdmapping.py -input "s3://thermoso-test/input/idmapping.rew.dat.gz" -output "s3://thermoso-test/output/clean.dat.gz" &> log 
 ```
