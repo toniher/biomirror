@@ -61,6 +61,12 @@ variable "db_port" {
   default = 3306
 }
 
+# Bucket path where data is processed
+variable "bucket_data_path" {
+  type    = string
+  default = "s3://mybucket/output/mydata.gz"
+}
+
 provider "aws" {
   profile                  = var.profile
   shared_credentials_files = var.credentials
