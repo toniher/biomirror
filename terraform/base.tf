@@ -62,9 +62,9 @@ variable "db_port" {
 }
 
 provider "aws" {
-  profile                 = var.profile
-  shared_credentials_file = var.credentials
-  region                  = var.region
+  profile                  = var.profile
+  shared_credentials_files = var.credentials
+  region                   = var.region
 }
 
 // Random resource for naming
