@@ -64,7 +64,7 @@ variable "db_port" {
 # Bucket path where data is processed
 variable "bucket_data_path" {
   type    = string
-  default = "s3://mybucket/output/mydata.gz"
+  default = "mybucket/output/mydata.gz"
 }
 
 provider "aws" {

@@ -19,6 +19,40 @@ resource "aws_glue_crawler" "biomirror_s3_crawler" {
   role          = aws_iam_role.glue-s3-role.arn
 
   s3_target {
-    path = var.bucket_data_path
+    path = "s3://${var.bucket_data_path}"
   }
+}
+
+resource "aws_iam_role" "glue-s3-role" {
+  name = "glue-s3-role-${random_string.rand.result}"
+
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${var.bucket_data_path}*"
+        ]
+      }
+    ]
+  })
+
+  tags = {
+    Name = "Glue-S3-Role"
+  }
+}
+
+resource "aws_iam_policy_attachment" "AWSGlueServiceRole-policy-attachment" {
+
+  name       = "AWSGlueServiceRole-policy-attachment-${random_string.rand.result}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+  groups     = []
+  users      = []
+  roles      = [aws_iam_role.glue-s3-role.name]
+
 }

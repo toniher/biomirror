@@ -12,4 +12,7 @@ export TF_VAR_db_storage=250
 export TF_VAR_db_max_storage=1000
 export TF_VAR_db_port=3306
 
+#Bucket
+export TF_VAR_bucket_data_path=mybucket/output/data.gz
+
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity|jq .Account|tr -d \")
