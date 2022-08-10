@@ -1,12 +1,12 @@
-resource "aws_security_group" "allow_mariadb" {
-  name        = "mariadb-rds-sg-${random_string.rand.result}"
+resource "aws_security_group" "allow_db" {
+  name        = "db-rds-sg-${random_string.rand.result}"
   description = "Allow TLS inbound traffic"
   vpc_id      = var.vpc_id
 
   ingress {
-    description = "Mariadb Access from within the VPC"
-    from_port   = 3306
-    to_port     = 3306
+    description = "Access from within the VPC"
+    from_port   = var.db_port
+    to_port     = var.db_port
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/8"]
   }
@@ -19,6 +19,6 @@ resource "aws_security_group" "allow_mariadb" {
   }
 
   tags = {
-    Name = "Allow access to prod mariadb rds"
+    Name = "Allow access to prod rds"
   }
 }

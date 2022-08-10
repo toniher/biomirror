@@ -60,6 +60,11 @@ variable "db_max_storage" {
   default = 1000
 }
 
+variable "db_port" {
+  type    = number
+  default = 3306
+}
+
 provider "aws" {
   profile                 = var.profile
   shared_credentials_file = var.credentials
@@ -71,24 +76,4 @@ resource "random_string" "rand" {
   length  = 8
   special = false
   upper   = false
-}
-
-resource "aws_db_subnet_group" "group_mariadb" {
-  name       = "mariadb-subnet-${random_string.rand.result}"
-  subnet_ids = var.subnets
-}
-
-resource "aws_db_instance" "mydb" {
-  engine                 = var.db_engine
-  engine_version         = var.db_version
-  instance_class         = var.db_instance
-  identifier             = "mariadb-instance-${random_string.rand.result}"
-  username               = "root"
-  password               = var.db_password
-  parameter_group_name   = "default.${var.db_engine}${var.db_version}"
-  db_subnet_group_name   = aws_db_subnet_group.group_mariadb.name
-  vpc_security_group_ids = [aws_security_group.allow_mariadb.id]
-  skip_final_snapshot    = true
-  allocated_storage      = var.db_storage
-  max_allocated_storage  = var.db_max_storage
 }
