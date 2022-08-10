@@ -11,3 +11,4 @@ Reference: https://citizix.com/create-an-rds-instance-in-terraform-with-a-mariad
 
 * Set up Glue between S3 and RDS
   * https://www.youtube.com/watch?v=rBFfYpHP1PM and  https://www.youtube.com/watch?v=f8wXc65tdAg
+  * Glue crawlers in Terraform https://geeks.wego.com/creating-glue-crawlers-via-terraform/
