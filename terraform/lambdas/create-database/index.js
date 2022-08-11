@@ -27,25 +27,29 @@ const connection = mysql.createConnection({
 exports.handler = async (event) => {  
 
     try {  
-        const data = await new Promise((resolve, reject) => {  
-        connection.connect(function (err) {  
-            if (err) {    
-                reject(err);
-            }      
-            // TODO: to be replaced with string from file
-            connection.query('CREATE DATABASE testdb',
-        
-            function (err, result) {  
-                if (err) {  
-                    console.log("Error->" + err);      
-                    reject(err);        
-            }           
-            resolve(result);  
-            });     
-        })   
+        const data = await new Promise((resolve, reject) => {
+            
+            connection.connect(function (err) {  
+                if (err) {    
+                    reject(err);
+                }
+                
+                fs.readFile('./dump.sql', (err_file, content) => {
+                    if (err_file) {
+                        reject(err_file);
+                    }
+
+                    connection.query(content, function (err, result) {
+                        if (err) {  
+                            console.log("Error->" + err);      
+                            reject(err);        
+                        }           
+                        resolve(result);  
+                    });     
+                }) 
+            });   
 
         }); 
-
 
         return {  
             statusCode: 200,   

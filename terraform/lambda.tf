@@ -73,6 +73,12 @@ data "archive_file" "db-lambda-zip" {
   }
 }
 
+resource "null_resource" "add_dump" {
+  provisioner "local-exec" {
+    command = "zip -uj ${data.archive_file.db-lambda-zip.output_path} ${local.lambda_path}/dump.sql"
+  }
+}
+
 resource "aws_lambda_function" "create_rds_database" {
   function_name = "create-db-${random_string.rand.result}"
   role          = aws_iam_role.lambda_biomirror_role.arn
@@ -96,6 +102,6 @@ resource "aws_lambda_function" "create_rds_database" {
     }
   }
 
-  depends_on = [aws_db_instance.mydb, aws_lambda_layer_version.mysql_layer]
+  depends_on = [aws_db_instance.mydb, aws_lambda_layer_version.mysql_layer, null_resource.add_dump]
 }
 
