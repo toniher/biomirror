@@ -1,4 +1,35 @@
-// TOOD: To be finished
+// TODO: To be finished
+// Source based on https://www.linkedin.com/pulse/como-deployar-aws-lambda-layers-com-terraform-e-nodejs-gasparoto/?trk=public_profile_article_view
+
+// path.root here: https://www.terraform.io/language/expressions/references
+locals {
+  layer_name  = "mysql"
+  layers_path = "${path.root}/layers/${local.layer_name}/nodejs"
+  lambda_name = "create-database"
+  lambda_path = "${path.root}/lambdas/${local.lambda_name}/"
+  runtime     = "nodejs16.x"
+}
+
+resource "null_resource" "build_lambda_layers" {
+  triggers {
+    layer_build = md5(file("${local.layers_path}/package.json"))
+  }
+
+  provisioner "local-exec" {
+    working_dir = local.layers_path
+    command     = "npm install --production && cd ../ && zip -9 -r --quiet ${local.layer_name}.zip *"
+  }
+}
+
+resource "aws_lambda_layer_version" "mysql_layer" {
+  filename    = "${local.layers_path}/../${local.layer_name}.zip"
+  layer_name  = local.layer_name
+  description = "mysql layer"
+
+  compatible_runtimes = ["${local.runtime}"]
+
+  depends_on = [null_resource.build_lambda_layers]
+}
 
 resource "aws_iam_role" "lambda_biomirror_role" {
   name = "lambda-biomirror-${random_string.rand.result}"
@@ -31,38 +62,40 @@ resource "aws_iam_role_policy_attachment" "lambda_role_policy" {
 // AmazonVPCFullAccess
 // AWSLambdaVPCAccessExecutionRole
 
-// TODO: More love needed here. Layers: https://www.linkedin.com/pulse/como-deployar-aws-lambda-layers-com-terraform-e-nodejs-gasparoto/?trk=public_profile_article_view
 data "archive_file" "db-lambda-zip" {
   type        = "zip"
-  source_file   = "index.js"
-  output_path   = "lambda_function.zip"
+  source_file = "index.js"
+
+  output_path = "${local.lambda_path}/${local.lambda_name}.zip"
   source {
-    content  = "index.js"
+    content  = file("${local.lambda_path}/index.js")
     filename = "index.js"
   }
 }
 
 resource "aws_lambda_function" "create_rds_database" {
-  filename      = data.archive_file.db-lambda-zip.output_path
   function_name = "create-db-${random_string.rand.result}"
   role          = aws_iam_role.lambda_biomirror_role.arn
   handler       = "index.handler"
 
+  layers = [aws_lambda_layer_version.mysql_layer.arn]
+
+  filename         = data.archive_file.db-lambda-zip.output_path
   source_code_hash = filebase64sha256(data.archive_file.db-lambda-zip.output_path)
 
-  runtime     = "nodejs16.x"
-  timeout     = "60"
+  runtime = local.runtime
+  timeout = 60
 
 
   environment {
-    variables = {  
+    variables = {
       RDS_HOSTNAME = aws_db_instance.mydb.address
-      RDS_USERNAME = root
+      RDS_USERNAME = "root"
       RDS_PASSWORD = var.db_password
-      RDS_PORT = var.db_port
+      RDS_PORT     = var.db_port
     }
   }
 
-  depends_on = [ aws_db_instance.mydb ]
+  depends_on = [aws_db_instance.mydb, aws_lambda_layer_version.mysql_layer]
 }
 
