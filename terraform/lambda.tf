@@ -26,7 +26,7 @@ resource "aws_lambda_layer_version" "mysql_layer" {
   layer_name  = local.layer_name
   description = "mysql layer"
 
-  compatible_runtimes = ["${local.runtime}"]
+  compatible_runtimes = [local.runtime]
 
   depends_on = [null_resource.build_lambda_layers]
 }
