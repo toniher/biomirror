@@ -88,7 +88,7 @@ resource "null_resource" "add_dump" {
     command = "zip -uj ${data.archive_file.db-lambda-zip.output_path} ${local.lambda_path}/dump.sql"
   }
 
-  depends_on = [archive_file.db-lambda-zip]
+  depends_on = [data.archive_file.db-lambda-zip]
 
 }
 
