@@ -4,7 +4,7 @@
 // path.root here: https://www.terraform.io/language/expressions/references
 locals {
   layer_name  = "mysql"
-  layers_path = "${path.root}/layers/${local.layer_name}/nodejs"
+  layers_path = "${path.root}/layers/${local.layer_name}/"
   lambda_name = "create-database"
   lambda_path = "${path.root}/lambdas/${local.lambda_name}/"
   runtime     = "nodejs16.x"
@@ -17,12 +17,12 @@ resource "null_resource" "build_lambda_layers" {
 
   provisioner "local-exec" {
     working_dir = local.layers_path
-    command     = "npm install --production && cd ../ && zip -9 -r --quiet ${local.layer_name}.zip *"
+    command     = "npm install --production && zip -9 -r --quiet ${local.layer_name}.zip *"
   }
 }
 
 resource "aws_lambda_layer_version" "mysql_layer" {
-  filename    = "${local.layers_path}/../${local.layer_name}.zip"
+  filename    = "${local.layers_path}/${local.layer_name}.zip"
   layer_name  = local.layer_name
   description = "mysql layer"
 
@@ -53,32 +53,27 @@ EOF
 
 // TODO: Review attached policies
 resource "aws_iam_role_policy_attachment" "lambda_role_policy_RDS_attachment" {
-  name       = "lambda_role_policy_RDS_attachment-${random_string.rand.result}"
-  roles      = [aws_iam_role.lambda_biomirror_role.name]
+  role       = aws_iam_role.lambda_biomirror_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_role_policy_RDSData_attachment" {
-  name       = "lambda_role_policy_RDSData_attachment-${random_string.rand.result}"
-  roles      = [aws_iam_role.lambda_biomirror_role.name]
+  role       = aws_iam_role.lambda_biomirror_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonRDSDataFullAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_role_policy_VPC_attachment" {
-  name       = "lambda_role_policy_VPC_attachment-${random_string.rand.result}"
-  roles      = [aws_iam_role.lambda_biomirror_role.name]
+  role       = aws_iam_role.lambda_biomirror_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_role_policy_VPCExec_attachment" {
-  name       = "lambda_role_policy_VPCExec_attachment-${random_string.rand.result}"
-  roles      = [aws_iam_role.lambda_biomirror_role.name]
+  role       = aws_iam_role.lambda_biomirror_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 data "archive_file" "db-lambda-zip" {
   type        = "zip"
-  source_file = "index.js"
 
   output_path = "${local.lambda_path}/${local.lambda_name}.zip"
   source {
