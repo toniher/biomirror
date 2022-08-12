@@ -73,22 +73,18 @@ resource "aws_iam_role_policy_attachment" "lambda_role_policy_VPCExec_attachment
 }
 
 data "archive_file" "db-lambda-zip" {
-  type        = "zip"
+  type = "zip"
 
   output_path = "${local.lambda_path}/${local.lambda_name}.zip"
   source {
     content  = file("${local.lambda_path}/index.js")
     filename = "index.js"
   }
-  
-}
 
-resource "null_resource" "add_dump" {
-  provisioner "local-exec" {
-    command = "zip -uj ${data.archive_file.db-lambda-zip.output_path} ${local.lambda_path}/dump.sql"
+  source {
+    content  = file("${local.lambda_path}/dump.sql")
+    filename = "dump.sql"
   }
-
-  depends_on = [data.archive_file.db-lambda-zip]
 
 }
 
@@ -105,6 +101,10 @@ resource "aws_lambda_function" "create_rds_database" {
   runtime = local.runtime
   timeout = 60
 
+  vpc_config {
+    subnet_ids         = var.subnets
+    security_group_ids = [aws_security_group.allow_db.id]
+  }
 
   environment {
     variables = {
@@ -115,6 +115,6 @@ resource "aws_lambda_function" "create_rds_database" {
     }
   }
 
-  depends_on = [aws_db_instance.mydb, aws_lambda_layer_version.mysql_layer, null_resource.add_dump]
+  depends_on = [aws_db_instance.mydb, aws_lambda_layer_version.mysql_layer]
 }
 

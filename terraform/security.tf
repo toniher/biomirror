@@ -8,7 +8,7 @@ resource "aws_security_group" "allow_db" {
     from_port   = var.db_port
     to_port     = var.db_port
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8"]
+    cidr_blocks = var.db_cidr_blocks
   }
 
   egress {
