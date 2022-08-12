@@ -11,6 +11,7 @@ resource "aws_db_instance" "mydb" {
   identifier             = "db-instance-${random_string.rand.result}"
   username               = "root"
   password               = var.db_password
+  db_name                = var.db_name
   parameter_group_name   = "default.${var.db_engine}${var.db_version}"
   db_subnet_group_name   = aws_db_subnet_group.group_db.name
   vpc_security_group_ids = [aws_security_group.allow_db.id]
