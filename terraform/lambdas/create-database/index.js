@@ -2,6 +2,7 @@
 // Ref: https://www.linkedin.com/pulse/como-deployar-aws-lambda-layers-com-terraform-e-nodejs-gasparoto/?trk=public_profile_article_view
 
 const mysql = require('mysql'); 
+const fs = require('fs');
 
 const connection = mysql.createConnection({ 
 
