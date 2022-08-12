@@ -17,7 +17,7 @@ resource "null_resource" "build_lambda_layers" {
 
   provisioner "local-exec" {
     working_dir = local.layers_path
-    command     = "npm install --production && zip -9 -r --quiet ${local.layer_name}.zip *"
+    command     = "mkdir nodejs && npm install --production && mv node_modules nodejs && zip -9 -r --quiet ${local.layer_name}.zip *"
   }
 }
 
@@ -80,12 +80,16 @@ data "archive_file" "db-lambda-zip" {
     content  = file("${local.lambda_path}/index.js")
     filename = "index.js"
   }
+  
 }
 
 resource "null_resource" "add_dump" {
   provisioner "local-exec" {
     command = "zip -uj ${data.archive_file.db-lambda-zip.output_path} ${local.lambda_path}/dump.sql"
   }
+
+  depends_on = [archive_file.db-lambda-zip]
+
 }
 
 resource "aws_lambda_function" "create_rds_database" {
