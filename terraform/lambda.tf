@@ -11,7 +11,7 @@ locals {
 }
 
 resource "null_resource" "build_lambda_layers" {
-  triggers {
+  triggers = {
     layer_build = md5(file("${local.layers_path}/package.json"))
   }
 

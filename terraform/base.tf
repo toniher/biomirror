@@ -61,6 +61,11 @@ variable "db_port" {
   default = 3306
 }
 
+variable "db_name" {
+  type    = string
+  default = "biomirror"
+}
+
 # Bucket path where data is processed
 variable "bucket_data_path" {
   type    = string
