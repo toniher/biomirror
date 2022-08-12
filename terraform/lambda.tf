@@ -51,16 +51,30 @@ resource "aws_iam_role" "lambda_biomirror_role" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_role_policy" {
-  role       = []
-  policy_arn = aws_iam_policy.stop_start_ec2_policy.arn
+// TODO: Review attached policies
+resource "aws_iam_role_policy_attachment" "lambda_role_policy_RDS_attachment" {
+  name       = "lambda_role_policy_RDS_attachment-${random_string.rand.result}"
+  roles      = [aws_iam_role.lambda_biomirror_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
 }
 
-// TODO: attach this policies
-// AmazonRDSFullAccess
-// AmazonRDSDataFullAccess
-// AmazonVPCFullAccess
-// AWSLambdaVPCAccessExecutionRole
+resource "aws_iam_role_policy_attachment" "lambda_role_policy_RDSData_attachment" {
+  name       = "lambda_role_policy_RDSData_attachment-${random_string.rand.result}"
+  roles      = [aws_iam_role.lambda_biomirror_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSDataFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_role_policy_VPC_attachment" {
+  name       = "lambda_role_policy_VPC_attachment-${random_string.rand.result}"
+  roles      = [aws_iam_role.lambda_biomirror_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_role_policy_VPCExec_attachment" {
+  name       = "lambda_role_policy_VPCExec_attachment-${random_string.rand.result}"
+  roles      = [aws_iam_role.lambda_biomirror_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
 
 data "archive_file" "db-lambda-zip" {
   type        = "zip"
