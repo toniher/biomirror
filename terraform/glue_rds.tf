@@ -1,34 +1,34 @@
 resource "aws_glue_catalog_database" "biomirror_rds_database" {
-    name = "biomirror-rds-db-${random_string.rand.result}"
+  name = "biomirror-rds-db-${random_string.rand.result}"
 }
 
 resource "aws_glue_connection" "biomirror_rds_connection" {
 
-    connection_properties = {
-        JDBC_CONNECTION_URL = "jdbc:mysql://${aws_db_instance.mydb.endpoint}/${var.db_name}"
-        PASSWORD            = "root"
-        USERNAME            = var.db_password
-    }
+  connection_properties = {
+    JDBC_CONNECTION_URL = "jdbc:mysql://${aws_db_instance.mydb.endpoint}/${var.db_name}"
+    PASSWORD            = var.db_password
+    USERNAME            = "root"
+  }
 
-    name = "biomirror-rds-connection-${random_string.rand.result}"
+  name = "biomirror-rds-connection-${random_string.rand.result}"
 
-    physical_connection_requirements {
-        // TODO: address availability and subnet as separate params, sic
-        availability_zone      = "eu-central-1a"
-        security_group_id_list = [ aws_security_group.allow_db.id ]
-        subnet_id              = var.subnets[0]
-    }
+  physical_connection_requirements {
+    // TODO: address availability and subnet as separate params, sic
+    availability_zone      = "eu-central-1a"
+    security_group_id_list = [aws_security_group.allow_db.id]
+    subnet_id              = var.subnets[0]
+  }
 }
 
 resource "aws_glue_crawler" "biomirror_rds_crawler" {
-    database_name = aws_glue_catalog_database.biomirror_rds_database.name
-    name          = "biomirror-rds-crawler-${random_string.rand.result}"
-    role          = aws_iam_role.glue-rds-role.arn
+  database_name = aws_glue_catalog_database.biomirror_rds_database.name
+  name          = "biomirror-rds-crawler-${random_string.rand.result}"
+  role          = aws_iam_role.glue-rds-role.arn
 
-    jdbc_target {
-        connection_name = aws_glue_connection.biomirror_rds_connection.name
-        path            = "${var.db_name}/%"
-    }
+  jdbc_target {
+    connection_name = aws_glue_connection.biomirror_rds_connection.name
+    path            = "${var.db_name}/%"
+  }
 }
 
 resource "aws_iam_role" "glue-rds-role" {
