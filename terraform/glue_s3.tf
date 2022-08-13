@@ -47,9 +47,9 @@ resource "aws_iam_role" "glue-s3-role" {
   }
 }
 
-resource "aws_iam_policy_attachment" "AWSGlueServiceRole-policy-attachment" {
+resource "aws_iam_policy_attachment" "AWSGlueServiceRole-S3-policy-attachment" {
 
-  name       = "AWSGlueServiceRole-policy-attachment-${random_string.rand.result}"
+  name       = "AWSGlueServiceRole-S3-policy-attachment-${random_string.rand.result}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
   groups     = []
   users      = []
