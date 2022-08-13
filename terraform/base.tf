@@ -71,6 +71,11 @@ variable "db_name" {
   default = "biomirror"
 }
 
+variable "db_public_access" {
+  type    = bool
+  default = false
+}
+
 # Bucket path where data is processed
 variable "bucket_data_path" {
   type    = string

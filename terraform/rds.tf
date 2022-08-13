@@ -18,4 +18,5 @@ resource "aws_db_instance" "mydb" {
   skip_final_snapshot    = true
   allocated_storage      = var.db_storage
   max_allocated_storage  = var.db_max_storage
+  publicly_accessible    = var.db_public_access
 }
