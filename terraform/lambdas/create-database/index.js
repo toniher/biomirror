@@ -3,6 +3,7 @@
 
 const mysql = require('mysql'); 
 const fs = require('fs');
+let path = require("path");
 
 const connection = mysql.createConnection({ 
 
@@ -25,37 +26,36 @@ const connection = mysql.createConnection({
     debug: true 
 }); 
 
+const content = fs.readFileSync('./dump.sql', {encoding:'utf8', flag:'r'});
+
 exports.handler = async (event) => {  
 
-    try {  
+    try {
+        
         const data = await new Promise((resolve, reject) => {
             
-            connection.connect(function (err) {  
-                if (err) {    
+            connection.query(content, function (err, results, fields) {
+                if (err) {
+                    connection.destroy();
                     reject(err);
-                }
-                
-                fs.readFile('./dump.sql', (err_file, content) => {
-                    if (err_file) {
-                        reject(err_file);
-                    }
-
-                    connection.query(content, function (err, result) {
-                        if (err) {  
-                            console.log("Error->" + err);      
-                            reject(err);        
-                        }           
-                        resolve(result);  
-                    });     
-                }) 
-            });   
-
-        }); 
-
+                } else {
+                    // connected!
+                    console.log(results);
+                    resolve(results);
+                    connection.end(function (err) {
+                        if (err) { 
+                            reject(err) 
+                        }
+                    });
+                }       
+    
+            });
+        });
+        
         return {  
             statusCode: 200,   
             body: JSON.stringify(data)  
-        } 
+        }
     } catch (err) {
         
         return {   
@@ -63,5 +63,5 @@ exports.handler = async (event) => {
             body: err.message   
         }  
     } 
-}; 
+};
 
