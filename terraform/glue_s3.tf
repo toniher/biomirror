@@ -18,6 +18,8 @@ resource "aws_glue_crawler" "biomirror_s3_crawler" {
   name          = "biomirror-s3-crawler-${random_string.rand.result}"
   role          = aws_iam_role.glue-s3-role.arn
 
+  classifiers = [ aws_glue_classifier.biomirror_csv.name ]
+
   s3_target {
     path = "s3://${var.bucket_data_path}"
   }
@@ -30,14 +32,12 @@ resource "aws_iam_role" "glue-s3-role" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Effect" : "Allow",
-        "Action" : [
-          "s3:GetObject",
-          "s3:PutObject"
-        ],
-        "Resource" : [
-          "arn:aws:s3:::${var.bucket_data_path}*"
-        ]
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "glue.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
       }
     ]
   })
@@ -46,6 +46,30 @@ resource "aws_iam_role" "glue-s3-role" {
     Name = "Glue-S3-Role"
   }
 }
+
+resource "aws_iam_role_policy" "s3_policy" {
+  name = "s3_policy-${random_string.rand.result}"
+  role = aws_iam_role.glue-s3-role.id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${var.bucket_data_path}*"
+      ]
+    }
+  ]
+}
+EOF
+}
+
 
 resource "aws_iam_policy_attachment" "AWSGlueServiceRole-S3-policy-attachment" {
 
