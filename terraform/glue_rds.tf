@@ -15,7 +15,7 @@ resource "aws_glue_connection" "biomirror_rds_connection" {
   physical_connection_requirements {
     // TODO: address availability and subnet as separate params, sic
     availability_zone      = var.db_availability_zone
-    security_group_id_list = [aws_security_group.allow_db.id]
+    security_group_id_list = [aws_security_group.allow_db_glue.id]
     subnet_id              = var.db_subnet
   }
 }
@@ -53,12 +53,9 @@ resource "aws_iam_role" "glue-rds-role" {
   }
 }
 
-resource "aws_iam_policy_attachment" "AWSGlueServiceRole-RDS-policy-attachment" {
+resource "aws_iam_role_policy_attachment" "AWSGlueServiceRole-RDS-policy-attachment" {
 
-  name       = "AWSGlueServiceRole-RDS-policy-attachment-${random_string.rand.result}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
-  groups     = []
-  users      = []
-  roles      = [aws_iam_role.glue-rds-role.name]
+  role      = aws_iam_role.glue-rds-role.name
 
 }
