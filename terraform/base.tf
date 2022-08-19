@@ -28,6 +28,11 @@ variable "vpc_id" {
   default = "vpc-68c6c103"
 }
 
+variable "route_table_id" {
+  type    = string
+  default = "rtb-1544fd7f"
+}
+
 variable "db_cidr_blocks" {
   type    = list(string)
   default = ["172.0.0.0/8"]
