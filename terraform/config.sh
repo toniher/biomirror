@@ -17,5 +17,6 @@ export TF_VAR_db_name=biomirror
 
 #Bucket
 export TF_VAR_bucket_data_path=mybucket/output/data.gz
+export TF_VAR_bucket_scripts=mybucket
 
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity|jq .Account|tr -d \")

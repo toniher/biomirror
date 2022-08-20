@@ -96,6 +96,12 @@ variable "bucket_data_path" {
   default = "mybucket/output/mydata.gz"
 }
 
+# Bucket where to place scripts
+variable "bucket_scripts" {
+  type    = string
+  default = "mybucket"
+}
+
 provider "aws" {
   profile                  = var.profile
   shared_credentials_files = var.credentials
