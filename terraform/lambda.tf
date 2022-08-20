@@ -17,7 +17,7 @@ resource "null_resource" "build_lambda_layers" {
 
   provisioner "local-exec" {
     working_dir = local.layers_path
-    command     = "mkdir nodejs && npm install --production && mv node_modules nodejs && zip -9 -r --quiet ${local.layer_name}.zip *"
+    command     = "mkdir -p nodejs && npm install --production && mv node_modules nodejs && zip -9 -r --quiet ${local.layer_name}.zip *"
   }
 }
 
