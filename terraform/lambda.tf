@@ -118,3 +118,13 @@ resource "aws_lambda_function" "create_rds_database" {
   depends_on = [aws_db_instance.mydb, aws_lambda_layer_version.mysql_layer]
 }
 
+// Invocation of Lambda at the end
+resource "aws_lambda_invocation" "create_rds_database_invocation" {
+  function_name = aws_lambda_function.create_rds_database.function_name
+
+  input = jsonencode({
+    test = "test"
+  })
+
+  depends_on = [aws_lambda_function.create_rds_database]
+}
