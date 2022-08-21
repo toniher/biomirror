@@ -14,7 +14,7 @@ resource "aws_glue_job" "glue_job" {
   max_retries       = 1
   glue_version      = "3.0"
   worker_type       = "G.1X"
-  number_of_workers = 10
+  number_of_workers = 5
 
   execution_class = "STANDARD" //Alternative is FLEX
 
@@ -24,7 +24,7 @@ resource "aws_glue_job" "glue_job" {
   }
 
   execution_property {
-    max_concurrent_runs = 10
+    max_concurrent_runs = 5
   }
 
   default_arguments = {

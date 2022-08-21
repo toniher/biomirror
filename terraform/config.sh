@@ -8,7 +8,7 @@ export TF_VAR_subnets='["subnet-8a280df7", "subnet-c54d6588", "subnet-b85ab5d2"]
 # DB stuff
 export TF_VAR_db_cidr_blocks='["172.0.0.0/8"]'
 export TF_VAR_db_engine=mariadb
-export TF_VAR_db_instance=db.t3.medium
+export TF_VAR_db_instance=db.t3.xlarge
 export TF_VAR_db_password=3this1.passwd
 export TF_VAR_db_storage=250
 export TF_VAR_db_max_storage=1000

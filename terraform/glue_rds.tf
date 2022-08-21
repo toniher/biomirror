@@ -76,3 +76,6 @@ resource "aws_iam_role_policy_attachment" "AWSGlueServiceRole-RDS-policy-attachm
   role       = aws_iam_role.glue-rds-role.name
 
 }
+
+// TODO: Add more policies here: https://awstip.com/aws-etl-insert-data-to-a-relational-database-using-glue-job-393a2e37c758
+

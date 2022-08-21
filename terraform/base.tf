@@ -50,7 +50,7 @@ variable "db_version" {
 
 variable "db_instance" {
   type    = string
-  default = "db.t3.medium"
+  default = "db.t3.xlarge"
 }
 variable "db_password" {
   type = string

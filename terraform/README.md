@@ -5,10 +5,13 @@ Reference: https://citizix.com/create-an-rds-instance-in-terraform-with-a-mariad
 # TODO
 
 * Automate VPC and subnets
-* Add Lambdas for querying DBs
+* Add Lambdas
+  * For Querying DB
+  * For triggering indexes
 * Trigger ETL crawlers
   * Trigger job when crawlers done
 * Improve DB import (https://aws.amazon.com/blogs/database/improve-performance-of-your-bulk-data-import-to-amazon-rds-for-mysql/)
+* More permissions: https://awstip.com/aws-etl-insert-data-to-a-relational-database-using-glue-job-393a2e37c758
 # Reference
 
 * Automate creation of the databases and import of schemas. Suggestion: using LAMBDA:
