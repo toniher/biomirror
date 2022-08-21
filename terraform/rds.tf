@@ -4,6 +4,12 @@ resource "aws_db_subnet_group" "group_db" {
   subnet_ids = var.subnets
 }
 
+// Temporary data of subnets based on: https://medium.com/@angielohqh/terraform-dynamically-look-up-vpc-requirements-for-aws-glue-connection-298662d10d89
+data "aws_subnet" "mydb_subnets" {
+  for_each = var.subnets
+  id       = each.value
+}
+
 resource "aws_db_instance" "mydb" {
   engine                 = var.db_engine
   engine_version         = var.db_version

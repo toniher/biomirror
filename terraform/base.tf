@@ -81,15 +81,15 @@ variable "db_public_access" {
   default = false
 }
 
-variable "db_subnet" {
-  type    = string
+/* variable "db_subnet" {
+  type = string
 }
 
 variable "db_availability_zone" {
-  type    = string
+  type = string
 }
 
-
+ */
 # Bucket path where data is processed
 variable "bucket_data_path" {
   type    = string

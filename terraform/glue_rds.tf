@@ -31,9 +31,9 @@ resource "aws_glue_connection" "biomirror_rds_connection" {
 
   physical_connection_requirements {
     // TODO: address availability and subnet as separate params, sic
-    availability_zone      = var.db_availability_zone
+    availability_zone      = aws_db_instance.mydb.availability_zone
     security_group_id_list = [aws_security_group.allow_db_glue.id]
-    subnet_id              = var.db_subnet
+    subnet_id              = [for subnet in data.aws_subnet.mydb_subnets : subnet.id if subnet.availability_zone == aws_db_instance.mydb.availability_zone][0]
   }
 }
 
@@ -51,18 +51,18 @@ resource "aws_glue_crawler" "biomirror_rds_crawler" {
 resource "aws_iam_role" "glue-rds-role" {
   name = "glue-rds-role-${random_string.rand.result}"
 
-  assume_role_policy =  jsonencode({
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "glue.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "sts:AssumeRole",
+        "Principal" : {
+          "Service" : "glue.amazonaws.com"
+        },
+        "Effect" : "Allow",
+        "Sid" : ""
+      }
+    ]
   })
 
   tags = {
@@ -73,6 +73,6 @@ resource "aws_iam_role" "glue-rds-role" {
 resource "aws_iam_role_policy_attachment" "AWSGlueServiceRole-RDS-policy-attachment" {
 
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
-  role      = aws_iam_role.glue-rds-role.name
+  role       = aws_iam_role.glue-rds-role.name
 
 }

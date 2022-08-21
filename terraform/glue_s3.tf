@@ -18,7 +18,7 @@ resource "aws_glue_crawler" "biomirror_s3_crawler" {
   name          = "biomirror-s3-crawler-${random_string.rand.result}"
   role          = aws_iam_role.glue-s3-role.arn
 
-  classifiers = [ aws_glue_classifier.biomirror_csv.name ]
+  classifiers = [aws_glue_classifier.biomirror_csv.name]
 
   s3_target {
     path = "s3://${var.bucket_data_path}"
@@ -32,12 +32,12 @@ resource "aws_iam_role" "glue-s3-role" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "glue.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
+        "Action" : "sts:AssumeRole",
+        "Principal" : {
+          "Service" : "glue.amazonaws.com"
+        },
+        "Effect" : "Allow",
+        "Sid" : ""
       }
     ]
   })
