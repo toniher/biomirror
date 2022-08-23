@@ -35,6 +35,8 @@ resource "aws_glue_connection" "biomirror_rds_connection" {
     security_group_id_list = [aws_security_group.allow_db_glue.id]
     subnet_id              = [for subnet in data.aws_subnet.mydb_subnets : subnet.id if subnet.availability_zone == aws_db_instance.mydb.availability_zone][0]
   }
+
+  depends_on = [aws_db_instance.mydb]
 }
 
 resource "aws_glue_crawler" "biomirror_rds_crawler" {
