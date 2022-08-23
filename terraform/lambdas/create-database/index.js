@@ -26,9 +26,20 @@ const connection = mysql.createConnection({
     debug: true 
 }); 
 
-const content = fs.readFileSync('./dump.sql', {encoding:'utf8', flag:'r'});
 
-exports.handler = async (event) => {  
+exports.handler = async (event) => {
+
+
+    let file_sql = "./create.sql";
+
+    if ( event && event.query && event.query.action ) {
+
+        let action = event.query.action;
+
+        file_sql = "./" + action + ".sql";
+    }
+
+    let content = fs.readFileSync(file_sql, {encoding:'utf8', flag:'r'});
 
     try {
         

@@ -82,9 +82,25 @@ data "archive_file" "db-lambda-zip" {
   }
 
   source {
-    content  = file("${local.lambda_path}/dump.sql")
-    filename = "dump.sql"
+    content  = file("${local.lambda_path}/create.sql")
+    filename = "create.sql"
   }
+
+  source {
+    content  = file("${local.lambda_path}/indexes.sql")
+    filename = "indexes.sql"
+  }
+
+  source {
+    content  = file("${local.lambda_path}/count.sql")
+    filename = "count.sql"
+  }
+
+  source {
+    content  = file("${local.lambda_path}/count-uniprot.sql")
+    filename = "count-uniprot.sql"
+  }
+
 
 }
 
@@ -123,7 +139,7 @@ resource "aws_lambda_invocation" "create_rds_database_invocation" {
   function_name = aws_lambda_function.create_rds_database.function_name
 
   input = jsonencode({
-    test = "test"
+    action = "create"
   })
 
   depends_on = [aws_lambda_function.create_rds_database]
