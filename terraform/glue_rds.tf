@@ -46,6 +46,11 @@ resource "aws_glue_crawler" "biomirror_rds_crawler" {
     connection_name = aws_glue_connection.biomirror_rds_connection.name
     path            = "${var.db_name}/%"
   }
+
+  // Start provisioner after it is created. Based on https://stackoverflow.com/questions/58034202/how-to-run-aws-glue-crawler-after-resource-update-created
+  provisioner "local-exec" {
+    command = "aws glue start-crawler --name ${self.name}"
+  }
 }
 
 resource "aws_iam_role" "glue-rds-role" {

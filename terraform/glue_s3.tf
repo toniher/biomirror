@@ -23,6 +23,11 @@ resource "aws_glue_crawler" "biomirror_s3_crawler" {
   s3_target {
     path = "s3://${var.bucket_data_path}"
   }
+
+  // Start provisioner after it is created. Based on https://stackoverflow.com/questions/58034202/how-to-run-aws-glue-crawler-after-resource-update-created
+  provisioner "local-exec" {
+    command = "aws glue start-crawler --name ${self.name}"
+  }
 }
 
 resource "aws_iam_role" "glue-s3-role" {
