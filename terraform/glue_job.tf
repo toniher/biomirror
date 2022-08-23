@@ -5,6 +5,8 @@ resource "aws_s3_object" "glue_script" {
   content = templatefile("glue_script.tpl.py", { glue_s3_db = aws_glue_catalog_database.biomirror_s3_database.name,
   glue_rds_db = aws_glue_catalog_database.biomirror_rds_database.name })
 
+  depends_on = [aws_glue_crawler.biomirror_rds_crawler, aws_glue_crawler.biomirror_s3_crawler]
+
 }
 
 resource "aws_glue_job" "glue_job" {
@@ -37,4 +39,6 @@ resource "aws_glue_job" "glue_job" {
     "--TempDir"                          = "s3://${var.bucket_scripts}/tmp/"
     "--spark-event-logs-path"            = "s3://${var.bucket_scripts}/logs/"
   }
+
+  depends_on = [aws_s3_object.glue_script]
 }
