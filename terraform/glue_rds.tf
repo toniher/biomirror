@@ -36,7 +36,7 @@ resource "aws_glue_connection" "biomirror_rds_connection" {
     subnet_id              = [for subnet in data.aws_subnet.mydb_subnets : subnet.id if subnet.availability_zone == aws_db_instance.mydb.availability_zone][0]
   }
 
-  depends_on = [aws_db_instance.mydb]
+  depends_on = [aws_db_instance.mydb, aws_lambda_invocation.create_rds_database_invocation]
 }
 
 resource "aws_glue_crawler" "biomirror_rds_crawler" {
