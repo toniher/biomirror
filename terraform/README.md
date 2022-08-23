@@ -7,6 +7,7 @@ Reference: https://citizix.com/create-an-rds-instance-in-terraform-with-a-mariad
 * Automate VPC and subnets
 * Improve DB import (https://aws.amazon.com/blogs/database/improve-performance-of-your-bulk-data-import-to-amazon-rds-for-mysql/)
 * More permissions: https://awstip.com/aws-etl-insert-data-to-a-relational-database-using-glue-job-393a2e37c758
+  * Create specific Bucket for logs and temporary 
 # Reference
 
 * Automate creation of the databases and import of schemas. Suggestion: using LAMBDA:
