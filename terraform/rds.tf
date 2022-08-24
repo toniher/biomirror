@@ -4,12 +4,13 @@ resource "aws_db_subnet_group" "group_db" {
   subnet_ids = module.vpc.public_subnets
 }
 
-/* // Temporary data of subnets based on: https://medium.com/@angielohqh/terraform-dynamically-look-up-vpc-requirements-for-aws-glue-connection-298662d10d89
+// Temporary data of subnets based on: https://medium.com/@angielohqh/terraform-dynamically-look-up-vpc-requirements-for-aws-glue-connection-298662d10d89
 data "aws_subnet" "mydb_subnets" {
   // https://stackoverflow.com/questions/62264013/terraform-failing-with-invalid-for-each-argument-the-given-for-each-argument
   for_each = toset(module.vpc.public_subnets)
   id       = each.value
-} */
+  depends_on = [module.vpc]
+}
 
 resource "aws_db_instance" "mydb" {
   engine                 = var.db_engine

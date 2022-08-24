@@ -1,14 +1,20 @@
 Terraform recipe for setting up a RDS MariaDB database for supporting the scripts
 
-Reference: https://citizix.com/create-an-rds-instance-in-terraform-with-a-mariadb-example/
+```
+terraform plan --target=module.vpc --output=vpc.plan
+terraform apply vpc.plan
+terraform plan
+terraform apply
+```
 
 # TODO
 
-* Automate VPC and subnets
 * Improve DB import (https://aws.amazon.com/blogs/database/improve-performance-of-your-bulk-data-import-to-amazon-rds-for-mysql/)
   * Need to consider different GLUE script which might allow bulkSize maybe
 
 # Reference
+
+* RDS: https://citizix.com/create-an-rds-instance-in-terraform-with-a-mariadb-example/
 
 * Automate creation of the databases and import of schemas. Suggestion: using LAMBDA:
   * https://docs.aws.amazon.com/lambda/latest/dg/services-rds-tutorial.html
