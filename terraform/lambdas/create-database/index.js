@@ -5,36 +5,36 @@ const mysql = require('mysql');
 const fs = require('fs');
 let path = require("path");
 
-const connection = mysql.createConnection({ 
-
-    //following param coming from aws lambda env variable  
-    host: process.env.RDS_HOSTNAME,
-    user: process.env.RDS_USERNAME,
-    password: process.env.RDS_PASSWORD, 
-    port: process.env.RDS_PORT, 
-
-    // calling direct inside code 
-    connectionLimit: 60,  
-    multipleStatements: true,
-
-    // Prevent nested sql statements 
-    connectionLimit: 1000, 
-    connectTimeout: 60 * 60 * 1000,
-    acquireTimeout: 60 * 60 * 1000,  
-    timeout: 60 * 60 * 1000,  
-
-    debug: true 
-}); 
-
 
 exports.handler = async (event) => {
 
+    // Important to be inside of the handler the connection
+    var connection = mysql.createConnection({ 
 
-    let file_sql = "./create.sql";
+        //following param coming from aws lambda env variable  
+        host: process.env.RDS_HOSTNAME,
+        user: process.env.RDS_USERNAME,
+        password: process.env.RDS_PASSWORD, 
+        port: process.env.RDS_PORT, 
+    
+        // calling direct inside code 
+        connectionLimit: 60,  
+        multipleStatements: true,
+    
+        // Prevent nested sql statements 
+        connectionLimit: 1000, 
+        connectTimeout: 60 * 60 * 1000,
+        acquireTimeout: 60 * 60 * 1000,  
+        timeout: 60 * 60 * 1000,  
+    
+        debug: true 
+    });
 
-    if ( event && event.query && event.query.action ) {
+    let file_sql = "./count.sql";
 
-        let action = event.query.action;
+    if ( event && event.action ) {
+
+        let action = event.action;
 
         file_sql = "./" + action + ".sql";
     }
