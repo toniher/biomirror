@@ -45,6 +45,9 @@ DataCatalogtable_node3 = glueContext.write_dynamic_frame.from_catalog(
     database="${glue_rds_db}",
     table_name="biomirror_idmapping",
     transformation_ctx="DataCatalogtable_node3",
+    additional_options = {
+        'bulksize': '3'
+    },
 )
 
 job.commit()
