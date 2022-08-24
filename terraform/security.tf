@@ -1,7 +1,7 @@
 resource "aws_security_group" "allow_db" {
   name        = "db-rds-sg-${random_string.rand.result}"
   description = "Allow TLS inbound traffic"
-  vpc_id      = var.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress {
     description = "Access from within the VPC"
@@ -26,7 +26,7 @@ resource "aws_security_group" "allow_db" {
 resource "aws_security_group" "allow_db_glue" {
   name        = "db-rds-glue-sg-${random_string.rand.result}"
   description = "Allow TLS inbound traffic"
-  vpc_id      = var.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress {
     description = "Access from within the VPC"
@@ -46,15 +46,15 @@ resource "aws_security_group" "allow_db_glue" {
   tags = {
     Name = "Allow access to prod rds"
   }
-  
+
 }
 
 // This allows self-referencing
 resource "aws_security_group_rule" "sec_group_glue_self" {
-  type                     = "ingress"
-  from_port                = 0
-  to_port                  = 0
-  protocol                 = "-1"
-  security_group_id        = aws_security_group.allow_db_glue.id
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = aws_security_group.allow_db_glue.id
   //source_security_group_id = aws_security_group.allow_db_glue.id
 }

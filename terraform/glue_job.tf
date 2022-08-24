@@ -92,19 +92,19 @@ resource "aws_iam_role_policy" "glue-job-bucket-policy" {
 
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:PutObject"
-            ],
-            "Resource": [
-                "arn:aws:s3:::${aws_s3_bucket.scripts-bucket.bucket}",
-                "arn:aws:s3:::${aws_s3_bucket.scripts-bucket.bucket}/*"
-            ]
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${aws_s3_bucket.scripts-bucket.bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.scripts-bucket.bucket}/*"
+        ]
+      }
     ]
   })
 

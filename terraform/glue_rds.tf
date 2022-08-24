@@ -1,20 +1,3 @@
-# S3 endpoint needed for connection
-
-resource "aws_vpc_endpoint" "s3_rds_glue" {
-  vpc_id       = var.vpc_id
-  service_name = "com.amazonaws.${var.region}.s3"
-
-  tags = {
-    Endpoint = "RDS-Glue"
-  }
-}
-
-resource "aws_vpc_endpoint_route_table_association" "s3_rds_glue_route_association" {
-  route_table_id  = var.route_table_id
-  vpc_endpoint_id = aws_vpc_endpoint.s3_rds_glue.id
-}
-
-
 resource "aws_glue_catalog_database" "biomirror_rds_database" {
   name = "biomirror-rds-db-${random_string.rand.result}"
 }

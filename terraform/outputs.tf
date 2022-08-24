@@ -21,3 +21,11 @@ output "db_instance_endpoint" {
 output "db_instance_status" {
   value = aws_db_instance.mydb.status
 }
+
+output "vpc_route_table_ids" {
+  value = module.vpc.public_route_table_ids
+}
+
+output "vpc_subnet_ids" {
+  value = module.vpc.public_subnets
+}
