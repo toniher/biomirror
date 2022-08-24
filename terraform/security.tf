@@ -46,6 +46,7 @@ resource "aws_security_group" "allow_db_glue" {
   tags = {
     Name = "Allow access to prod rds"
   }
+  
 }
 
 // This allows self-referencing
@@ -55,5 +56,5 @@ resource "aws_security_group_rule" "sec_group_glue_self" {
   to_port                  = 0
   protocol                 = "-1"
   security_group_id        = aws_security_group.allow_db_glue.id
-  source_security_group_id = aws_security_group.allow_db_glue.id
+  //source_security_group_id = aws_security_group.allow_db_glue.id
 }
