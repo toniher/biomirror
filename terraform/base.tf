@@ -49,11 +49,6 @@ variable "route_table_id" {
   default = "rtb-1544fd7f"
 }
 
-variable "db_cidr_blocks" {
-  type    = list(string)
-  default = [var.cidr]
-}
-
 variable "db_engine" {
   type    = string
   default = "mariadb"

@@ -8,7 +8,7 @@ resource "aws_security_group" "allow_db" {
     from_port   = var.db_port
     to_port     = var.db_port
     protocol    = "tcp"
-    cidr_blocks = var.db_cidr_blocks
+    cidr_blocks = [var.cidr]
   }
 
   egress {
@@ -29,11 +29,10 @@ resource "aws_security_group" "allow_db_glue" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    description = "Access from within the VPC"
-    from_port   = var.db_port
-    to_port     = var.db_port
-    protocol    = "tcp"
-    cidr_blocks = var.db_cidr_blocks
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
   }
 
   egress {
@@ -50,11 +49,11 @@ resource "aws_security_group" "allow_db_glue" {
 }
 
 // This allows self-referencing
-resource "aws_security_group_rule" "sec_group_glue_self" {
+resource "aws_security_group_rule" "sec_group_glue_db" {
   type              = "ingress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
+  from_port         = var.db_port
+  to_port           = var.db_port
+  protocol          = "tcp"
+  cidr_blocks       = [var.cidr]
   security_group_id = aws_security_group.allow_db_glue.id
-  //source_security_group_id = aws_security_group.allow_db_glue.id
 }
