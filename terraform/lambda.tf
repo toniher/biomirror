@@ -118,7 +118,7 @@ resource "aws_lambda_function" "create_rds_database" {
   timeout = 60
 
   vpc_config {
-    subnet_ids         = var.subnets
+    subnet_ids         = module.vpc.public_subnets
     security_group_ids = [aws_security_group.allow_db.id]
   }
 

@@ -23,11 +23,6 @@ variable "availability_zones" {
   default = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
 }
 
-variable "subnets" {
-  type    = list(string)
-  default = ["subnet-8a280df7", "subnet-c54d6588", "subnet-b85ab5d2"]
-}
-
 
 variable "cidr" {
   type    = string
@@ -37,16 +32,6 @@ variable "cidr" {
 variable "public_subnets" {
   type    = list(string)
   default = ["172.35.3.0/24", "172.35.4.0/24", "172.35.5.0/24"]
-}
-
-variable "vpc_id" {
-  type    = string
-  default = "vpc-68c6c103"
-}
-
-variable "route_table_id" {
-  type    = string
-  default = "rtb-1544fd7f"
 }
 
 variable "db_engine" {
