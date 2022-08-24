@@ -22,7 +22,7 @@ resource "aws_s3_object" "glue_script" {
 resource "aws_glue_job" "glue_job" {
   name              = "glue-job-${random_string.rand.result}"
   description       = "Glue Job for biomirror"
-  role_arn          = aws_iam_role.glue-rds-role.arn
+  role_arn          = aws_iam_role.glue-job-role.arn
   max_retries       = 1
   glue_version      = "3.0"
   worker_type       = "G.1X"
