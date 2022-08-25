@@ -1,11 +1,15 @@
 resource "aws_s3_bucket" "scripts-bucket" {
   bucket        = format("%s-%s", var.bucket_scripts, random_string.rand.result)
-  acl           = "private"
   force_destroy = true
 
   tags = {
     name = format("%s-%s", var.bucket_scripts, random_string.rand.result)
   }
+}
+
+resource "aws_s3_bucket_acl" "scripts-bucket-acl" {
+  bucket = aws_s3_bucket.scripts-bucket.id
+  acl    = "private"
 }
 
 
