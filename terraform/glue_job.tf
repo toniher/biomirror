@@ -31,6 +31,7 @@ resource "aws_glue_job" "glue_job" {
   glue_version      = "3.0"
   worker_type       = "G.1X"
   number_of_workers = 5
+  connections       = [aws_glue_connection.biomirror_rds_connection]
 
   execution_class = "STANDARD" //Alternative is FLEX
 
