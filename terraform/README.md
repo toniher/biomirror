@@ -1,7 +1,7 @@
 Terraform recipe for setting up a RDS MariaDB database for supporting the scripts
 
 ```
-terraform plan --target=module.vpc --output=vpc.plan
+terraform plan --target=module.vpc --out=vpc.plan
 terraform apply vpc.plan
 terraform plan
 terraform apply
