@@ -10,7 +10,7 @@ terraform apply
 # TODO
 
 * Improve DB import (https://aws.amazon.com/blogs/database/improve-performance-of-your-bulk-data-import-to-amazon-rds-for-mysql/)
-  * Need to consider different GLUE script which might allow bulkSize maybe
+  * Need to consider different GLUE script which might allow bulkSize maybe -> https://www.youtube.com/watch?v=QH1Jc9Wrp9Y
 
 # Reference
 
