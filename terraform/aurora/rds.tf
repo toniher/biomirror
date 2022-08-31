@@ -30,14 +30,14 @@ data "aws_subnet" "mydb_subnets" {
 // Ref: https://stackoverflow.com/questions/72060850/use-terraform-to-deploy-mysql-8-0-in-aws-aurora-v2
 resource "aws_rds_cluster" "aurora_cluster" {
 
-    cluster_identifier            = "aurora_cluster-${random_string.rand.result}"
+    cluster_identifier            = "aurora-cluster-${random_string.rand.result}"
     database_name                 = var.db_name
     master_username               = "root"
     master_password               = var.db_password
     // backup_retention_period       = 14
     // preferred_backup_window       = "02:00-03:00"
     // preferred_maintenance_window  = "wed:03:00-wed:04:00"
-    allocated_storage      =      var.db_storage
+    // allocated_storage      =      var.db_storage
 
     db_subnet_group_name          = aws_db_subnet_group.group_db.name
     // final_snapshot_identifier     = "${var.environment_name}_aurora_cluster"
@@ -55,7 +55,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
 resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
 
     count                 = 2
-    identifier            = "aurora_instance-${random_string.rand.result}-${count.index}"
+    identifier            = "aurora-instance-${random_string.rand.result}-${count.index}"
     cluster_identifier    = aws_rds_cluster.aurora_cluster.id
     instance_class        = var.db_instance
     db_subnet_group_name  = aws_db_subnet_group.group_db.name

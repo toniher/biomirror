@@ -131,7 +131,7 @@ resource "aws_lambda_function" "create_rds_database" {
     }
   }
 
-  depends_on = [aws_rds_cluster.aurora_cluster, aws_lambda_layer_version.mysql_layer]
+  depends_on = [aws_rds_cluster_instance.aurora_cluster_instance, aws_lambda_layer_version.mysql_layer]
 }
 
 // Invocation of Lambda at the end
