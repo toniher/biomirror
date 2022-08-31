@@ -36,17 +36,18 @@ variable "public_subnets" {
 
 variable "db_engine" {
   type    = string
-  default = "mariadb"
+  default = "aurora-mysql"
 }
+
 
 variable "db_version" {
   type    = string
-  default = "10.5"
+  default = "8.0.mysql_aurora.3.02.0"
 }
 
 variable "db_instance" {
   type    = string
-  default = "db.t3.xlarge"
+  default = "db.t3.large"
 }
 variable "db_password" {
   type = string
@@ -77,15 +78,7 @@ variable "db_public_access" {
   default = false
 }
 
-/* variable "db_subnet" {
-  type = string
-}
 
-variable "db_availability_zone" {
-  type = string
-}
-
- */
 # Bucket path where data is processed
 variable "bucket_data_path" {
   type    = string

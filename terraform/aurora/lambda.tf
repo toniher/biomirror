@@ -124,14 +124,14 @@ resource "aws_lambda_function" "create_rds_database" {
 
   environment {
     variables = {
-      RDS_HOSTNAME = aws_db_instance.mydb.address
+      RDS_HOSTNAME = aws_rds_cluster.aurora_cluster.endpoint
       RDS_USERNAME = "root"
       RDS_PASSWORD = var.db_password
       RDS_PORT     = var.db_port
     }
   }
 
-  depends_on = [aws_db_instance.mydb, aws_lambda_layer_version.mysql_layer]
+  depends_on = [aws_rds_cluster.aurora_cluster, aws_lambda_layer_version.mysql_layer]
 }
 
 // Invocation of Lambda at the end

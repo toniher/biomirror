@@ -27,6 +27,7 @@ data "aws_subnet" "mydb_subnets" {
 } */
 
 // Ref: https://gist.github.com/sandcastle/4e7b979c480690044bd8
+// Ref: https://stackoverflow.com/questions/72060850/use-terraform-to-deploy-mysql-8-0-in-aws-aurora-v2
 resource "aws_rds_cluster" "aurora_cluster" {
 
     cluster_identifier            = "aurora_cluster-${random_string.rand.result}"
@@ -42,6 +43,9 @@ resource "aws_rds_cluster" "aurora_cluster" {
     // final_snapshot_identifier     = "${var.environment_name}_aurora_cluster"
     vpc_security_group_ids = [aws_security_group.allow_db.id]
 
+    engine                  = var.db_engine
+    engine_version          = var.db_version
+
     lifecycle {
         create_before_destroy = true
     }
@@ -53,9 +57,11 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
     count                 = 2
     identifier            = "aurora_instance-${random_string.rand.result}-${count.index}"
     cluster_identifier    = aws_rds_cluster.aurora_cluster.id
-    instance_class        = "db.t2.small"
+    instance_class        = var.db_instance
     db_subnet_group_name  = aws_db_subnet_group.group_db.name
     publicly_accessible   = var.db_public_access
+    engine                = aws_rds_cluster.aurora_cluster.engine
+    engine_version        = aws_rds_cluster.aurora_cluster.engine_version
 
     lifecycle {
         create_before_destroy = true
