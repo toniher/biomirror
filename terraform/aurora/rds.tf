@@ -13,12 +13,12 @@ data "aws_subnet" "mydb_subnets" {
 }
 
 resource "aws_rds_cluster_parameter_group" "mydb" {
-  name        = "biomirror-aurora-${var.db_engine}${var.db_version}"
-  family      = "aurora-${var.db_engine}${var.db_version}"
+  name        = "biomirror-aurora-${random_string.rand.result}"
+  family      = var.db_family_version
   description = "RDS cluster parameter group for biomirror"
 
   parameter {
-    name  = "aurora_load_from_s3_role"
+    name  = "aws_default_s3_role"
     value = aws_iam_role.rds_database_role.arn
   }
 }
@@ -38,7 +38,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   vpc_security_group_ids = [aws_security_group.allow_db.id]
 
   skip_final_snapshot       = true //TODO: We can change
-  final_snapshot_identifier = "aurora_cluster-${random_string.rand.result}"
+  final_snapshot_identifier = "aurora-cluster-${random_string.rand.result}"
 
 
 
