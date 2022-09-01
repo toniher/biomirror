@@ -67,16 +67,6 @@ variable "db_password" {
   type = string
 }
 
-variable "db_storage" {
-  type    = number
-  default = 250
-}
-
-variable "db_max_storage" {
-  type    = number
-  default = 1000
-}
-
 variable "db_port" {
   type    = number
   default = 3306
@@ -113,4 +103,8 @@ resource "random_string" "rand" {
   upper   = false
 }
 
-// TODO: Data load of bucket
+// Data load of bucket
+
+data "aws_s3_bucket" "bucket_data" {
+  bucket = split("/", var.bucket_data_path)[0]
+}
