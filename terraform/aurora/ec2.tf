@@ -12,6 +12,7 @@ resource "aws_instance" "ec2_executor" {
     volume_size = var.ec2_volume_size
   }
 
+  subnet_id = module.vpc.public_subnets[0] // Let's get the first subnet
 
   // Let's wait all buckets to be created first. It could be even tried one by one
   depends_on = [aws_lambda_invocation.create_rds_database_invocation, aws_rds_cluster_parameter_group.mydb, aws_iam_instance_profile.ec2_profile]
