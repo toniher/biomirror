@@ -20,5 +20,6 @@ while read -r ifile; do
     mysql -uroot -p${db_password} -h${db_host} biomirror < /tmp/command.sql
 done < "/tmp/files.txt"
 
-
+# TODO:
+# Once done, trigger system to shutdown
 
