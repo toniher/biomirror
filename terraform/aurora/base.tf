@@ -18,6 +18,20 @@ variable "key_name" {
   type = string
 }
 
+variable "ec2_ami" {
+  type = string
+}
+
+variable "ec2_instance_type" {
+  type    = string
+  default = "t2.micro"
+}
+
+variable "ec2_volume_size" {
+  type    = number
+  default = 10
+}
+
 variable "availability_zones" {
   type    = list(string)
   default = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
