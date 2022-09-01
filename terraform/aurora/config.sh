@@ -11,8 +11,6 @@ export TF_var_public_subnets='["172.35.3.0/24", "172.35.4.0/24", "172.35.5.0/24"
 export TF_VAR_db_engine=aurora-mysql
 export TF_VAR_db_instance=db.t3.large
 export TF_VAR_db_password=3this1.passwd
-export TF_VAR_db_storage=250
-export TF_VAR_db_max_storage=1000
 export TF_VAR_db_port=3306
 export TF_VAR_db_name=biomirror
 
