@@ -79,12 +79,12 @@ resource "aws_iam_policy" "rds_s3_database_policy" {
     {
       "Effect": "Allow",
       "Action": ["s3:GetObject", "s3:GetObjectVersion"],
-      "Resource": "${data_s3_bucket.bucket_data.arn}/*"
+      "Resource": "${data.aws_s3_bucket.bucket_data.arn}/*"
     },
     {
       "Effect": "Allow",
       "Action": ["s3:ListBucket"],
-      "Resource": "${data_s3_bucket.bucket_data.arn}"
+      "Resource": "${data.aws_s3_bucket.bucket_data.arn}"
     }
   ]
 }

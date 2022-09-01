@@ -70,8 +70,11 @@ data "aws_iam_policy_document" "s3_read_permissions" {
       "s3:ListBucket",
     ]
 
-    resources = ["arn:aws:s3:::${data_s3_bucket.bucket_data.id}",
-      "arn:aws:s3:::${data_s3_bucket.bucket_data.id}/*",
+    resources = ["arn:aws:s3:::${data.aws_s3_bucket.bucket_data.id}",
+      "arn:aws:s3:::${data.aws_s3_bucket.bucket_data.id}/*",
     ]
   }
+
+  depends_on = [data.aws_s3_bucket.bucket_data]
+
 }

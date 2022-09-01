@@ -90,6 +90,11 @@ variable "bucket_data_path" {
 }
 
 
+data "aws_s3_bucket" "bucket_data" {
+  bucket = split("/", var.bucket_data_path)[0]
+}
+
+
 provider "aws" {
   profile                  = var.profile
   shared_credentials_files = var.credentials
@@ -104,7 +109,3 @@ resource "random_string" "rand" {
 }
 
 // Data load of bucket
-
-data "aws_s3_bucket" "bucket_data" {
-  bucket = split("/", var.bucket_data_path)[0]
-}
