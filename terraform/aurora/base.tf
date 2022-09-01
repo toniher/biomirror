@@ -112,3 +112,5 @@ resource "random_string" "rand" {
   special = false
   upper   = false
 }
+
+// TODO: Data load of bucket
