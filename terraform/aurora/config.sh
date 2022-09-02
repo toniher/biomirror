@@ -1,5 +1,6 @@
 export TF_VAR_key_name=key-nf
 export TF_VAR_profile=default
+export TF_VAR_email=email@email.com
 export TF_VAR_ec2_ami=ami-0872ea47efc1cee46
 export TF_VAR_ec2_instance_type=t2.micro
 export TF_VAR_credentials='["/home/myuser/.aws/credentials"]'
