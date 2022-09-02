@@ -37,7 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "executor_check" {
     
     alarm_name          = "Instance-check-on-biomirror"
     comparison_operator = "GreaterThanOrEqualToThreshold"
-    evaluation_periods  = "2"
+    evaluation_periods  = "1"
     metric_name         = "StatusCheckFailed"
     namespace           = "AWS/EC2"
     period              = "300"
