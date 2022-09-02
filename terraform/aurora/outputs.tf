@@ -10,6 +10,9 @@ output "aurora_endpoint_read" {
   value = aws_rds_cluster.aurora_cluster.reader_endpoint
 }
 
+output "ec2_address" {
+  value = aws_instance.ec2_executor.public_dns
+}
 output "vpc_route_table_ids" {
   value = module.vpc.public_route_table_ids
 }
