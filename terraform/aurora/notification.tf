@@ -1,6 +1,6 @@
 // Notification. Reference: https://adamtheautomator.com/terraform-cloudwatch/
 
-var email {
+variable "email" {
     type    = string
 }
 
