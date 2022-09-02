@@ -6,7 +6,7 @@ resource "aws_instance" "ec2_executor" {
   instance_type        = var.ec2_instance_type
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   key_name             = var.key_name
-  security_groups      = [aws_security_group.allow_ssh.name]
+  vpc_security_group_ids  = [aws_security_group.allow_ssh.id]
   user_data            = templatefile("ec2init.sh.tpl", { db_password = var.db_password, db_host = aws_rds_cluster.aurora_cluster.endpoint, bucket_data_path = var.bucket_data_path, rand = random_string.rand.result })
   root_block_device {
     volume_size = var.ec2_volume_size

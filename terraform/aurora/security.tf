@@ -27,6 +27,8 @@ resource "aws_security_group" "allow_ssh" {
 
   name        = "allow_ssh-${random_string.rand.result}"
   description = "default ssh (22) access with Terraform"
+  vpc_id      = module.vpc.vpc_id
+
   ingress {
     cidr_blocks = [
       "0.0.0.0/0"

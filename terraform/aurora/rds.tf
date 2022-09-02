@@ -40,7 +40,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   skip_final_snapshot       = true //TODO: We can change
   final_snapshot_identifier = "aurora-cluster-${random_string.rand.result}"
 
-
+  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.mydb.name
 
   engine         = var.db_engine
   engine_version = var.db_version
