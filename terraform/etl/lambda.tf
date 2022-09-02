@@ -4,9 +4,9 @@
 // path.root here: https://www.terraform.io/language/expressions/references
 locals {
   layer_name  = "mysql"
-  layers_path = "${path.root}/layers/${local.layer_name}/"
+  layers_path = "${path.root}/../layers/${local.layer_name}/"
   lambda_name = "create-database"
-  lambda_path = "${path.root}/lambdas/${local.lambda_name}/"
+  lambda_path = "${path.root}/../lambdas/${local.lambda_name}/"
   runtime     = "nodejs16.x"
 }
 
